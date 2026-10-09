@@ -72,7 +72,7 @@
 
 
         {{-- CONTENT --}}
-        <main class="p-6 space-y-6 max-w-7xl w-full mx-auto">
+        <main class="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 space-y-6 max-w-7xl w-full mx-auto">
 
             {{-- SUCCESS --}}
             @if(session('success'))

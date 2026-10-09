@@ -7,7 +7,7 @@
     <!-- Dynamic SEO & Meta Tags -->
     @include('components.seo', [
         'title' => 'Himachal Tour Packages | Dharamshala, Dalhousie, Bir Billing',
-        'description' => 'Explore tailored holiday circuits across Dharamshala, McLeodganj, Kangra Valley, and Bir Billing paragliding with private cabs and expert mountain chauffeurs.'
+        'description' => 'Explore tailored holiday circuits across Dharamshala, McLeodganj, Kangra Valley, and Bir Billing paraglidingwith private cabs and expert mountain chauffeurs.'
     ])
 
     @if(\App\Models\Setting::get('site_favicon'))
@@ -35,7 +35,7 @@
     <!-- Hero Header -->
     <section class="bg-gray-900 text-white py-14">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-            <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-800 text-emerald-400 border border-gray-700 mb-3">
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-800 text-emerald-400 border border-gray-700mb-3">
                 Curated Mountain Circuits & Day Tours
             </span>
             <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Himachal Sightseeing & Holiday Packages</h1>
@@ -68,7 +68,7 @@
                 <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between group">
                     <div>
                         <!-- Clickable Package Banner Image -->
-                        <a href="{{ route('tours.show', $package->id) }}" class="block relative h-52 bg-gray-100 overflow-hidden">
+                        <a href="{{ route('tours.show', ['slug' => $package->slug]) }}" class="block relative h-52 bg-gray-100 overflow-hidden">
                             @if($tourImgUrl)
                                 <img src="{{ $tourImgUrl }}" 
                                      alt="{{ $package->title }}" 
@@ -90,14 +90,14 @@
                             <div class="flex items-start justify-between">
                                 <div>
                                     <!-- Clickable Title -->
-                                    <a href="{{ route('tours.show', $package->id) }}" class="text-lg font-bold text-gray-900 hover:text-emerald-700 transition">
+                                    <a href="{{ route('tours.show', ['slug' => $package->slug]) }}" class="text-lg font-bold text-gray-900 hover:text-emerald-700 transition">
                                         {{ $package->title }}
                                     </a>
                                     <p class="text-xs text-gray-500 mt-0.5">Private Sightseeing Tour</p>
                                 </div>
                                 <div class="text-right">
                                     <span class="text-xs text-gray-400 block">Package from</span>
-                                    <span class="text-lg font-extrabold text-emerald-700">₹{{ number_format($package->starting_price ?? 2500) }}</span>
+                                    <span class="text-lg font-extrabold text-emerald-700">â‚¹{{ number_format($package->starting_price?? 2500) }}</span>
                                 </div>
                             </div>
 
@@ -105,27 +105,20 @@
                                 {{ $package->short_desc ?? $package->description ?? '' }}
                             </p>
 
-                            @if(!empty($package->inclusions))
-                                <div class="mt-4 pt-4 border-t border-gray-100">
-                                    <span class="text-[10px] uppercase font-bold text-gray-400 block tracking-wider mb-2">Inclusions</span>
-                                    <p class="text-xs text-gray-700 bg-gray-50 p-2.5 rounded-lg leading-relaxed">
-                                        {{ is_array($package->inclusions) ? implode(', ', $package->inclusions) : $package->inclusions }}
-                                    </p>
-                                </div>
-                            @endif
+                          
                         </div>
                     </div>
 
                     <!-- Dual Action Buttons -->
                     <div class="p-6 pt-0 grid grid-cols-2 gap-2">
-                        <a href="{{ route('tours.show', $package->id) }}" 
+                        <a href="{{ route('tours.show', ['slug' => $package->slug]) }}" 
                            class="py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-xl text-xs transition text-center flex items-center justify-center space-x-1">
                             <span>View Details</span>
                             <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
                         </a>
 
                         <button type="button" 
-                                @click="selectedPackage = { id: {{ $package->id }}, title: '{{ addslashes($package->title) }}', price: {{ $package->starting_price ?? 2500 }} }; bookingModal = true"
+                                @click="selectedPackage = { id: {{ $package->id }}, title: '{{ addslashes($package->title) }}', price:{{ $package->starting_price ?? 2500 }} }; bookingModal = true"
                                 class="py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-xl text-xs transition flex items-center justify-center space-x-1">
                             <i data-lucide="calendar" class="w-3.5 h-3.5 text-emerald-400"></i>
                             <span>Book Now</span>
@@ -164,7 +157,7 @@
                 <div class="mb-5">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600">Tour Reservation</span>
                     <h3 class="text-xl font-bold text-gray-900"><span x-text="selectedPackage ? selectedPackage.title : 'Tour'"></span></h3>
-                    <p class="text-xs text-gray-500 mt-0.5">Starting at ₹<span x-text="selectedPackage ? selectedPackage.price : 0"></span>. Fill details to block cab & itinerary.</p>
+                    <p class="text-xs text-gray-500 mt-0.5">Starting at â‚¹<span x-text="selectedPackage ? selectedPackage.price : 0"></span>. Fill details to block cab & itinerary.</p>
                 </div>
 
                 <form action="{{ route('bookings.store') }}" method="POST" class="space-y-3.5 text-xs">
@@ -174,7 +167,7 @@
 
                     <div>
                         <label class="block font-semibold mb-1 text-gray-700 uppercase text-[10px]">Your Name *</label>
-                        <input type="text" name="customer_name" required placeholder="Full Name" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg outline-hidden focus:ring-2 focus:ring-gray-900 text-xs">
+                        <input type="text" name="customer_name" required placeholder="Full Name" class="w-full p-2.5 bg-gray-50 borderborder-gray-300 rounded-lg outline-hidden focus:ring-2 focus:ring-gray-900 text-xs">
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">

@@ -35,7 +35,7 @@
     <!-- Hero Header -->
     <section class="bg-gray-900 text-white py-14">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-            <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-800 text-emerald-400 border border-gray-700 mb-3">
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-800 text-emerald-400 border border-gray-700mb-3">
                 100% Sanitized & Mountain-Certified Cabs
             </span>
             <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Executive Cab Fleet & Bookings</h1>
@@ -72,7 +72,7 @@
                 <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between group">
                     <div>
                         <!-- Clickable Vehicle Image Banner -->
-                        <a href="{{ route('cabs.show', $cab->id) }}" class="block relative h-48 bg-gray-100 overflow-hidden">
+                        <a href="{{ route('cabs.show', ['slug' => $cab->slug]) }}" class="block relative h-48 bg-gray-100 overflow-hidden">
                             @if($cabImgUrl)
                                 <img src="{{ $cabImgUrl }}" 
                                      alt="{{ $cab->name }}" 
@@ -93,14 +93,14 @@
                             <div class="flex items-start justify-between">
                                 <div>
                                     <!-- Clickable Title -->
-                                    <a href="{{ route('cabs.show', $cab->id) }}" class="text-lg font-bold text-gray-900 hover:text-emerald-700 transition">
+                                    <a href="{{ route('cabs.show', ['slug' => $cab->slug]) }}" class="text-lg font-bold text-gray-900 hover:text-emerald-700 transition">
                                         {{ $cab->name }}
                                     </a>
-                                    <p class="text-xs text-gray-500 mt-0.5">{{ $cab->model_year ?? 'Recent Model' }} • Mountain Certified</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">{{ $cab->model_year ?? 'Recent Model' }} â€¢ Mountain Certified</p>
                                 </div>
                                 <div class="text-right">
                                     <span class="text-xs text-gray-400 block">Starting from</span>
-                                    <span class="text-lg font-extrabold text-emerald-700">₹{{ number_format($cab->base_fare ?? 1500) }}</span>
+                                    <span class="text-lg font-extrabold text-emerald-700">â‚¹{{ number_format($cab->base_fare ?? 1500)}}</span>
                                 </div>
                             </div>
 
@@ -130,7 +130,7 @@
 
                     <!-- Dual Action Buttons -->
                     <div class="p-6 pt-0 grid grid-cols-2 gap-2">
-                        <a href="{{ route('cabs.show', $cab->id) }}" 
+                        <a href="{{ route('cabs.show', ['slug' => $cab->slug]) }}" 
                            class="py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-xl text-xs transition text-center flex items-center justify-center space-x-1">
                             <span>View Details</span>
                             <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
@@ -169,7 +169,7 @@
                 <div class="mb-5">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600">Instant Reservation</span>
                     <h3 class="text-xl font-bold text-gray-900">Book <span x-text="selectedCab ? selectedCab.name : 'Cab'"></span></h3>
-                    <p class="text-xs text-gray-500 mt-0.5">Base Fare from ₹<span x-text="selectedCab ? selectedCab.fare : 0"></span>. Fill details to confirm pickup.</p>
+                    <p class="text-xs text-gray-500 mt-0.5">Base Fare from â‚¹<span x-text="selectedCab ? selectedCab.fare : 0"></span>. Fill details to confirm pickup.</p>
                 </div>
 
                 <form action="{{ route('bookings.store') }}" method="POST" class="space-y-3.5 text-xs">
@@ -179,7 +179,7 @@
 
                     <div>
                         <label class="block font-semibold mb-1 text-gray-700 uppercase text-[10px]">Your Name *</label>
-                        <input type="text" name="customer_name" required placeholder="Full Name" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg outline-hidden focus:ring-2 focus:ring-gray-900 text-xs">
+                        <input type="text" name="customer_name" required placeholder="Full Name" class="w-full p-2.5 bg-gray-50 borderborder-gray-300 rounded-lg outline-hidden focus:ring-2 focus:ring-gray-900 text-xs">
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -196,7 +196,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block font-semibold mb-1 text-gray-700 uppercase text-[10px]">Pickup Location *</label>
-                            <input type="text" name="pickup_location" required placeholder="e.g. Gaggal Airport / Hotel" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg outline-hidden focus:ring-2 focus:ring-gray-900 text-xs">
+                            <input type="text" name="pickup_location" required placeholder="e.g. Gaggal Airport / Hotel" class="w-fullp-2.5 bg-gray-50 border border-gray-300 rounded-lg outline-hidden focus:ring-2 focus:ring-gray-900 text-xs">
                         </div>
                         <div>
                             <label class="block font-semibold mb-1 text-gray-700 uppercase text-[10px]">Drop Location</label>
