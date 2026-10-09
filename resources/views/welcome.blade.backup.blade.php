@@ -1,0 +1,2175 @@
+<!DOCTYPE html>
+
+<html lang="en" class="scroll-smooth">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    @if(\App\Models\Setting::get('site_favicon'))
+
+    <link rel="icon" type="image/x-icon" href="{{ \App\Models\Setting::get('site_favicon') }}">
+
+    @endif
+
+    @include('components.seo')
+
+    <!-- Vite -->
+
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+
+
+
+    <!-- Scripts -->
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style> body { font-family: 'Inter', sans-serif; } </style>
+
+
+
+    <style>
+
+    #hero-slider {
+
+        position: relative;
+
+        width: 100%;
+
+        min-height: 620px;
+
+    }
+
+
+
+    .hero-slide {
+
+        position: absolute;
+
+        inset: 0;
+
+        width: 100%;
+
+        height: 100%;
+
+        transition: opacity 700ms ease-in-out;
+
+    }
+
+
+
+    .hero-slide img {
+
+        width: 100%;
+
+        height: 100%;
+
+        object-fit: cover;
+
+        object-position: center;
+
+    }
+
+
+
+    @media (max-width: 640px) {
+
+        #hero-slider {
+
+            min-height: 620px;
+
+        }
+
+
+
+        .hero-slide img {
+
+            object-position: center center;
+
+        }
+
+    }
+
+
+
+    @media (min-width: 641px) and (max-width: 1024px) {
+
+        #hero-slider {
+
+            min-height: 650px;
+
+        }
+
+    }
+
+
+
+    @media (min-width: 1025px) {
+
+        #hero-slider {
+
+            min-height: 680px;
+
+        }
+
+    }
+
+</style>
+
+    
+
+</head>
+
+<body class="bg-gray-50 text-gray-800 antialiased"
+
+      x-data="{ openBookingModal: false, modalTab: 'airport', selectedVehicleId: '' }"
+
+      @open-booking.window="openBookingModal = true">
+
+    <!-- Dynamic Top Announcement Bar -->
+
+    @php
+
+        $topBarText = \App\Models\Setting::get(
+
+            'top_bar_text',
+
+            'Gaggal Airport (DHM) & Himachal Tour Chauffeur Network'
+
+        );
+
+        $topBarPhone = \App\Models\Setting::get(
+
+            'top_bar_phone',
+
+            \App\Models\Setting::get('contact_phone', '+91 98765 43210')
+
+        );
+
+        $topBarLocation = \App\Models\Setting::get(
+
+            'top_bar_location',
+
+            'Dharamshala, HP'
+
+        );
+
+    @endphp
+
+    <!-- Reusable Global Header Component -->
+
+    @include('components.header')
+
+    <!-- Dynamic Hero Slider Section -->
+
+    @php
+
+
+
+        $heroBanners = \App\Models\HeroBanner::where('is_active', true)
+
+
+
+            ->orderBy('sort_order')
+
+
+
+            ->orderBy('id')
+
+
+
+            ->get();
+
+        $fallbackHeroImage = \App\Models\Setting::get(
+
+
+
+            'hero_banner_image',
+
+
+
+            'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1600&q=85'
+
+
+
+        );
+
+        $fallbackHeroTitle = \App\Models\Setting::get(
+
+
+
+            'hero_title',
+
+
+
+            'Reliable Cab Services in Dharamshala'
+
+
+
+        );
+
+        $fallbackHeroSubtitle = \App\Models\Setting::get(
+
+
+
+            'hero_subtitle',
+
+
+
+            'Punctual airport transfers, outstation routes, and local excursions with verified drivers and upfront rates.'
+
+
+
+        );
+
+
+
+    @endphp
+
+    <section
+
+
+
+        id="hero-slider"
+
+
+
+        class="relative w-full bg-gray-950 text-white min-h-[420px] sm:min-h-[500px] lg:min-h-[580px] flex items-center justify-center overflow-hidden"
+
+
+
+        aria-label="Dharamshala Travels hero slider"
+
+
+
+    >
+
+        @if($heroBanners->count() > 0)
+
+            @foreach($heroBanners as $index => $heroBanner)
+
+
+
+                <div
+
+
+
+                    class="hero-slide absolute inset-0 transition-opacity duration-700 ease-in-out {{ $index === 0 ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none' }}"
+
+
+
+                    data-slide-index="{{ $index }}"
+
+
+
+                    aria-hidden="{{ $index === 0 ? 'false' : 'true' }}"
+
+
+
+                >
+
+
+
+                  @php
+
+    $heroImage = $heroBanner->image;
+
+
+
+    if ($heroImage) {
+
+        if (
+
+            !filter_var($heroImage, FILTER_VALIDATE_URL)
+
+            && !str_starts_with($heroImage, '/')
+
+        ) {
+
+            $heroImage = asset('storage/' . ltrim($heroImage, '/'));
+
+        }
+
+    }
+
+@endphp
+
+
+
+<img
+
+    src="{{ $heroImage }}"
+
+    alt="{{ $heroBanner->title ?: 'Dharamshala Travels Hero Banner' }}"
+
+    class="absolute inset-0 w-full h-full object-cover object-center z-10"
+
+    loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
+
+\>  &#x20;
+
+                    <div class="absolute inset-0 bg-black bg-opacity-45"></div>
+
+
+
+                    <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/25 to-transparent"></div>
+
+                    <div class="relative z-10 h-full flex items-center justify-center px-4">
+
+
+
+                        <div class="w-full max-w-4xl mx-auto text-center px-3 sm:px-5 pt-16 sm:pt-20 pb-16 sm:pb-20">
+
+                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-green-900 bg-opacity-80 text-green-300 border border-green-700 mb-5">
+
+
+
+                                ★ Himachal’s Most Trusted Cab Network
+
+
+
+                            </span>
+
+                            <h1 class="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight mb-4 sm:mb-5 leading-tight">
+
+
+
+                                {{ $heroBanner->title ?: $fallbackHeroTitle }}
+
+
+
+                            </h1>
+
+                            <p class="text-gray-200 text-sm sm:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
+
+
+
+                                {{ $heroBanner->subtitle ?: $fallbackHeroSubtitle }}
+
+
+
+                            </p>
+
+                            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+
+
+
+                                <button
+
+
+
+                                    type="button"
+
+
+
+                                    @click="openBookingModal = true"
+
+
+
+                                    class="w-full sm:w-auto px-8 py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl text-sm transition shadow-lg flex items-center justify-center space-x-2"
+
+
+
+                                >
+
+
+
+                                    <i data-lucide="car" class="w-4 h-4"></i>
+
+
+
+                                    <span>Book Your Ride Now</span>
+
+
+
+                                </button>
+
+                                <a
+
+
+
+                                    href="#fleet"
+
+
+
+                                    class="w-full sm:w-auto px-6 py-3.5 bg-gray-900 bg-opacity-80 hover:bg-gray-800 text-gray-200 border border-gray-700 font-semibold rounded-xl text-sm transition"
+
+
+
+                                >
+
+
+
+                                    View Fleet Lineup
+
+
+
+                                </a>
+
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+            @endforeach
+
+            @if($heroBanners->count() > 1)
+
+
+
+                <button
+
+
+
+                    type="button"
+
+
+
+                    id="hero-prev"
+
+
+
+                    class="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black bg-opacity-50 hover:bg-opacity-75 border border-white border-opacity-30 text-white flex items-center justify-center transition"
+
+
+
+                    aria-label="Previous slide"
+
+
+
+                >
+
+
+
+                    <i data-lucide="chevron-left" class="w-6 h-6"></i>
+
+
+
+                </button>
+
+                <button
+
+
+
+                    type="button"
+
+
+
+                    id="hero-next"
+
+
+
+                    class="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black bg-opacity-50 hover:bg-opacity-75 border border-white border-opacity-30 text-white flex items-center justify-center transition"
+
+
+
+                    aria-label="Next slide"
+
+
+
+                >
+
+
+
+                    <i data-lucide="chevron-right" class="w-6 h-6"></i>
+
+
+
+                </button>
+
+                <div
+
+
+
+                    id="hero-dots"
+
+
+
+                    class="absolute bottom-7 left-1/2 transform -translate-x-1/2 z-30 flex items-center gap-2"
+
+
+
+                    role="tablist"
+
+
+
+                    aria-label="Hero slides"
+
+
+
+                >
+
+
+
+                    @foreach($heroBanners as $index => $heroBanner)
+
+
+
+                        <button
+
+
+
+                            type="button"
+
+
+
+                            data-hero-dot="{{ $index }}"
+
+
+
+                            class="hero-dot h-2.5 rounded-full transition-all duration-300 {{ $index === 0 ? 'w-8 bg-white' : 'w-2.5 bg-white bg-opacity-50' }}"
+
+
+
+                            aria-label="Go to slide {{ $index + 1 }}"
+
+
+
+                            aria-selected="{{ $index === 0 ? 'true' : 'false' }}"
+
+
+
+                        ></button>
+
+
+
+                    @endforeach
+
+
+
+                </div>
+
+
+
+            @endif
+
+        @else
+
+            <div class="absolute inset-0">
+
+
+
+                <img
+
+
+
+                    src="{{ $fallbackHeroImage }}"
+
+
+
+                    alt="Dharamshala Travels Hero Banner"
+
+
+
+                    class="w-full h-full object-cover"
+
+
+
+                >
+
+
+
+                <div class="absolute inset-0 bg-black bg-opacity-45"></div>
+
+
+
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/25 to-transparent"></div>
+
+
+
+            </div>
+
+            <div class="relative max-w-4xl mx-auto px-4 py-28 text-center z-10">
+
+
+
+                <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-green-900 bg-opacity-80 text-green-300 border border-green-700 mb-5">
+
+
+
+                    ★ Himachal’s Most Trusted Cab Network
+
+
+
+                </span>
+
+                <h1 class="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight mb-4 sm:mb-5 leading-tight">
+
+
+
+                    {{ $fallbackHeroTitle }}
+
+
+
+                </h1>
+
+                <p class="text-gray-200 text-sm sm:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
+
+
+
+                    {{ $fallbackHeroSubtitle }}
+
+
+
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+
+
+
+                    <button
+
+
+
+                        type="button"
+
+
+
+                        @click="openBookingModal = true"
+
+
+
+                        class="w-full sm:w-auto px-8 py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl text-sm transition shadow-lg flex items-center justify-center space-x-2"
+
+
+
+                    >
+
+
+
+                        <i data-lucide="car" class="w-4 h-4"></i>
+
+
+
+                        <span>Book Your Ride Now</span>
+
+
+
+                    </button>
+
+                    <a
+
+
+
+                        href="#fleet"
+
+
+
+                        class="w-full sm:w-auto px-6 py-3.5 bg-gray-900 bg-opacity-80 hover:bg-gray-800 text-gray-200 border border-gray-700 font-semibold rounded-xl text-sm transition"
+
+
+
+                    >
+
+
+
+                        View Fleet Lineup
+
+
+
+                    </a>
+
+
+
+                </div>
+
+
+
+            </div>
+
+        @endif
+
+
+
+    </section>
+
+@if($heroBanners->count() > 1)
+
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+
+
+    const slider = document.getElementById('hero-slider');
+
+
+
+    if (!slider) {
+
+        return;
+
+    }
+
+
+
+    const slides = Array.from(
+
+        slider.querySelectorAll('.hero-slide')
+
+    );
+
+
+
+    const dots = Array.from(
+
+        slider.querySelectorAll('.hero-dot')
+
+    );
+
+
+
+    const prevButton = document.getElementById('hero-prev');
+
+    const nextButton = document.getElementById('hero-next');
+
+
+
+    if (slides.length < 2) {
+
+        return;
+
+    }
+
+
+
+    let currentSlide = 0;
+
+    let autoSlideTimer = null;
+
+
+
+    function showSlide(index) {
+
+
+
+        currentSlide =
+
+            (index + slides.length) % slides.length;
+
+
+
+        slides.forEach(function (slide, i) {
+
+
+
+            const active = i === currentSlide;
+
+
+
+            slide.classList.toggle(
+
+                'opacity-100',
+
+                active
+
+            );
+
+
+
+            slide.classList.toggle(
+
+                'opacity-0',
+
+                !active
+
+            );
+
+
+
+            slide.classList.toggle(
+
+                'z-10',
+
+                active
+
+            );
+
+
+
+            slide.classList.toggle(
+
+                'z-0',
+
+                !active
+
+            );
+
+
+
+            slide.classList.toggle(
+
+                'pointer-events-auto',
+
+                active
+
+            );
+
+
+
+            slide.classList.toggle(
+
+                'pointer-events-none',
+
+                !active
+
+            );
+
+
+
+            slide.setAttribute(
+
+                'aria-hidden',
+
+                active ? 'false' : 'true'
+
+            );
+
+        });
+
+
+
+        dots.forEach(function (dot, i) {
+
+
+
+            const active = i === currentSlide;
+
+
+
+            dot.classList.toggle(
+
+                'w-8',
+
+                active
+
+            );
+
+
+
+            dot.classList.toggle(
+
+                'w-2.5',
+
+                !active
+
+            );
+
+
+
+            dot.classList.toggle(
+
+                'bg-white',
+
+                active
+
+            );
+
+
+
+            dot.classList.toggle(
+
+                'bg-opacity-50',
+
+                !active
+
+            );
+
+
+
+            dot.setAttribute(
+
+                'aria-selected',
+
+                active ? 'true' : 'false'
+
+            );
+
+        });
+
+    }
+
+
+
+    function startAutoSlide() {
+
+
+
+        stopAutoSlide();
+
+
+
+        autoSlideTimer = setInterval(function () {
+
+
+
+            showSlide(currentSlide + 1);
+
+
+
+        }, 3000);
+
+    }
+
+
+
+    function stopAutoSlide() {
+
+
+
+        if (autoSlideTimer) {
+
+
+
+            clearInterval(autoSlideTimer);
+
+
+
+            autoSlideTimer = null;
+
+        }
+
+    }
+
+
+
+    if (prevButton) {
+
+
+
+        prevButton.addEventListener(
+
+            'click',
+
+            function () {
+
+
+
+                showSlide(currentSlide - 1);
+
+
+
+                startAutoSlide();
+
+            }
+
+        );
+
+    }
+
+
+
+    if (nextButton) {
+
+
+
+        nextButton.addEventListener(
+
+            'click',
+
+            function () {
+
+
+
+                showSlide(currentSlide + 1);
+
+
+
+                startAutoSlide();
+
+            }
+
+        );
+
+    }
+
+
+
+    dots.forEach(function (dot, index) {
+
+
+
+        dot.addEventListener(
+
+            'click',
+
+            function () {
+
+
+
+                showSlide(index);
+
+
+
+                startAutoSlide();
+
+            }
+
+        );
+
+    });
+
+
+
+    // Start from first slide
+
+    showSlide(0);
+
+
+
+    // Automatic sliding
+
+    startAutoSlide();
+
+
+
+});
+
+</script>
+
+
+
+@endif
+
+    <!-- Fleet Showcase -->
+
+    <section id="fleet" class="py-16 bg-gray-100">
+
+        <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="mb-8">
+
+                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Fleet Lineup</span>
+
+                <h2 class="text-2xl font-bold text-gray-900">Commercial Cabs</h2>
+
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+
+                <?php if (isset($vehicles) && count($vehicles) > 0): ?>
+
+                    <?php foreach ($vehicles as$veh): ?>
+
+                    <div class="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm flex flex-col justify-between hover:shadow-md transition">
+
+                        <a href="{{ route('vehicles.show', $veh->id) }}" class="block">
+
+                            <div class="relative h-44 overflow-hidden bg-gray-200">
+
+                                <img src="{{ $veh->image }}" alt="{{ $veh->name }}" class="w-full h-full object-cover">
+
+                                <span class="absolute bottom-3 right-3 bg-gray-900 bg-opacity-80 text-white text-xs font-medium px-2 py-1 rounded">
+
+                                    ₹{{ number_format($veh->rate_per_km, 0) }}/km
+
+                                </span>
+
+                            </div>
+
+                            <div class="p-4">
+
+                                <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+
+                                    <span class="font-semibold uppercase text-xs text-green-700 bg-green-50 px-2 py-0.5 rounded">{{ $veh->category }}</span>
+
+                                    <span>{{ $veh->seating_capacity }} Seater</span>
+
+                                </div>
+
+                                <h3 class="font-bold text-gray-900 text-base mt-2 hover:text-green-700 transition">{{ $veh->name }}</h3>
+
+                            </div>
+
+                        </a>
+
+                        <div class="p-4 pt-3 border-t border-gray-100 flex items-center justify-between bg-gray-50">
+
+                            <div>
+
+                                <span class="text-xs text-gray-500 block font-medium uppercase">Base Fare</span>
+
+                                <span class="text-base font-bold text-gray-900">₹{{ number_format($veh->base_fare, 0) }}</span>
+
+                            </div>
+
+                            <div class="flex items-center space-x-2">
+
+                                <a href="{{ route('vehicles.show', $veh->id) }}" class="px-3 py-1.5 border border-gray-300 hover:bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold transition">
+
+                                    Details
+
+                                </a>
+
+                                <button type="button" @click="selectedVehicleId = '{{ $veh->id }}'; openBookingModal = true;" class="px-3.5 py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg text-xs font-semibold transition">
+
+                                    Book
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <?php endforeach; ?>
+
+                <?php endif; ?>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Packages / Tours Section -->
+
+    <section id="tours" class="py-16 bg-white border-t border-gray-200">
+
+        <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-2xl mx-auto mb-10">
+
+                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Sightseeing & Circuits</span>
+
+                <h2 class="text-2xl font-bold text-gray-900">Himachal Tour Packages</h2>
+
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+
+                <?php if (isset($packages) && count($packages) > 0): ?>
+
+                    <?php foreach ($packages as$pkg): ?>
+
+                    <div class="bg-gray-50 rounded-xl overflow-hidden border border-gray-200 flex flex-col justify-between hover:shadow-md transition">
+
+                        <a href="{{ route('packages.show', $pkg->id) }}" class="block">
+
+                            <div class="relative h-44 bg-gray-200 overflow-hidden">
+
+                                <img src="{{ $pkg->thumbnail }}" alt="{{ $pkg->title }}" class="w-full h-full object-cover">
+
+                                <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs">
+
+                                    <span class="bg-gray-900 bg-opacity-80 px-2 py-0.5 rounded">{{ $pkg->duration }}</span>
+
+                                    <span class="bg-gray-900 bg-opacity-80 px-2 py-0.5 rounded text-yellow-400 font-semibold">★ {{ $pkg->rating }}</span>
+
+                                </div>
+
+                            </div>
+
+                            <div class="p-4">
+
+                                <h3 class="font-bold text-gray-900 mb-1.5 leading-snug hover:text-green-700 transition">{{ $pkg->title }}</h3>
+
+                                <p class="text-xs text-gray-600 line-clamp-2 leading-relaxed">{{ $pkg->short_desc }}</p>
+
+                            </div>
+
+                        </a>
+
+                        <div class="p-4 pt-3 border-t border-gray-200 flex items-center justify-between bg-white">
+
+                            <div>
+
+                                <span class="text-xs text-gray-500 block font-medium uppercase">Starting From</span>
+
+                                <span class="text-base font-bold text-gray-900">₹{{ number_format($pkg->starting_price, 0) }}</span>
+
+                            </div>
+
+                            <div class="flex items-center space-x-2">
+
+                                <a href="{{ route('packages.show', $pkg->id) }}" class="px-3 py-1.5 border border-gray-300 hover:bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold transition">
+
+                                    View Itinerary
+
+                                </a>
+
+                                <a href="{{ route('packages.show', $pkg->id) }}" class="px-3.5 py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg text-xs font-semibold transition">
+
+                                    Book Tour
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <?php endforeach; ?>
+
+                <?php endif; ?>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Booking Modal Anchor / Dialog (Fixed Translucent Backdrop) -->
+
+    <div id="booking"></div>
+
+    <div x-show="openBookingModal"
+
+         x-transition:enter="transition ease-out duration-200"
+
+         x-transition:enter-start="opacity-0"
+
+         x-transition:enter-end="opacity-100"
+
+         x-transition:leave="transition ease-in duration-150"
+
+         x-transition:leave-start="opacity-100"
+
+         x-transition:leave-end="opacity-0"
+
+         style="display: none; background-color: rgba(17, 24, 39, 0.55); backdrop-filter: blur(4px);"
+
+         class="fixed inset-0 z-50 flex items-center justify-center p-4">
+
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 sm:p-8 text-gray-800 shadow-2xl relative overflow-y-auto max-h-[90vh] border border-gray-100"
+
+             @click.outside="openBookingModal = false">
+
+            <button type="button" @click="openBookingModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold leading-none">&times;</button>
+
+            <!-- Tabs -->
+
+            <div class="flex items-center space-x-2 border-b border-gray-100 pb-4 mb-6">
+
+                <button type="button" @click="modalTab = 'airport'" :class="modalTab === 'airport' ? 'bg-gray-900 text-white' : 'text-gray-600 bg-gray-100'" class="px-4 py-2 rounded-lg font-semibold text-xs transition flex items-center space-x-2">
+
+                    <i data-lucide="plane-takeoff" class="w-4 h-4"></i> <span>Airport Cab</span>
+
+                </button>
+
+                <button type="button" @click="modalTab = 'outstation'" :class="modalTab === 'outstation' ? 'bg-gray-900 text-white' : 'text-gray-600 bg-gray-100'" class="px-4 py-2 rounded-lg font-semibold text-xs transition flex items-center space-x-2">
+
+                    <i data-lucide="compass" class="w-4 h-4"></i> <span>Outstation</span>
+
+                </button>
+
+                <button type="button" @click="modalTab = 'local'" :class="modalTab === 'local' ? 'bg-gray-900 text-white' : 'text-gray-600 bg-gray-100'" class="px-4 py-2 rounded-lg font-semibold text-xs transition flex items-center space-x-2">
+
+                    <i data-lucide="map-pin" class="w-4 h-4"></i> <span>Sightseeing</span>
+
+                </button>
+
+            </div>
+
+            <!-- Booking Form -->
+
+            <form action="{{ route('bookings.store') }}" method="POST" class="space-y-4">
+
+                @csrf
+
+                <input type="hidden" name="booking_type" :value="modalTab">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                    <div>
+
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Passenger Name</label>
+
+                        <input type="text" name="customer_name" required placeholder="e.g. Rahul Sharma" class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none focus:ring-2 focus:ring-gray-900">
+
+                    </div>
+
+                    <div>
+
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Phone Number</label>
+
+                        <input type="tel" name="customer_phone" required placeholder="e.g. 98160XXXXX" class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none focus:ring-2 focus:ring-gray-900">
+
+                    </div>
+
+                    <div>
+
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Pickup Point</label>
+
+                        <input type="text" name="pickup_location" required placeholder="e.g. Gaggal Airport (DHM)" class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none focus:ring-2 focus:ring-gray-900">
+
+                    </div>
+
+                    <div>
+
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Drop Point</label>
+
+                        <input type="text" name="drop_location" placeholder="e.g. McLeodganj / Dharamkot" class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none focus:ring-2 focus:ring-gray-900">
+
+                    </div>
+
+                    <div>
+
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Travel Date</label>
+
+                        <input type="date" name="travel_date" required value="{{ date('Y-m-d') }}" class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none focus:ring-2 focus:ring-gray-900">
+
+                    </div>
+
+                    <div>
+
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Vehicle</label>
+
+                        <select name="vehicle_id" x-model="selectedVehicleId" class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none focus:ring-2 focus:ring-gray-900">
+
+                            <option value="">Any Available Vehicle</option>
+
+                            <?php if (isset($vehicles) && count($vehicles) > 0): ?>
+
+                                <?php foreach ($vehicles as$veh): ?>
+
+                                <option value="{{ $veh->id }}">{{ $veh->name }} ({{$veh->category }})</option>
+
+                                <?php endforeach; ?>
+
+                            <?php endif; ?>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+
+                    <span class="text-xs text-gray-500 font-medium">✓ No advance required • Direct Booking</span>
+
+                    <button type="submit" class="w-full sm:w-auto bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold px-6 py-2.5 rounded-lg transition">
+
+                        Confirm & Book Ride
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+   <!-- =========================================================
+
+     Customer Reviews & Testimonials
+
+     3 Reviews Per Slide
+
+     ========================================================= -->
+
+
+
+@php
+
+    $reviewCollection = isset($reviews)
+
+        ? collect($reviews)
+
+        : collect();
+
+
+
+    $reviewSlides = $reviewCollection->chunk(3);
+
+@endphp
+
+
+
+<section
+
+    id="reviews"
+
+    class="py-16 bg-gray-50 border-t border-gray-200"
+
+    x-data="{
+
+        currentSlide: 0,
+
+        totalSlides: {{ $reviewSlides->count() }},
+
+        timer: null,
+
+
+
+        next() {
+
+            if (this.totalSlides > 0) {
+
+                this.currentSlide =
+
+                    (this.currentSlide + 1) % this.totalSlides;
+
+            }
+
+        },
+
+
+
+        previous() {
+
+            if (this.totalSlides > 0) {
+
+                this.currentSlide =
+
+                    (this.currentSlide - 1 + this.totalSlides) % this.totalSlides;
+
+            }
+
+        },
+
+
+
+        startAutoSlide() {
+
+            if (this.totalSlides > 1) {
+
+                this.timer = setInterval(() => {
+
+                    this.next();
+
+                }, 2000);
+
+            }
+
+        },
+
+
+
+        init() {
+
+            this.startAutoSlide();
+
+        }
+
+    }"
+
+\>
+
+
+
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 sm:px-6">
+
+
+
+        {{-- SECTION HEADING --}}
+
+        <div class="text-center max-w-2xl mx-auto mb-10">
+
+
+
+            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+
+                Testimonials
+
+            </span>
+
+
+
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">
+
+                What Travelers Say
+
+            </h2>
+
+
+
+            <p class="text-sm text-gray-500 mt-2">
+
+                Verified reviews from mountain tourists & commuters.
+
+            </p>
+
+
+
+        </div>
+
+        @if($reviewSlides->count() > 0)
+
+
+
+            {{-- REVIEW SLIDER --}}
+
+            <div class="relative">
+
+
+
+                @foreach($reviewSlides as $slideIndex => $slide)
+
+
+
+                    <div
+
+                        x-show="currentSlide === {{ $slideIndex }}"
+
+                        x-transition:enter="transition ease-out duration-300"
+
+                        x-transition:enter-start="opacity-0 translate-x-4"
+
+                        x-transition:enter-end="opacity-100 translate-x-0"
+
+                        x-transition:leave="transition ease-in duration-200"
+
+                        x-transition:leave-start="opacity-100"
+
+                        x-transition:leave-end="opacity-0"
+
+                        class="grid grid-cols-1 md:grid-cols-3 gap-6"
+
+                    >
+
+
+
+                        @foreach($slide as $review)
+
+
+
+                            <article
+
+                                class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition"
+
+                            >
+
+
+
+                                {{-- STARS --}}
+
+                                <div class="flex items-center gap-1 mb-4">
+
+
+
+                                    @for($star = 1; $star <= 5; $star++)
+
+
+
+                                        <span class="text-sm text-amber-400">
+
+                                            ★
+
+                                        </span>
+
+
+
+                                    @endfor
+
+
+
+                                </div>
+
+                                {{-- REVIEW --}}
+
+                                <p class="text-sm text-gray-600 leading-6 min-h-[72px]">
+
+                                    "{{ $review->review }}"
+
+                                </p>
+
+                                {{-- DIVIDER --}}
+
+                                <div class="border-t border-gray-100 my-5"></div>
+
+                                {{-- USER --}}
+
+                                <div class="flex items-center justify-between gap-4">
+
+
+
+                                    <div>
+
+
+
+                                        <p class="text-sm font-bold text-gray-900">
+
+                                            {{ $review->name }}
+
+                                        </p>
+
+
+
+                                        <p class="text-xs text-gray-400 mt-1">
+
+                                            Verified Traveler
+
+                                        </p>
+
+
+
+                                    </div>
+
+
+
+                                    <span class="text-xs text-gray-400 whitespace-nowrap">
+
+                                        {{ optional($review->created_at)->format('M Y') }}
+
+                                    </span>
+
+
+
+                                </div>
+
+
+
+                            </article>
+
+
+
+                        @endforeach
+
+
+
+                    </div>
+
+
+
+                @endforeach
+
+                {{-- PREVIOUS BUTTON --}}
+
+                @if($reviewSlides->count() > 1)
+
+
+
+                    <button
+
+                        type="button"
+
+                        @click="previous()"
+
+                        aria-label="Previous reviews"
+
+                        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 md:-translate-x-5 w-10 h-10 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center text-gray-700 hover:bg-gray-900 hover:text-white transition"
+
+                    >
+
+                        <i data-lucide="chevron-left" class="w-5 h-5"></i>
+
+                    </button>
+
+                    {{-- NEXT BUTTON --}}
+
+                    <button
+
+                        type="button"
+
+                        @click="next()"
+
+                        aria-label="Next reviews"
+
+                        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 md:translate-x-5 w-10 h-10 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center text-gray-700 hover:bg-gray-900 hover:text-white transition"
+
+                    >
+
+                        <i data-lucide="chevron-right" class="w-5 h-5"></i>
+
+                    </button>
+
+
+
+                @endif
+
+
+
+            </div>
+
+            {{-- SLIDER DOTS --}}
+
+            @if($reviewSlides->count() > 1)
+
+
+
+                <div class="flex justify-center items-center gap-2 mt-7">
+
+
+
+                    @foreach($reviewSlides as $slideIndex => $slide)
+
+
+
+                        <button
+
+                            type="button"
+
+                            @click="currentSlide = {{ $slideIndex }}"
+
+                            :class="currentSlide === {{ $slideIndex }}
+
+                                ? 'w-7 bg-gray-900'
+
+                                : 'w-2.5 bg-gray-300 hover:bg-gray-400'"
+
+                            class="h-2.5 rounded-full transition-all duration-300"
+
+                            aria-label="Go to review slide {{ $slideIndex + 1 }}"
+
+                        ></button>
+
+
+
+                    @endforeach
+
+
+
+                </div>
+
+
+
+            @endif
+
+            {{-- VIEW ALL REVIEWS --}}
+
+            <div class="flex justify-center mt-8">
+
+
+
+                <a
+
+                    href="/reviews"
+
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-800 text-sm font-semibold rounded-xl shadow-sm hover:bg-gray-900 hover:text-white hover:border-gray-900 transition"
+
+                >
+
+
+
+                    <span>
+
+                        View More Reviews
+
+                    </span>
+
+
+
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+
+
+
+                </a>
+
+
+
+            </div>
+
+        @else
+
+
+
+            {{-- EMPTY STATE --}}
+
+            <div class="bg-white border border-gray-200 rounded-2xl p-10 text-center">
+
+
+
+                <div class="text-gray-400 text-3xl mb-3">
+
+                    ★
+
+                </div>
+
+
+
+                <h3 class="text-base font-bold text-gray-900">
+
+                    No Reviews Yet
+
+                </h3>
+
+
+
+                <p class="text-sm text-gray-500 mt-1">
+
+                    Traveler reviews will appear here.
+
+                </p>
+
+
+
+            </div>
+
+
+
+        @endif
+
+
+
+    </div>
+
+
+
+</section>
+
+    <!-- Reusable Global Footer Component -->
+
+    <!-- =========================================================
+
+         Latest Blogs Section
+
+         Shows exactly 3 latest blogs above the global footer.
+
+         ========================================================= -->
+
+
+
+    @php
+
+        $latestBlogs = \App\Models\Blog::query()
+
+            ->latest('blog_date')
+
+            ->latest('id')
+
+            ->take(3)
+
+            ->get();
+
+    @endphp
+
+
+
+    <section id="blogs" class="py-16 bg-white border-t border-gray-200">
+
+        <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 sm:px-6">
+
+
+
+            <div class="text-center max-w-2xl mx-auto mb-12">
+
+                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+
+                    Travel Stories
+
+                </span>
+
+
+
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">
+
+                    Latest From Our Blog
+
+                </h2>
+
+
+
+                <p class="text-xs sm:text-sm text-gray-500 mt-2">
+
+                    Travel guides, Himachal destinations and useful tips for your journey.
+
+                </p>
+
+            </div>
+
+
+
+            @if($latestBlogs->count() > 0)
+
+
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+
+
+
+                    @foreach($latestBlogs as $blog)
+
+
+
+                        <article class="bg-white rounded-xl sm:rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition group h-full flex flex-col">
+
+
+
+                            <a href="{{ url('/blogs') }}" class="block">
+
+                                <div class="relative h-48 sm:h-52 lg:h-56 overflow-hidden bg-gray-100">
+
+
+
+                                    @if($blog->image)
+
+                                        <img
+
+                                            src="{{ $blog->image }}"
+
+                                            alt="{{ $blog->title }}"
+
+                                            class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+
+                                            loading="lazy"
+
+                                        >
+
+                                    @else
+
+                                        <div class="w-full h-full flex items-center justify-center bg-gray-100">
+
+                                            <i data-lucide="image" class="w-10 h-10 text-gray-300"></i>
+
+                                        </div>
+
+                                    @endif
+
+
+
+                                    <div class="absolute top-3 left-3 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-sm">
+
+                                        <span class="text-[10px] font-bold text-gray-700">
+
+                                            {{ optional($blog->blog_date)->format('d M Y') }}
+
+                                        </span>
+
+                                    </div>
+
+
+
+                                </div>
+
+                            </a>
+
+
+
+                            <div class="p-4 sm:p-5 flex-1 flex flex-col">
+
+
+
+                                <span class="inline-flex items-center text-[10px] font-bold uppercase tracking-wider text-green-700 bg-green-50 px-2.5 py-1 rounded-md">
+
+                                    Travel Guide
+
+                                </span>
+
+
+
+                                <h3 class="text-base font-bold text-gray-900 leading-snug mt-3 line-clamp-2 group-hover:text-green-700 transition">
+
+                                    {{ $blog->title }}
+
+                                </h3>
+
+
+
+                                <p class="text-xs text-gray-500 leading-relaxed mt-3 line-clamp-3">
+
+                                    {{ $blog->description }}
+
+                                </p>
+
+
+
+                                <div class="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between gap-3">
+
+
+
+                                    <span class="text-[10px] text-gray-400 whitespace-nowrap">
+
+                                        Dharamshala Travels
+
+                                    </span>
+
+
+
+                                    <a
+
+                                        href="{{ url('/blogs') }}"
+
+                                        class="inline-flex items-center gap-1 text-xs font-semibold text-gray-900 hover:text-green-700 transition"
+
+                                    >
+
+                                        Read More
+
+                                        <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+
+                                    </a>
+
+
+
+                                </div>
+
+
+
+                            </div>
+
+
+
+                        </article>
+
+
+
+                    @endforeach
+
+
+
+                </div>
+
+
+
+                <div class="mt-10 text-center">
+
+                    <a
+
+                        href="{{ url('/blogs') }}"
+
+                        class="inline-flex items-center gap-2 px-6 py-2.5 bg-white border border-gray-300 hover:border-gray-900 text-gray-800 text-xs font-semibold rounded-xl shadow-sm transition hover:bg-gray-50"
+
+                    >
+
+                        <span>View More Blogs</span>
+
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+
+                    </a>
+
+                </div>
+
+
+
+            @else
+
+
+
+                <div class="text-center py-10">
+
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-gray-100 flex items-center justify-center">
+
+                        <i data-lucide="file-text" class="w-7 h-7 text-gray-300"></i>
+
+                    </div>
+
+
+
+                    <h3 class="text-sm font-bold text-gray-700 mt-4">
+
+                        Travel Stories Coming Soon
+
+                    </h3>
+
+
+
+                    <p class="text-xs text-gray-400 mt-1">
+
+                        Our latest travel guides and destination stories will appear here.
+
+                    </p>
+
+                </div>
+
+
+
+            @endif
+
+
+
+        </div>
+
+    </section>
+
+@include('components.footer')
+
+    <!-- Safe SweetAlert & Lucide Icons Scripts -->
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            if (typeof lucide !== 'undefined') {
+
+                lucide.createIcons();
+
+            }
+
+            @if(session('booking_success'))
+
+                Swal.fire({
+
+                    icon: 'success',
+
+                    iconColor: '#10b981',
+
+                    title: '<span class="text-xl font-extrabold text-gray-900">Thank You, {{ session("customer_name") }}!</span>',
+
+                    html: `
+
+                        <div class="mt-2 text-center text-xs text-gray-600 space-y-3">
+
+                            <p class="text-sm font-medium text-gray-700">Aapki cab reservation request safaltapoorvak receive ho gayi hai.</p>
+
+                            <div class="bg-gray-50 border border-dashed border-gray-300 rounded-xl p-3 inline-block">
+
+                                <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider block">Booking Reference ID</span>
+
+                                <span class="text-base font-black text-gray-900 tracking-widest">{{ session("booking_code") }}</span>
+
+                            </div>
+
+                            <div class="bg-green-50 text-green-900 rounded-xl p-3 text-xs leading-relaxed text-left flex items-start space-x-2 border border-green-100">
+
+                                <span class="text-green-600 font-bold text-sm">✓</span>
+
+                                <div>
+
+                                    <span class="font-bold">Zero Advance Required</span>
+
+                                    <p class="text-[11px] text-green-800 mt-0.5">Travel Date: <strong>{{ session('travel_date') }}</strong>. Hamara driver schedule se pehle coordination ke liye aap se contact karega.</p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    `,
+
+                    confirmButtonText: 'Great, Understood!',
+
+                    confirmButtonColor: '#111827',
+
+                    customClass: {
+
+                        popup: 'rounded-3xl p-6 shadow-2xl border border-gray-100',
+
+                        confirmButton: 'px-6 py-2.5 rounded-xl font-semibold text-xs'
+
+                    }
+
+                });
+
+            @endif
+
+        });
+
+    </script>
+
+</body>
+
+</html>
