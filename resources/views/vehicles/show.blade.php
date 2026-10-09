@@ -29,7 +29,7 @@
             $vehicle->name .
             ' (' .
             $vehicle->category .
-            ') for Dharamshala, Gaggal Airport transfers, and Himachal tours at ₹' .
+            ') for Dharamshala, Gaggal Airport transfers, and Himachal tours at â‚¹' .
             number_format($vehicle->base_fare, 0) .
             ' base fare.',
 
@@ -131,7 +131,7 @@
                          active: 0, 
                          slides: {{ json_encode($vehicle->all_images) }},
                          next() { if(this.slides.length > 1) this.active = (this.active + 1) % this.slides.length },
-                         prev() { if(this.slides.length > 1) this.active = (this.active - 1 + this.slides.length) % this.slides.length }
+                         prev() { if(this.slides.length > 1) this.active = (this.active - 1 + this.slides.length) % this.slides.length}
                      }">
                     
                     <!-- Main Slider Viewport -->
@@ -193,8 +193,8 @@
                             </div>
                             <div class="text-right">
                                 <span class="text-xs text-gray-500 block uppercase font-medium">Standard Tariff</span>
-                                <span class="text-2xl font-extrabold text-gray-900">₹{{ number_format($vehicle->base_fare, 0) }}</span>
-                                <span class="text-xs text-gray-500 block">+ ₹{{ number_format($vehicle->rate_per_km, 0) }}/km</span>
+                                <span class="text-2xl font-extrabold text-gray-900">â‚¹{{ number_format($vehicle->base_fare, 0) }}</span>
+                                <span class="text-xs text-gray-500 block">+ â‚¹{{ number_format($vehicle->rate_per_km, 0) }}/km</span>
                             </div>
                         </div>
 
@@ -264,7 +264,7 @@
 
                         <div>
                             <label class="block font-semibold mb-1 text-gray-700">Drop Destination</label>
-                            <input type="text" name="drop_location" placeholder="e.g. McLeodganj / Palampur / Bir" class="w-full p-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-gray-900">
+                            <input type="text" name="drop_location" placeholder="e.g. McLeodganj / Palampur / Bir" class="w-full p-2.5border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-gray-900">
                         </div>
 
                         <button type="submit" class="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg text-xs transition mt-2 shadow-sm">
@@ -286,14 +286,14 @@
             <h3 class="text-lg font-bold text-gray-900 mb-4">Other Vehicles in Fleet</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <?php foreach ($relatedVehicles as$rel): ?>
-                <a href="{{ route('vehicles.show', $rel->id) }}" class="bg-white rounded-xl overflow-hidden border border-gray-200 p-4 block hover:shadow-md transition">
+                <a href="{{ route('cabs.show', ['slug' => $rel->slug]) }}" class="bg-white rounded-xl overflow-hidden border border-gray-200 p-4block hover:shadow-md transition">
                     <img src="{{ $rel->image }}" alt="{{ $rel->name }}" class="w-full h-36 object-cover rounded-lg mb-3">
                     <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
                         <span>{{ $rel->category }}</span>
                         <span>{{ $rel->seating_capacity }} Seater</span>
                     </div>
                     <h4 class="font-bold text-gray-900 text-sm mb-2">{{ $rel->name }}</h4>
-                    <span class="text-xs font-bold text-green-700">₹{{ number_format($rel->base_fare, 0) }} Base Fare</span>
+                    <span class="text-xs font-bold text-green-700">â‚¹{{ number_format($rel->base_fare, 0) }} Base Fare</span>
                 </a>
                 <?php endforeach; ?>
             </div>
@@ -325,7 +325,7 @@
                             </div>
 
                             <div class="bg-green-50 text-green-900 rounded-xl p-3 text-xs leading-relaxed text-left flex items-start space-x-2 border border-green-100">
-                                <span class="text-green-600 font-bold text-sm">✓</span>
+                                <span class="text-green-600 font-bold text-sm">âœ“</span>
                                 <div>
                                     <span class="font-bold">Zero Advance Required</span>
                                     <p class="text-[11px] text-green-800 mt-0.5">Travel Date: <strong>{{ session('travel_date') }}</strong>. Hamara local chauffeur trip coordination ke liye aapse sampark karega.</p>

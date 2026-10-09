@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Vehicle extends Model
 {
@@ -11,6 +12,7 @@ class Vehicle extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'category',
         'badge',
         'rate_per_km',
@@ -46,6 +48,21 @@ class Vehicle extends Model
     /**
      * Main image + Gallery images ko single sanitized list mein return karega
      */
+
+    protected static function booted(): void
+{
+    static::creating(function (Vehicle $vehicle) {
+        if (empty($vehicle->slug) && !empty($vehicle->name)) {
+            $vehicle->slug = Str::slug($vehicle->name);
+        }
+    });
+
+    static::updating(function (Vehicle $vehicle) {
+        if ($vehicle->isDirty('name')) {
+            $vehicle->slug = Str::slug($vehicle->name);
+        }
+    });
+}
     public function getAllImagesAttribute(): array
     {
         $images = [];
