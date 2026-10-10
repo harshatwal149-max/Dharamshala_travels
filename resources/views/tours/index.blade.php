@@ -134,10 +134,11 @@
         </div>
         <div>
             <span class="dt-eyebrow">Tailor-made trips</span>
-            <h2 class="mt-3 text-3xl font-extrabold text-pine-950 sm:text-4xl">Don’t see your perfect trip?</h2>
-            <p class="mt-4 text-stone-600">Tell us your dates, group size and the places you want to see — from a half-day monastery tour to a two-week Himachal road trip. We plan the route, timings and stops around you.</p>
+            <h2 class="mt-3 text-3xl font-extrabold text-pine-950 sm:text-4xl">Make your own tour package</h2>
+            <p class="mt-4 text-stone-600">We invite you to “make your own” tour package as you like — tell us your dates, group size and the places you want to see, and we will get back with the driving and tour details.</p>
+            <p class="mt-3 text-stone-600">Be sure of our best price policy: as a registered union we follow proper guidelines on tour costs. There is no middle-man and hence no commission. We can provide a taxi for every trip.</p>
             <ul class="mt-6 grid gap-3 sm:grid-cols-2">
-                @foreach(['Honeymoon & family trips', 'Trekking & adventure', 'Pilgrimage circuits', 'Spiti, Kinnaur & Lahaul (seasonal)'] as $idea)
+                @foreach(['Best price policy', 'No middle-man, no commission', 'Registered taxi union', 'Honeymoon, family & pilgrimage trips'] as $idea)
                     <li class="flex items-center gap-2.5 text-sm font-medium text-stone-700"><i data-lucide="check-circle-2" class="h-4 w-4 text-pine-500"></i>{{ $idea }}</li>
                 @endforeach
             </ul>

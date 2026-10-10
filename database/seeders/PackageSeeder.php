@@ -130,6 +130,40 @@ class PackageSeeder extends Seeder
                 ],
                 'inclusions'     => ['Round-trip cab to Kareri village', 'Certified trek leader', 'Tents, sleeping bags & mats', 'All meals on the trek'],
             ],
+            [
+                'title'          => 'Shimla & Manali Tour Package',
+                'slug'           => 'shimla-manali-tour-package',
+                'duration'       => '6 Days / 5 Nights',
+                'starting_price' => 22500.00,
+                'short_desc'     => 'Tour route: Delhi - Shimla - Manali - Delhi. Jakhu Temple, The Mall & The Ridge in Shimla, then Hadimba Devi Temple, Vashisht hot springs, Naggar Castle and an excursion to Rohtang Pass from Manali.',
+                'images'         => ['manali-mall-road', 'dhauladhar-peaks', 'dhauladhar-alpenglow', 'prayer-flags', 'dharamshala-town'],
+                'itinerary'      => [
+                    'Day 1' => 'Arrival Delhi / Kalka - Shimla. Meet our representative and drive to Shimla. On arrival check in at the hotel. Dinner and overnight at the hotel.',
+                    'Day 2' => 'Shimla. Morning visit Jakhu Hanuman Temple, Green Valley and the Indian Institute of Advanced Studies. Evening free to stroll in the famous shopping places of Shimla town - The Mall and The Ridge. Dinner and overnight at the hotel.',
+                    'Day 3' => 'Shimla - Manali (320 km / 8 hrs). After an early breakfast proceed to Manali, a hill station surrounded by snow mountains and beautiful waterfalls. On arrival check in at the hotel. Dinner and overnight at Manali.',
+                    'Day 4' => 'Manali. After breakfast, city tour visiting Naggar Castle, Jagatsukh Temples, Hadimba Devi Temple, Manu Temple, the Tibetan Monastery and Vashisht hot springs. Afternoon at leisure. Dinner and overnight at the hotel.',
+                    'Day 5' => 'Manali. Full day excursion visiting Kothi Gorge, Gulaba, Marhi and Rohtang Pass, the most visited tourist spot in the Himalaya (permit and season permitting). Afternoon free for shopping. Dinner and overnight at the hotel.',
+                    'Day 6' => 'Manali - Delhi (Departure). After breakfast depart to Kalka and board the train to Delhi (ETD 1800 hrs, ETA 2200 hrs). On arrival our representative meets you and transfers you to your destination (within Delhi only).',
+                ],
+                'inclusions'     => ['Hotel stay with breakfast & dinner', 'Private cab for all transfers & sightseeing', 'Kalka - Delhi train ticket', 'Delhi drop on arrival (within Delhi only)', 'Fuel, tolls, parking, state taxes & driver allowance'],
+            ],
+            [
+                'title'          => 'Dharamshala & Amritsar Tour Package',
+                'slug'           => 'dharamshala-amritsar-tour-package',
+                'duration'       => '6 Days / 5 Nights',
+                'starting_price' => 18500.00,
+                'short_desc'     => 'Tour route: Amritsar - Dharamshala - Delhi. The Golden Temple, Jallianwala Bagh and the Wagah Border flag ceremony, followed by the Dalai Lama Temple, Bhagsu Nag, Norbulingka Institute, Naddi and Dharamkot.',
+                'images'         => ['tsuglagkhang', 'bhagsu-falls', 'norbulingka', 'dharamkot', 'mcleodganj-market'],
+                'itinerary'      => [
+                    'Day 1' => 'Arrival Amritsar. Arrive at Amritsar Railway Station, where our representative meets and greets you and takes you to the hotel. Check in, rest of the day at leisure. Overnight at Amritsar.',
+                    'Day 2' => 'Amritsar. After breakfast, full day city tour starting with the Golden Temple, the most important Sikh shrine and a living symbol of Sikh spiritual and historical traditions. Then visit Jallianwala Bagh, where on 13 April 1919 British soldiers opened fire on an unarmed gathering, killing hundreds of civilians. After lunch visit the Maharaja Ranjit Singh Summer Palace Museum in the heart of Ram Bagh. In the evening visit the Indo-Pak Wagah Border (30 km from Amritsar) to watch the "Beating the Retreat" flag ceremony, as soldiers from both countries march in perfect drill and lower their national flags at sunset amid thunderous applause. Return to the hotel for the night.',
+                    'Day 3' => 'Amritsar - Dharamshala (215 km / 5 hrs). After breakfast drive to Dharamshala, the Himalayan hill resort that is home to the Dalai Lama. Check in at the hotel; the rest of the day is free. We suggest a walk along the Mall Road, where Tibetan refugees display and sell their crafts. Overnight in Dharamshala.',
+                    'Day 4' => 'Dharamshala. After breakfast visit Tsuglagkhang, Dharamshala\'s main Buddhist temple, commonly known as the Dalai Lama Temple. The complex houses the Namgyal Monastery, which trains monks for the temple\'s rituals. Later visit Bhagsu Nag Temple and waterfall. Evening at leisure. Overnight in Dharamshala.',
+                    'Day 5' => 'Dharamshala - McLeodganj. After breakfast visit the Norbulingka Institute, with its own temple, museum and meditation hall, where 1,173 images of the Buddha decorate the 44-foot-high temple hall. Later visit Naddi and Dharamkot village. Overnight at McLeodganj.',
+                    'Day 6' => 'McLeodganj - Delhi / Chandigarh. After breakfast the rest of the day is free to spend at leisure, followed by the overnight bus to Delhi.',
+                ],
+                'inclusions'     => ['Hotel stay with breakfast', 'Amritsar railway station pickup', 'Private cab for all transfers & sightseeing', 'Wagah Border excursion', 'Overnight bus ticket to Delhi', 'Fuel, tolls, parking, state taxes & driver allowance'],
+            ],
         ];
 
         foreach ($packages as $package) {
