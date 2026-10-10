@@ -2,101 +2,99 @@
 
     x-data="{ mobileMenuOpen: false }"
 
-    class="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm"
-
->
+    class="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
 
 
 
     @php
 
-        /*
+    /*
 
-        |--------------------------------------------------------------------------
+    |--------------------------------------------------------------------------
 
-        | Website Branding
+    | Website Branding
 
-        |--------------------------------------------------------------------------
+    |--------------------------------------------------------------------------
 
-        */
-
-
-
-        $siteLogo = \App\Models\Setting::get('site_logo', '');
+    */
 
 
 
-        $siteTitle = \App\Models\Setting::get(
-
-            'site_title',
-
-            'Dharamshala Travels'
-
-        );
+    $siteLogo = \App\Models\Setting::get('site_logo', '');
 
 
 
-        /*
+    $siteTitle = \App\Models\Setting::get(
 
-        |--------------------------------------------------------------------------
+    'site_title',
 
-        | Header Contact
+    'Dharamshala Travels'
 
-        |--------------------------------------------------------------------------
-
-        */
+    );
 
 
 
-        $headerPhone = \App\Models\Setting::get(
+    /*
 
-            'contact_phone',
+    |--------------------------------------------------------------------------
 
-            '+91 98765 43210'
+    | Header Contact
 
-        );
+    |--------------------------------------------------------------------------
 
-
-
-        /*
-
-        |--------------------------------------------------------------------------
-
-        | Top Announcement Bar
-
-        |--------------------------------------------------------------------------
-
-        */
+    */
 
 
 
-        $topBarText = \App\Models\Setting::get(
+    $headerPhone = \App\Models\Setting::get(
 
-            'top_bar_text',
+    'contact_phone',
 
-            'Gaggal Airport (DHM) & Himachal Tour Chauffeur Network'
+    '+91 98765 43210'
 
-        );
-
-
-
-        $topBarPhone = \App\Models\Setting::get(
-
-            'top_bar_phone',
-
-            '+91 98765 43210'
-
-        );
+    );
 
 
 
-        $topBarLocation = \App\Models\Setting::get(
+    /*
 
-            'top_bar_location',
+    |--------------------------------------------------------------------------
 
-            'Dharamshala, HP'
+    | Top Announcement Bar
 
-        );
+    |--------------------------------------------------------------------------
+
+    */
+
+
+
+    $topBarText = \App\Models\Setting::get(
+
+    'top_bar_text',
+
+    'Gaggal Airport (DHM) & Himachal Tour Chauffeur Network'
+
+    );
+
+
+
+    $topBarPhone = \App\Models\Setting::get(
+
+    'top_bar_phone',
+
+    '+91 98765 43210'
+
+    );
+
+
+
+    $topBarLocation = \App\Models\Setting::get(
+
+    'top_bar_location',
+
+    'Dharamshala, HP'
+
+    );
 
     @endphp
 
@@ -130,29 +128,27 @@
 
 
 
-                    <div class="flex items-center gap-1.5 text-center sm:text-left">
+                <div class="flex items-center gap-1.5 text-center sm:text-left">
 
 
 
-                        <i
+                    <i
 
-                            data-lucide="megaphone"
+                        data-lucide="megaphone"
 
-                            class="w-3.5 h-3.5 text-emerald-400 shrink-0"
-
-                        ></i>
+                        class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
 
 
 
-                        <span class="text-gray-300">
+                    <span class="text-gray-300">
 
-                            {{ $topBarText }}
+                        {{ $topBarText }}
 
-                        </span>
+                    </span>
 
 
 
-                    </div>
+                </div>
 
 
 
@@ -172,35 +168,31 @@
 
 
 
-                        <a
+                    <a
 
-                            href="tel:{{ preg_replace('/[^0-9+]/', '', $topBarPhone) }}"
+                        href="tel:{{ preg_replace('/[^0-9+]/', '', $topBarPhone) }}"
 
-                            class="flex items-center gap-1.5 text-gray-400 hover:text-white transition"
-
-                        >
+                        class="flex items-center gap-1.5 text-gray-400 hover:text-white transition">
 
 
 
-                            <i
+                        <i
 
-                                data-lucide="phone-call"
+                            data-lucide="phone-call"
 
-                                class="w-3.5 h-3.5 text-emerald-400"
-
-                            ></i>
+                            class="w-3.5 h-3.5 text-emerald-400"></i>
 
 
 
-                            <span>
+                        <span>
 
-                                {{ $topBarPhone }}
+                            {{ $topBarPhone }}
 
-                            </span>
+                        </span>
 
 
 
-                        </a>
+                    </a>
 
 
 
@@ -214,7 +206,7 @@
 
 
 
-                        <span class="text-gray-700">|</span>
+                    <span class="text-gray-700">|</span>
 
 
 
@@ -228,29 +220,27 @@
 
 
 
-                        <span class="flex items-center gap-1.5 text-gray-400">
+                    <span class="flex items-center gap-1.5 text-gray-400">
 
 
 
-                            <i
+                        <i
 
-                                data-lucide="map-pin"
+                            data-lucide="map-pin"
 
-                                class="w-3.5 h-3.5 text-emerald-400"
-
-                            ></i>
+                            class="w-3.5 h-3.5 text-emerald-400"></i>
 
 
 
-                            <span>
+                        <span>
 
-                                {{ $topBarLocation }}
-
-                            </span>
-
-
+                            {{ $topBarLocation }}
 
                         </span>
+
+
+
+                    </span>
 
 
 
@@ -306,9 +296,7 @@
 
                 href="{{ url('/') }}"
 
-                class="flex items-center group shrink-0 py-1"
-
-            >
+                class="flex items-center group shrink-0 py-1">
 
 
 
@@ -316,23 +304,21 @@
 
 
 
-                    {{-- Logo container ko bada kiya gaya hai taaki logo saaf aur clear dikhe --}}
+                {{-- Logo container ko bada kiya gaya hai taaki logo saaf aur clear dikhe --}}
 
-                    <div class="h-16 sm:h-[72px] w-auto max-w-[150px] flex items-center justify-center overflow-hidden">
+                <div class="h-16 sm:h-[72px] w-auto max-w-[150px] flex items-center justify-center overflow-hidden">
 
-                        <img
+                    <img
 
-                            src="{{ $siteLogo }}"
+                        src="{{ $siteLogo }}"
 
-                            alt="{{ $siteTitle }}"
+                        alt="{{ $siteTitle }}"
 
-                            class="h-full w-auto max-w-full object-contain transition-transform duration-200 group-hover:scale-105"
+                        class="h-full w-auto max-w-full object-contain transition-transform duration-200 group-hover:scale-105"
 
-                            loading="eager"
+                        loading="eager">
 
-                        >
-
-                    </div>
+                </div>
 
 
 
@@ -340,25 +326,21 @@
 
 
 
-                    <div
+                <div
 
-                        class="w-12 h-12 rounded-xl bg-gray-900 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-sm"
-
-                    >
+                    class="w-12 h-12 rounded-xl bg-gray-900 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-sm">
 
 
 
-                        <i
+                    <i
 
-                            data-lucide="mountain-snow"
+                        data-lucide="mountain-snow"
 
-                            class="w-7 h-7 text-emerald-400"
-
-                        ></i>
+                        class="w-7 h-7 text-emerald-400"></i>
 
 
 
-                    </div>
+                </div>
 
 
 
@@ -374,9 +356,7 @@
 
                     <span
 
-                        class="text-xl sm:text-2xl font-extrabold tracking-tight text-gray-900 block leading-tight group-hover:text-emerald-700 transition-colors"
-
-                    >
+                        class="text-xl sm:text-2xl font-extrabold tracking-tight text-gray-900 block leading-tight group-hover:text-emerald-700 transition-colors">
 
                         {{ $siteTitle }}
 
@@ -386,9 +366,7 @@
 
                     <span
 
-                        class="text-[11px] font-bold tracking-wider text-gray-500 uppercase block mt-0.5"
-
-                    >
+                        class="text-[11px] font-bold tracking-wider text-gray-500 uppercase block mt-0.5">
 
 
 
@@ -416,9 +394,7 @@
 
             <nav
 
-                class="hidden md:flex items-center justify-center gap-8 lg:gap-10 text-sm font-semibold text-gray-700 flex-1"
-
-            >
+                class="hidden md:flex items-center justify-center gap-8 lg:gap-10 text-sm font-semibold text-gray-700 flex-1">
 
 
 
@@ -428,9 +404,7 @@
 
                     href="{{ url('/') }}"
 
-                    class="whitespace-nowrap transition-colors {{ request()->is('/') ? 'text-emerald-700 font-bold' : 'hover:text-emerald-700' }}"
-
-                >
+                    class="whitespace-nowrap transition-colors {{ request()->is('/') ? 'text-emerald-700 font-bold' : 'hover:text-emerald-700' }}">
 
                     Home
 
@@ -446,9 +420,7 @@
 
                     href="{{ route('cabs.index') }}"
 
-                    class="whitespace-nowrap transition-colors {{ request()->routeIs('cabs.\*') ? 'text-emerald-700 font-bold' : 'hover:text-emerald-700' }}"
-
-                >
+                    class="whitespace-nowrap transition-colors {{ request()->routeIs('cabs.\*') ? 'text-emerald-700 font-bold' : 'hover:text-emerald-700' }}">
 
                     Book Cab
 
@@ -464,9 +436,7 @@
 
                     href="{{ route('tours.index') }}"
 
-                    class="whitespace-nowrap transition-colors {{ request()->routeIs('tours.\*') ? 'text-emerald-700 font-bold' : 'hover:text-emerald-700' }}"
-
-                >
+                    class="whitespace-nowrap transition-colors {{ request()->routeIs('tours.\*') ? 'text-emerald-700 font-bold' : 'hover:text-emerald-700' }}">
 
                     Tour Packages
 
@@ -482,9 +452,7 @@
 
                     href="{{ url('/blogs') }}"
 
-                    class="whitespace-nowrap transition-colors {{ request()->is('blogs\*') ? 'text-emerald-700 font-bold' : 'hover:text-emerald-700' }}"
-
-                >
+                    class="whitespace-nowrap transition-colors {{ request()->is('blogs\*') ? 'text-emerald-700 font-bold' : 'hover:text-emerald-700' }}">
 
                     Blogs
 
@@ -500,9 +468,7 @@
 
                     href="{{ route('contact') }}"
 
-                    class="whitespace-nowrap transition-colors {{ request()->routeIs('contact') ? 'text-emerald-700 font-bold' : 'hover:text-emerald-700' }}"
-
-                >
+                    class="whitespace-nowrap transition-colors {{ request()->routeIs('contact') ? 'text-emerald-700 font-bold' : 'hover:text-emerald-700' }}">
 
                     Contact Us
 
@@ -532,39 +498,49 @@
 
 
 
-                    <a
+                <a
 
-                        href="tel:{{ preg_replace('/[^0-9+]/', '', $headerPhone) }}"
+                    href="tel:{{ preg_replace('/[^0-9+]/', '', $headerPhone) }}"
 
-                        class="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-emerald-700 px-2.5 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
-
-                    >
+                    class="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-emerald-700 px-2.5 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
 
 
 
-                        <i
+                    <i
 
-                            data-lucide="phone-call"
+                        data-lucide="phone-call"
 
-                            class="w-3.5 h-3.5 text-emerald-600"
-
-                        ></i>
+                        class="w-3.5 h-3.5 text-emerald-600"></i>
 
 
 
-                        <span>
+                    <span>
 
-                            {{ $headerPhone }}
+                        {{ $headerPhone }}
 
-                        </span>
+                    </span>
 
 
 
-                    </a>
+                </a>
 
 
 
                 @endif
+
+                <a
+                    href="tel:+919816338442"
+                    class="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-emerald-700 px-2.5 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+                    <i data-lucide="phone-call" class="w-3.5 h-3.5 text-emerald-600"></i>
+                    <span>+91-98163-38442</span>
+                </a>
+
+                <a
+                    href="tel:+919459264147"
+                    class="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-emerald-700 px-2.5 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+                    <i data-lucide="phone-call" class="w-3.5 h-3.5 text-emerald-600"></i>
+                    <span>+91-9459264147</span>
+                </a>
 
 
 
@@ -576,9 +552,7 @@
 
                     href="{{ route('contact') }}"
 
-                    class="inline-flex items-center gap-1.5 px-3.5 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold rounded-xl transition-colors"
-
-                >
+                    class="inline-flex items-center gap-1.5 px-3.5 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold rounded-xl transition-colors">
 
 
 
@@ -586,9 +560,7 @@
 
                         data-lucide="mail-question"
 
-                        class="w-3.5 h-3.5 text-emerald-700"
-
-                    ></i>
+                        class="w-3.5 h-3.5 text-emerald-700"></i>
 
 
 
@@ -612,9 +584,7 @@
 
                     href="{{ route('cabs.index') }}"
 
-                    class="inline-block px-4 py-2.5 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-xl shadow-sm transition-colors"
-
-                >
+                    class="inline-block px-4 py-2.5 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-xl shadow-sm transition-colors">
 
                     Reserve Ride
 
@@ -648,9 +618,7 @@
 
                     class="p-2 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors"
 
-                    title="Send Enquiry"
-
-                >
+                    title="Send Enquiry">
 
 
 
@@ -658,9 +626,7 @@
 
                         data-lucide="mail-question"
 
-                        class="w-5 h-5"
-
-                    ></i>
+                        class="w-5 h-5"></i>
 
 
 
@@ -680,9 +646,7 @@
 
                     class="p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none"
 
-                    aria-label="Toggle Navigation"
-
-                >
+                    aria-label="Toggle Navigation">
 
 
 
@@ -692,9 +656,7 @@
 
                         class="w-6 h-6"
 
-                        x-show="!mobileMenuOpen"
-
-                    ></i>
+                        x-show="!mobileMenuOpen"></i>
 
 
 
@@ -706,9 +668,7 @@
 
                         x-show="mobileMenuOpen"
 
-                        style="display: none;"
-
-                    ></i>
+                        style="display: none;"></i>
 
 
 
@@ -756,9 +716,7 @@
 
         style="display: none;"
 
-        class="md:hidden border-t border-gray-100 bg-white px-4 py-4 shadow-lg"
-
-    >
+        class="md:hidden border-t border-gray-100 bg-white px-4 py-4 shadow-lg">
 
 
 
@@ -774,9 +732,7 @@
 
                 @click="mobileMenuOpen = false"
 
-                class="block text-sm font-semibold py-2.5 {{ request()->is('/') ? 'text-emerald-700 font-bold' : 'text-gray-700 hover:text-emerald-700' }}"
-
-            >
+                class="block text-sm font-semibold py-2.5 {{ request()->is('/') ? 'text-emerald-700 font-bold' : 'text-gray-700 hover:text-emerald-700' }}">
 
                 Home
 
@@ -794,9 +750,7 @@
 
                 @click="mobileMenuOpen = false"
 
-                class="block text-sm font-semibold py-2.5 {{ request()->routeIs('cabs.\*') ? 'text-emerald-700 font-bold' : 'text-gray-700 hover:text-emerald-700' }}"
-
-            >
+                class="block text-sm font-semibold py-2.5 {{ request()->routeIs('cabs.\*') ? 'text-emerald-700 font-bold' : 'text-gray-700 hover:text-emerald-700' }}">
 
                 Book Cab
 
@@ -814,9 +768,7 @@
 
                 @click="mobileMenuOpen = false"
 
-                class="block text-sm font-semibold py-2.5 {{ request()->routeIs('tours.\*') ? 'text-emerald-700 font-bold' : 'text-gray-700 hover:text-emerald-700' }}"
-
-            >
+                class="block text-sm font-semibold py-2.5 {{ request()->routeIs('tours.\*') ? 'text-emerald-700 font-bold' : 'text-gray-700 hover:text-emerald-700' }}">
 
                 Tour Packages
 
@@ -834,9 +786,7 @@
 
                 @click="mobileMenuOpen = false"
 
-                class="block text-sm font-semibold py-2.5 {{ request()->is('blogs\*') ? 'text-emerald-700 font-bold' : 'text-gray-700 hover:text-emerald-700' }}"
-
-            >
+                class="block text-sm font-semibold py-2.5 {{ request()->is('blogs\*') ? 'text-emerald-700 font-bold' : 'text-gray-700 hover:text-emerald-700' }}">
 
                 Blogs
 
@@ -854,9 +804,7 @@
 
                 @click="mobileMenuOpen = false"
 
-                class="block text-sm font-semibold py-2.5 {{ request()->routeIs('contact') ? 'text-emerald-700 font-bold' : 'text-gray-700 hover:text-emerald-700' }}"
-
-            >
+                class="block text-sm font-semibold py-2.5 {{ request()->routeIs('contact') ? 'text-emerald-700 font-bold' : 'text-gray-700 hover:text-emerald-700' }}">
 
                 Contact Us
 
@@ -888,9 +836,7 @@
 
                 @click="mobileMenuOpen = false"
 
-                class="text-center px-3 py-2.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl flex items-center justify-center gap-1"
-
-            >
+                class="text-center px-3 py-2.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl flex items-center justify-center gap-1">
 
 
 
@@ -898,9 +844,7 @@
 
                     data-lucide="mail-question"
 
-                    class="w-3.5 h-3.5"
-
-                ></i>
+                    class="w-3.5 h-3.5"></i>
 
 
 
@@ -924,9 +868,7 @@
 
                 @click="mobileMenuOpen = false"
 
-                class="text-center px-3 py-2.5 bg-gray-900 text-white text-xs font-semibold rounded-xl"
-
-            >
+                class="text-center px-3 py-2.5 bg-gray-900 text-white text-xs font-semibold rounded-xl">
 
                 Reserve Ride
 

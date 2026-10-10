@@ -159,6 +159,8 @@ $whatsappHref = preg_replace('/[^0-9]/', '', $whatsapp ?: $contactPhone);
                         <div>
                             <div class="footer-label">Call Us</div>
                             <div class="footer-value">{{ $contactPhone }}</div>
+                            <div class="footer-value">+91-98163-38442</div>
+                            <div class="footer-value">+91-9459264147</div>
                         </div>
                     </a>
 

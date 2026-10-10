@@ -263,6 +263,7 @@ Route::get('/cabs', [BookingController::class, 'cabsPage'])
 Route::get('/tours', [BookingController::class, 'toursPage'])
 
     ->name('tours.index');
+    
 
 
 
@@ -1585,3 +1586,9 @@ Route::prefix('admin')
             ])->name('reviews.destroy');
         });
     });
+
+Route::fallback(function () {
+    return redirect()->route('home');
+});
+
+

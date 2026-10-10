@@ -100,7 +100,7 @@
                                 </div>
                                 <div class="text-right">
                                     <span class="text-xs text-gray-400 block">Starting from</span>
-                                    <span class="text-lg font-extrabold text-emerald-700">â‚¹{{ number_format($cab->base_fare ?? 1500)}}</span>
+                                    <span class="text-lg font-extrabold text-emerald-700">  {{ number_format($cab->base_fare ?? 1500)}}</span>
                                 </div>
                             </div>
 

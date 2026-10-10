@@ -1,96 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Edit Blog | Admin Panel</title>
+    <title>Edit Blog - {{ \App\Models\Setting::get('site_title', 'Dharamshala Travels') }}</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="icon"
+          href="{{ \App\Models\Setting::get('favicon') ? asset('storage/' . \App\Models\Setting::get('favicon')) : asset('favicon.ico') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    @if (file_exists(public_path('build/manifest.json')))
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endif
 
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+            defer></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
 </head>
 
-<body class="bg-[#f6f8fb] text-slate-900 overflow-hidden">
+<body class="bg-slate-100 text-slate-800 antialiased flex h-screen overflow-hidden">
 
-<div class="h-screen flex overflow-hidden">
-
-    {{-- SIDEBAR --}}
-    <aside class="w-64 shrink-0 h-screen overflow-hidden">
-        @include('admin.partials.sidebar')
-    </aside>
+    {{-- Sidebar --}}
+    @include('admin.partials.sidebar')
 
 
-    {{-- MAIN --}}
-    <main class="flex-1 min-w-0 h-screen overflow-y-auto overflow-x-hidden">
+    {{-- Main Area --}}
+    <div class="flex-1 flex flex-col overflow-y-auto min-w-0">
 
+        {{-- Header --}}
+        <header
+            class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 sticky top-0 z-30">
 
-        {{-- HEADER --}}
-        <header class="sticky top-0 z-30 h-16 bg-white border-b border-slate-200 flex items-center justify-between px-7">
+            <div class="flex items-center gap-4">
 
-            <div class="flex items-center gap-3">
+                <a href="{{ route('admin.blogs.index') }}"
+                   class="inline-flex items-center justify-center w-9 h-9 rounded-lg
+                          border border-slate-200 text-slate-600
+                          hover:bg-slate-50 hover:text-slate-900 transition">
 
-                <a
-                    href="{{ route('admin.blogs.index') }}"
-                    class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition"
-                >
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
                 </a>
 
                 <div>
-                    <h1 class="text-base font-bold text-slate-900">
+                    <div class="flex items-center gap-2 text-xs text-slate-500 mb-0.5">
+                        <span>Admin</span>
+                        <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                        <span>Blogs</span>
+                        <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                        <span class="text-slate-700">Edit</span>
+                    </div>
+
+                    <h1 class="text-lg font-semibold text-slate-900">
                         Edit Blog
                     </h1>
-
-                    <p class="text-[11px] text-slate-500">
-                        Update your travel article
-                    </p>
                 </div>
 
             </div>
 
 
-            <a
-                href="{{ route('admin.blogs.index') }}"
-                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 text-xs font-bold hover:bg-slate-50 transition"
-            >
-                <i data-lucide="list" class="w-4 h-4"></i>
-                All Blogs
-            </a>
+            <div class="flex items-center gap-3">
+
+                <a href="{{ route('admin.blogs.index') }}"
+                   class="hidden sm:inline-flex items-center gap-2 px-4 py-2
+                          text-sm font-medium text-slate-600
+                          border border-slate-200 rounded-lg
+                          hover:bg-slate-50 transition">
+
+                    <i data-lucide="files" class="w-4 h-4"></i>
+
+                    All Blogs
+                </a>
+
+                <a href="{{ route('home') }}"
+                   target="_blank"
+                   class="inline-flex items-center gap-2 px-4 py-2
+                          text-sm font-medium text-slate-600
+                          border border-slate-200 rounded-lg
+                          hover:bg-slate-50 transition">
+
+                    <i data-lucide="external-link" class="w-4 h-4"></i>
+
+                    Website
+                </a>
+
+            </div>
 
         </header>
 
 
+        {{-- Page Content --}}
+        <main class="p-6 space-y-6">
 
-        {{-- CONTENT --}}
-        <div class="p-7">
+            {{-- Validation Errors --}}
+            @if ($errors->any())
 
-
-            {{-- ERRORS --}}
-            @if($errors->any())
-
-                <div class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
+                <div class="bg-red-50 border border-red-200 rounded-xl p-4">
 
                     <div class="flex items-start gap-3">
 
-                        <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center shrink-0">
-                            <i
-                                data-lucide="alert-circle"
-                                class="w-4 h-4 text-red-600"
-                            ></i>
+                        <div class="w-8 h-8 rounded-lg bg-red-100
+                                    flex items-center justify-center shrink-0">
+
+                            <i data-lucide="alert-circle"
+                               class="w-5 h-5 text-red-600"></i>
+
                         </div>
 
                         <div>
 
-                            <p class="text-xs font-bold text-red-800">
-                                Please fix the following errors
-                            </p>
+                            <h3 class="font-semibold text-red-800 text-sm">
+                                Please fix the following errors:
+                            </h3>
 
-                            <ul class="mt-2 space-y-1 text-xs text-red-700">
+                            <ul class="mt-2 list-disc list-inside text-sm text-red-700 space-y-1">
 
-                                @foreach($errors->all() as $error)
-                                    <li>• {{ $error }}</li>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
                                 @endforeach
 
                             </ul>
@@ -104,32 +150,25 @@
             @endif
 
 
+            {{-- Intro --}}
+            <div>
 
-            {{-- INTRO --}}
-            <div class="mb-6">
-
-                <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-600">
-                    Content Management
-                </span>
-
-                <h2 class="text-2xl font-bold text-slate-900 mt-1">
+                <h2 class="text-2xl font-bold text-slate-900">
                     Edit Blog
                 </h2>
 
-                <p class="text-xs text-slate-500 mt-1">
-                    Update the title, content, date or images of this blog.
+                <p class="text-sm text-slate-500 mt-1">
+                    Update your travel article
                 </p>
 
             </div>
 
 
-
-            {{-- FORM --}}
+            {{-- Form --}}
             <form
                 action="{{ route('admin.blogs.update', $blog) }}"
                 method="POST"
-                enctype="multipart/form-data"
-            >
+                enctype="multipart/form-data">
 
                 @csrf
                 @method('PUT')
@@ -138,34 +177,33 @@
                 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
 
-                    {{-- LEFT --}}
+                    {{-- LEFT SIDE --}}
                     <div class="xl:col-span-2 space-y-6">
 
 
-                        {{-- BLOG INFORMATION --}}
-                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                        {{-- Blog Information --}}
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm">
 
                             <div class="px-6 py-5 border-b border-slate-200">
 
                                 <div class="flex items-center gap-3">
 
-                                    <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center">
+                                    <div class="w-10 h-10 rounded-lg bg-blue-50
+                                                flex items-center justify-center">
 
-                                        <i
-                                            data-lucide="file-text"
-                                            class="w-5 h-5 text-emerald-600"
-                                        ></i>
+                                        <i data-lucide="file-text"
+                                           class="w-5 h-5 text-blue-600"></i>
 
                                     </div>
 
                                     <div>
 
-                                        <h3 class="text-sm font-bold text-slate-900">
+                                        <h3 class="font-semibold text-slate-900">
                                             Blog Information
                                         </h3>
 
-                                        <p class="text-[11px] text-slate-500 mt-0.5">
-                                            Update your article information
+                                        <p class="text-xs text-slate-500 mt-0.5">
+                                            Update the main content of your blog
                                         </p>
 
                                     </div>
@@ -175,79 +213,97 @@
                             </div>
 
 
-                            <div class="p-6 space-y-5">
+                            <div class="p-6 space-y-6">
 
 
-                                {{-- TITLE --}}
+                                {{-- Title --}}
                                 <div>
 
-                                    <label class="block text-xs font-bold text-slate-700 mb-2">
+                                    <label
+                                        for="title"
+                                        class="block text-sm font-medium text-slate-700 mb-2">
+
                                         Blog Title
                                         <span class="text-red-500">*</span>
+
                                     </label>
 
                                     <input
                                         type="text"
+                                        id="title"
                                         name="title"
                                         value="{{ old('title', $blog->title) }}"
                                         required
-                                        class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition"
-                                    >
+                                        class="w-full px-4 py-3 rounded-lg
+                                               border border-slate-300
+                                               bg-white text-slate-900
+                                               placeholder-slate-400
+                                               focus:ring-2 focus:ring-blue-500
+                                               focus:border-blue-500
+                                               outline-none transition"
+                                        placeholder="Enter blog title">
 
                                 </div>
 
 
-
-                                {{-- DESCRIPTION --}}
+                                {{-- Description --}}
                                 <div>
 
-                                    <label class="block text-xs font-bold text-slate-700 mb-2">
-                                        Blog Description
+                                    <label
+                                        for="description"
+                                        class="block text-sm font-medium text-slate-700 mb-2">
+
+                                        Description
                                         <span class="text-red-500">*</span>
+
                                     </label>
 
                                     <textarea
+                                        id="description"
                                         name="description"
-                                        rows="14"
+                                        rows="12"
                                         required
-                                        class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition resize-y"
-                                    >{{ old('description', $blog->description) }}</textarea>
+                                        class="w-full px-4 py-3 rounded-lg
+                                               border border-slate-300
+                                               bg-white text-slate-900
+                                               placeholder-slate-400
+                                               focus:ring-2 focus:ring-blue-500
+                                               focus:border-blue-500
+                                               outline-none transition resize-y"
+                                        placeholder="Write your blog content...">{{ old('description', $blog->description) }}</textarea>
 
                                 </div>
-
 
                             </div>
 
                         </div>
 
 
+                        {{-- Existing Gallery --}}
+                        @if (!empty($blog->multiple_images))
 
-                        {{-- EXISTING GALLERY --}}
-                        @if(!empty($blog->multiple_images))
-
-                            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm">
 
                                 <div class="px-6 py-5 border-b border-slate-200">
 
                                     <div class="flex items-center gap-3">
 
-                                        <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center">
+                                        <div class="w-10 h-10 rounded-lg bg-purple-50
+                                                    flex items-center justify-center">
 
-                                            <i
-                                                data-lucide="images"
-                                                class="w-5 h-5 text-blue-600"
-                                            ></i>
+                                            <i data-lucide="images"
+                                               class="w-5 h-5 text-purple-600"></i>
 
                                         </div>
 
                                         <div>
 
-                                            <h3 class="text-sm font-bold text-slate-900">
+                                            <h3 class="font-semibold text-slate-900">
                                                 Existing Gallery
                                             </h3>
 
-                                            <p class="text-[11px] text-slate-500">
-                                                Images already attached to this blog
+                                            <p class="text-xs text-slate-500 mt-0.5">
+                                                Current images in this blog
                                             </p>
 
                                         </div>
@@ -261,15 +317,26 @@
 
                                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
 
-                                        @foreach($blog->multiple_images as $image)
+                                        @foreach ($blog->multiple_images as $image)
 
-                                            <div class="group relative aspect-square rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                                            <div class="relative group aspect-square rounded-lg
+                                                        overflow-hidden bg-slate-100
+                                                        border border-slate-200">
 
                                                 <img
-                                                    src="{{ $image }}"
-                                                    alt="Blog gallery image"
-                                                    class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                                                >
+                                                    src="{{ asset('storage/' . $image) }}"
+                                                    alt="Gallery Image"
+                                                    class="w-full h-full object-cover">
+
+                                                <div
+                                                    class="absolute inset-0 bg-black/40
+                                                           opacity-0 group-hover:opacity-100
+                                                           transition flex items-center justify-center">
+
+                                                    <i data-lucide="image"
+                                                       class="w-6 h-6 text-white"></i>
+
+                                                </div>
 
                                             </div>
 
@@ -284,31 +351,29 @@
                         @endif
 
 
-
-                        {{-- ADD MORE GALLERY --}}
-                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                        {{-- Add Gallery Images --}}
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm">
 
                             <div class="px-6 py-5 border-b border-slate-200">
 
                                 <div class="flex items-center gap-3">
 
-                                    <div class="w-9 h-9 rounded-lg bg-indigo-50 flex items-center justify-center">
+                                    <div class="w-10 h-10 rounded-lg bg-emerald-50
+                                                flex items-center justify-center">
 
-                                        <i
-                                            data-lucide="image-plus"
-                                            class="w-5 h-5 text-indigo-600"
-                                        ></i>
+                                        <i data-lucide="image-plus"
+                                           class="w-5 h-5 text-emerald-600"></i>
 
                                     </div>
 
                                     <div>
 
-                                        <h3 class="text-sm font-bold text-slate-900">
+                                        <h3 class="font-semibold text-slate-900">
                                             Add More Gallery Images
                                         </h3>
 
-                                        <p class="text-[11px] text-slate-500">
-                                            Optional additional images
+                                        <p class="text-xs text-slate-500 mt-0.5">
+                                            Upload additional images for this blog
                                         </p>
 
                                     </div>
@@ -322,126 +387,130 @@
 
                                 <label
                                     for="multiple_images"
-                                    class="group block border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center cursor-pointer hover:border-emerald-400 hover:bg-emerald-50/30 transition"
-                                >
+                                    class="block w-full border-2 border-dashed
+                                           border-slate-300 rounded-xl p-8
+                                           text-center cursor-pointer
+                                           hover:border-blue-400
+                                           hover:bg-blue-50/30 transition">
 
-                                    <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 group-hover:bg-emerald-50 flex items-center justify-center">
+                                    <div class="flex flex-col items-center">
 
-                                        <i
-                                            data-lucide="upload-cloud"
-                                            class="w-7 h-7 text-slate-400 group-hover:text-emerald-600"
-                                        ></i>
+                                        <div class="w-12 h-12 rounded-full bg-slate-100
+                                                    flex items-center justify-center mb-3">
+
+                                            <i data-lucide="upload"
+                                               class="w-6 h-6 text-slate-500"></i>
+
+                                        </div>
+
+                                        <p class="text-sm font-medium text-slate-700">
+                                            Click to upload gallery images
+                                        </p>
+
+                                        <p class="text-xs text-slate-500 mt-1">
+                                            JPEG, PNG, JPG or WEBP
+                                        </p>
+
+                                        <p id="gallery-count"
+                                           class="text-xs text-blue-600 font-medium mt-2">
+                                        </p>
 
                                     </div>
 
-                                    <h4 class="text-sm font-bold text-slate-700 mt-4">
-                                        Select Additional Images
-                                    </h4>
-
-                                    <p class="text-xs text-slate-400 mt-1">
-                                        You can select multiple images
-                                    </p>
-
-                                    <span class="inline-flex mt-4 px-3 py-1.5 rounded-lg bg-slate-100 text-[10px] font-bold text-slate-600 group-hover:bg-emerald-100 group-hover:text-emerald-700">
-                                        Choose Images
-                                    </span>
-
                                     <input
-                                        id="multiple_images"
                                         type="file"
+                                        id="multiple_images"
                                         name="multiple_images[]"
                                         multiple
                                         accept="image/jpeg,image/png,image/jpg,image/webp"
                                         class="hidden"
-                                        onchange="showGalleryCount(this)"
-                                    >
+                                        onchange="showGalleryCount(this)">
 
                                 </label>
-
-
-                                <p
-                                    id="gallery-count"
-                                    class="text-center text-xs font-semibold text-emerald-600 mt-3 hidden"
-                                ></p>
-
-                                <p class="text-[10px] text-slate-400 text-center mt-3">
-                                    JPG, JPEG, PNG or WEBP · Maximum 5MB per image
-                                </p>
 
                             </div>
 
                         </div>
 
-
                     </div>
 
 
-
-                    {{-- RIGHT --}}
+                    {{-- RIGHT SIDE --}}
                     <div class="space-y-6">
 
 
-                        {{-- UPDATE --}}
-                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                        {{-- Update Blog --}}
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm">
 
-                            <div class="px-5 py-4 border-b border-slate-200">
+                            <div class="px-6 py-5 border-b border-slate-200">
 
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-3">
 
-                                    <i
-                                        data-lucide="save"
-                                        class="w-4 h-4 text-emerald-600"
-                                    ></i>
+                                    <div class="w-10 h-10 rounded-lg bg-blue-50
+                                                flex items-center justify-center">
 
-                                    <h3 class="text-sm font-bold text-slate-900">
-                                        Update Blog
-                                    </h3>
+                                        <i data-lucide="settings"
+                                           class="w-5 h-5 text-blue-600"></i>
+
+                                    </div>
+
+                                    <div>
+
+                                        <h3 class="font-semibold text-slate-900">
+                                            Update Blog
+                                        </h3>
+
+                                        <p class="text-xs text-slate-500 mt-0.5">
+                                            Manage publishing details
+                                        </p>
+
+                                    </div>
 
                                 </div>
 
                             </div>
 
 
-                            <div class="p-5 space-y-4">
+                            <div class="p-6 space-y-5">
 
-
-                                {{-- DATE --}}
+                                {{-- Blog Date --}}
                                 <div>
 
-                                    <label class="block text-xs font-bold text-slate-700 mb-2">
+                                    <label
+                                        for="blog_date"
+                                        class="block text-sm font-medium text-slate-700 mb-2">
+
                                         Blog Date
                                         <span class="text-red-500">*</span>
+
                                     </label>
 
-                                    <div class="relative">
-
-                                        <i
-                                            data-lucide="calendar"
-                                            class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
-                                        ></i>
-
-                                        <input
-                                            type="date"
-                                            name="blog_date"
-                                            value="{{ old('blog_date', optional($blog->blog_date)->format('Y-m-d')) }}"
-                                            required
-                                            class="w-full pl-10 pr-3 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition"
-                                        >
-
-                                    </div>
+                                    <input
+                                        type="date"
+                                        id="blog_date"
+                                        name="blog_date"
+                                        value="{{ old('blog_date', optional($blog->blog_date)->format('Y-m-d')) }}"
+                                        required
+                                        class="w-full px-4 py-3 rounded-lg
+                                               border border-slate-300
+                                               focus:ring-2 focus:ring-blue-500
+                                               focus:border-blue-500
+                                               outline-none transition">
 
                                 </div>
 
 
-                                <div class="border-t border-slate-100"></div>
-
-
                                 <button
                                     type="submit"
-                                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-sm hover:bg-emerald-700 hover:shadow transition"
-                                >
+                                    class="w-full inline-flex items-center
+                                           justify-center gap-2 px-5 py-3
+                                           bg-blue-600 text-white
+                                           font-semibold rounded-lg
+                                           hover:bg-blue-700
+                                           focus:ring-4 focus:ring-blue-100
+                                           transition">
 
-                                    <i data-lucide="save" class="w-4 h-4"></i>
+                                    <i data-lucide="save" class="w-5 h-5"></i>
 
                                     Update Blog
 
@@ -450,9 +519,15 @@
 
                                 <a
                                     href="{{ route('admin.blogs.index') }}"
-                                    class="w-full inline-flex items-center justify-center px-4 py-3 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 transition"
-                                >
+                                    class="w-full inline-flex items-center
+                                           justify-center gap-2 px-5 py-3
+                                           border border-slate-300
+                                           text-slate-700 font-medium
+                                           rounded-lg hover:bg-slate-50
+                                           transition">
+
                                     Cancel
+
                                 </a>
 
                             </div>
@@ -460,56 +535,58 @@
                         </div>
 
 
+                        {{-- Current Cover Image --}}
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm">
 
-                        {{-- CURRENT COVER --}}
-                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                            <div class="px-6 py-5 border-b border-slate-200">
 
-                            <div class="px-5 py-4 border-b border-slate-200">
+                                <div class="flex items-center gap-3">
 
-                                <div class="flex items-center gap-2">
+                                    <div class="w-10 h-10 rounded-lg bg-amber-50
+                                                flex items-center justify-center">
 
-                                    <i
-                                        data-lucide="image"
-                                        class="w-4 h-4 text-emerald-600"
-                                    ></i>
+                                        <i data-lucide="image"
+                                           class="w-5 h-5 text-amber-600"></i>
 
-                                    <h3 class="text-sm font-bold text-slate-900">
-                                        Cover Image
-                                    </h3>
+                                    </div>
+
+                                    <div>
+
+                                        <h3 class="font-semibold text-slate-900">
+                                            Cover Image
+                                        </h3>
+
+                                        <p class="text-xs text-slate-500 mt-0.5">
+                                            Replace the current cover image
+                                        </p>
+
+                                    </div>
 
                                 </div>
 
                             </div>
 
 
-                            <div class="p-5">
-
+                            <div class="p-6">
 
                                 <div
                                     id="cover-preview"
-                                    class="h-52 rounded-xl overflow-hidden border border-slate-200 bg-slate-50"
-                                >
+                                    class="aspect-video rounded-xl overflow-hidden
+                                           bg-slate-100 border border-slate-200 mb-4">
 
-                                    @if($blog->image)
+                                    @if ($blog->image)
 
                                         <img
-                                            src="{{ $blog->image }}"
+                                            src="{{ asset('storage/' . $blog->image) }}"
                                             alt="{{ $blog->title }}"
-                                            class="w-full h-full object-cover"
-                                        >
+                                            class="w-full h-full object-cover">
 
                                     @else
 
-                                        <div class="w-full h-full flex flex-col items-center justify-center">
+                                        <div class="w-full h-full flex items-center justify-center">
 
-                                            <i
-                                                data-lucide="image-off"
-                                                class="w-8 h-8 text-slate-300"
-                                            ></i>
-
-                                            <p class="text-xs text-slate-400 mt-2">
-                                                No cover image
-                                            </p>
+                                            <i data-lucide="image-off"
+                                               class="w-10 h-10 text-slate-300"></i>
 
                                         </div>
 
@@ -518,34 +595,31 @@
                                 </div>
 
 
-
                                 <label
                                     for="image"
-                                    class="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold cursor-pointer hover:bg-slate-50 transition"
-                                >
+                                    class="w-full inline-flex items-center
+                                           justify-center gap-2 px-4 py-3
+                                           border border-slate-300
+                                           text-slate-700 font-medium
+                                           rounded-lg cursor-pointer
+                                           hover:bg-slate-50 transition">
 
-                                    <i
-                                        data-lucide="upload"
-                                        class="w-4 h-4"
-                                    ></i>
+                                    <i data-lucide="upload" class="w-4 h-4"></i>
 
-                                    Replace Cover Image
+                                    Choose New Cover Image
 
                                 </label>
 
-
                                 <input
-                                    id="image"
                                     type="file"
+                                    id="image"
                                     name="image"
                                     accept="image/jpeg,image/png,image/jpg,image/webp"
                                     class="hidden"
-                                    onchange="previewCover(this)"
-                                >
+                                    onchange="previewCover(this)">
 
-
-                                <p class="text-[10px] text-slate-400 text-center mt-3">
-                                    JPG, JPEG, PNG or WEBP · Maximum 5MB
+                                <p class="text-xs text-slate-500 mt-2 text-center">
+                                    JPEG, PNG, JPG or WEBP
                                 </p>
 
                             </div>
@@ -553,30 +627,32 @@
                         </div>
 
 
+                        {{-- Blog ID --}}
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm">
 
-                        {{-- BLOG ID --}}
-                        <div class="rounded-2xl bg-slate-900 p-5 text-white">
+                            <div class="p-6">
 
-                            <div class="flex items-center gap-3">
+                                <div class="flex items-center justify-between">
 
-                                <div class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
+                                    <div>
 
-                                    <i
-                                        data-lucide="file-text"
-                                        class="w-4 h-4 text-emerald-300"
-                                    ></i>
+                                        <p class="text-xs text-slate-500">
+                                            Blog ID
+                                        </p>
 
-                                </div>
+                                        <p class="text-lg font-semibold text-slate-900 mt-1">
+                                            #{{ $blog->id }}
+                                        </p>
 
-                                <div>
+                                    </div>
 
-                                    <p class="text-[10px] uppercase tracking-wider text-slate-400">
-                                        Blog ID
-                                    </p>
+                                    <div class="w-10 h-10 rounded-lg bg-slate-100
+                                                flex items-center justify-center">
 
-                                    <p class="text-sm font-bold mt-0.5">
-                                        #{{ $blog->id }}
-                                    </p>
+                                        <i data-lucide="hash"
+                                           class="w-5 h-5 text-slate-500"></i>
+
+                                    </div>
 
                                 </div>
 
@@ -584,84 +660,77 @@
 
                         </div>
 
-
                     </div>
-
 
                 </div>
 
             </form>
 
+        </main>
 
-        </div>
-
-    </main>
-
-</div>
+    </div>
 
 
+    {{-- Scripts --}}
+    <script>
 
-<script>
+        function previewCover(input) {
 
-function previewCover(input) {
+            const preview = document.getElementById('cover-preview');
 
-    const preview = document.getElementById('cover-preview');
+            if (!input.files || !input.files[0]) {
+                return;
+            }
 
-    if (!input.files || !input.files[0]) {
-        return;
-    }
+            const file = input.files[0];
 
-    const file = input.files[0];
+            if (!file.type.startsWith('image/')) {
+                return;
+            }
 
-    const reader = new FileReader();
+            const reader = new FileReader();
 
-    reader.onload = function (e) {
+            reader.onload = function (e) {
 
-        preview.innerHTML = `
-            <img
-                src="${e.target.result}"
-                class="w-full h-full object-cover"
-                alt="New Cover Preview"
-            >
-        `;
+                preview.innerHTML = `
+                    <img
+                        src="${e.target.result}"
+                        alt="Cover Preview"
+                        class="w-full h-full object-cover">
+                `;
 
-    };
+                lucide.createIcons();
+            };
 
-    reader.readAsDataURL(file);
-}
-
-
-function showGalleryCount(input) {
-
-    const countElement = document.getElementById('gallery-count');
-
-    if (!input.files || input.files.length === 0) {
-
-        countElement.classList.add('hidden');
-
-        return;
-    }
-
-    countElement.textContent =
-        input.files.length +
-        (input.files.length === 1
-            ? ' image selected'
-            : ' images selected');
-
-    countElement.classList.remove('hidden');
-}
+            reader.readAsDataURL(file);
+        }
 
 
-document.addEventListener('DOMContentLoaded', function () {
+        function showGalleryCount(input) {
 
-    if (window.lucide) {
-        lucide.createIcons();
-    }
+            const countElement = document.getElementById('gallery-count');
 
-});
+            if (!input.files || input.files.length === 0) {
 
-</script>
+                countElement.textContent = '';
+
+                return;
+            }
+
+            const count = input.files.length;
+
+            countElement.textContent =
+                count + (count === 1 ? ' image selected' : ' images selected');
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            lucide.createIcons();
+
+        });
+
+    </script>
 
 </body>
-
 </html>
