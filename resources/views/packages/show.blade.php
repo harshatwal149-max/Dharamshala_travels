@@ -172,16 +172,6 @@
 
                             </div>
 
-                            <div class="text-right">
-
-                                <span class="text-xs text-gray-500 block uppercase font-medium">Starting Tariff</span>
-
-                                <span class="text-2xl font-extrabold text-gray-900">₹{{ number_format($package->starting_price, 0) }}</span>
-
-                                <span class="text-xs text-gray-500 block">per vehicle tour</span>
-
-                            </div>
-
                         </div>
 
 
@@ -565,8 +555,6 @@
                             <span class="text-xs text-gray-500 block mb-1">{{ $relPkg->duration }}</span>
 
                             <h4 class="font-bold text-gray-900 text-sm mb-2">{{ $relPkg->title }}</h4>
-
-                            <span class="text-xs font-bold text-green-700">From ₹{{ number_format($relPkg->starting_price, 0) }}</span>
 
                         </a>
 

@@ -1,197 +1,178 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.site')
 
-    <title>Contact Us | {{ \App\Models\Setting::get('site_title', 'Dharamshala Travels') }}</title>
-    <meta name="description" content="Get in touch with Dharamshala Travels for customized tour packages, airport cab bookings, and round-the-clock Himachal mountain travel inquiries.">
+@use('App\Models\Setting')
+@use('App\Support\Media')
 
-    @if(\App\Models\Setting::get('site_favicon'))
-    <link rel="icon" type="image/x-icon" href="{{ \App\Models\Setting::get('site_favicon') }}">
-    @endif
+@php
+    $phone = Setting::get('contact_phone') ?: '+91 98765 43210';
+    $phoneHref = preg_replace('/[^0-9+]/', '', $phone);
+    $whatsapp = Setting::get('footer_whatsapp') ?: $phone;
+    $whatsappHref = preg_replace('/\D/', '', $whatsapp);
+    $email = Setting::get('contact_email') ?: 'info@dharamshalatravels.com';
+    $address = Setting::get('contact_address') ?: 'Main Taxi Stand, Kotwali Bazar, Dharamshala, Himachal Pradesh 176215';
+    $hours = Setting::get('contact_hours') ?: 'Available 6:00 AM – 11:00 PM';
+    $response = Setting::get('contact_email_response') ?: 'Response within 2 hours';
+    $mapUrl = Setting::get('footer_map_url') ?: 'https://www.google.com/maps/search/?api=1&query=' . urlencode($address);
+    $lat = Setting::get('seo_latitude');
+    $lng = Setting::get('seo_longitude');
+    $mapEmbed = 'https://maps.google.com/maps?q=' . urlencode($lat && $lng ? "{$lat},{$lng}" : $address) . '&z=15&output=embed';
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
-    @if (file_exists(public_path('build/manifest.json')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
+    $field = 'dt-input';
+@endphp
 
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Inter', sans-serif; } </style>
+@section('content')
 
-    @include('components.seo', [
-    'title' => 'Contact Us | ' . \App\Models\Setting::get('site_title', 'Dharamshala Travels'),
-    'description' => 'Get in touch with Dharamshala Travels for 24/7 cab bookings, Gaggal airport transfers, and custom tour packages.'
+@include('partials.page-hero', [
+    'eyebrow'  => 'We reply within minutes',
+    'title'    => 'Contact our travel desk',
+    'subtitle' => Setting::get('contact_subtitle') ?: 'Questions about a cab, a tour or an airport pickup? Call, WhatsApp or send us a message — a real person from our Dharamshala team will get back to you.',
+    'image'    => '/images/dharamshala/mcleodganj-view.jpg',
+    'crumbs'   => ['Contact' => route('contact')],
 ])
-</head>
-<body class="bg-gray-50 text-gray-800 antialiased flex flex-col min-h-screen">
 
-    <!-- Reusable Global Header -->
-    @include('components.header')
+{{-- Contact cards --}}
+<section class="bg-cream">
+    <div class="mx-auto grid max-w-7xl gap-4 px-4 pt-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8 lg:pt-14">
+        @foreach([
+            ['phone-call', 'Call us', $phone, $hours, 'tel:' . $phoneHref, false],
+            ['message-circle', 'WhatsApp', $whatsapp, 'Quickest way to book', 'https://wa.me/' . $whatsappHref . '?text=' . rawurlencode('Hi Dharamshala Travels, I would like to book a cab.'), true],
+            ['mail', 'Email', $email, $response, 'mailto:' . $email, false],
+            ['map-pin', 'Visit us', 'Dharamshala, HP', $address, $mapUrl, true],
+        ] as [$icon, $label, $value, $sub, $href, $external])
+            <a href="{{ $href }}" @if($external) target="_blank" rel="noopener" @endif
+               class="group flex items-start gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-stone-200 transition hover:-translate-y-1 hover:ring-pine-300">
+                <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-pine-900 text-saffron-400 transition group-hover:bg-saffron-500 group-hover:text-pine-950">
+                    <i data-lucide="{{ $icon }}" class="h-5 w-5"></i>
+                </span>
+                <span class="min-w-0">
+                    <span class="block text-xs font-semibold uppercase tracking-wider text-stone-500">{{ $label }}</span>
+                    <span class="mt-0.5 block font-bold text-pine-950 [overflow-wrap:anywhere] {{ str_contains($value, '@') ? 'text-sm' : '' }}">{{ $value }}</span>
+                    <span class="mt-1 block text-xs leading-relaxed text-stone-500">{{ $sub }}</span>
+                </span>
+            </a>
+        @endforeach
+    </div>
+</section>
 
-    <!-- Hero / Header Title Section -->
-    <section class="bg-gray-900 text-white py-14">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-            <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-800 text-green-400 border border-gray-700 mb-3">
-                24/7 Travel Desk & Assistance
-            </span>
-            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Get in Touch With Us</h1>
-            <p class="text-gray-400 text-sm max-w-xl mx-auto mt-2">
-                Have questions about cab fares, custom tour itineraries, or Gaggal Airport transfers? Drop a message or call directly.
-            </p>
-        </div>
-    </section>
+{{-- Form + info --}}
+<section class="bg-cream">
+    <div class="mx-auto grid max-w-7xl gap-8 px-4 pb-14 pt-8 sm:px-6 lg:grid-cols-12 lg:px-8 lg:pb-20 lg:pt-10">
 
-    <!-- Main Content: Details + Enquiry Form -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12 flex-1 w-full">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- Left Column: 100% Dynamic Company Details (from Admin Settings) -->
-            <div class="lg:col-span-5 space-y-6">
-                <div class="bg-white rounded-2xl p-6 sm:p-8 border border-gray-200 shadow-sm space-y-6">
-                    <div>
-                        <h2 class="text-xl font-bold text-gray-900">
-                            {{ \App\Models\Setting::get('site_title', 'Dharamshala Travels') }}
-                        </h2>
-                        <p class="text-xs text-gray-500 mt-1">
-                            {{ \App\Models\Setting::get('contact_subtitle', 'Official Himachal Pradesh taxi and tour mobility operations center.') }}
+        {{-- Form --}}
+        <div class="lg:col-span-7">
+            <div class="rounded-3xl bg-white p-6 ring-1 ring-stone-200 sm:p-10">
+                <span class="dt-eyebrow">Send an enquiry</span>
+                <h2 class="mt-2 text-2xl font-extrabold text-pine-950 sm:text-3xl">Tell us about your trip</h2>
+                <p class="mt-2 text-sm text-stone-600">Share your dates, pickup point and group size — we will call you back to plan everything.</p>
+
+                @if(session('enquiry_success'))
+                    <div class="mt-6 flex items-start gap-3 rounded-2xl border border-pine-200 bg-pine-50 p-4 text-sm text-pine-800" role="status">
+                        <i data-lucide="circle-check" class="mt-0.5 h-5 w-5 shrink-0 text-pine-600"></i>
+                        <p><strong class="block">Message sent!</strong>{{ session('enquiry_success') }}</p>
+                    </div>
+                @endif
+
+                <form action="{{ route('contact.store') }}" method="POST" class="mt-6 grid gap-5 sm:grid-cols-2" novalidate>
+                    @csrf
+
+                    <label class="block">
+                        <span class="mb-1.5 block text-xs font-semibold text-stone-600">Your name *</span>
+                        <input type="text" name="name" value="{{ old('name') }}" required maxlength="100" autocomplete="name" placeholder="e.g. Rajesh Kumar"
+                               class="{{ $field }} @error('name') !border-red-400 @enderror">
+                        @error('name')<span class="mt-1 block text-xs text-red-600">{{ $message }}</span>@enderror
+                    </label>
+
+                    <label class="block">
+                        <span class="mb-1.5 block text-xs font-semibold text-stone-600">Mobile / WhatsApp *</span>
+                        <input type="tel" name="phone" value="{{ old('phone') }}" required maxlength="20" autocomplete="tel" placeholder="e.g. 98160 12345"
+                               class="{{ $field }} @error('phone') !border-red-400 @enderror">
+                        @error('phone')<span class="mt-1 block text-xs text-red-600">{{ $message }}</span>@enderror
+                    </label>
+
+                    <label class="block">
+                        <span class="mb-1.5 block text-xs font-semibold text-stone-600">Email <span class="font-normal text-stone-400">(optional)</span></span>
+                        <input type="email" name="email" value="{{ old('email') }}" maxlength="150" autocomplete="email" placeholder="you@example.com"
+                               class="{{ $field }} @error('email') !border-red-400 @enderror">
+                        @error('email')<span class="mt-1 block text-xs text-red-600">{{ $message }}</span>@enderror
+                    </label>
+
+                    <label class="block">
+                        <span class="mb-1.5 block text-xs font-semibold text-stone-600">Subject</span>
+                        <select name="subject" class="{{ $field }}">
+                            @foreach(['General enquiry', 'Gaggal Airport pickup / drop', 'Local sightseeing', 'Outstation cab', 'Tour package', 'Trek (Triund, Kareri…)', 'Other'] as $topic)
+                                <option value="{{ $topic }}" @selected(old('subject') === $topic)>{{ $topic }}</option>
+                            @endforeach
+                        </select>
+                    </label>
+
+                    <label class="block sm:col-span-2">
+                        <span class="mb-1.5 block text-xs font-semibold text-stone-600">Your message *</span>
+                        <textarea name="message" rows="5" required maxlength="2000"
+                                  placeholder="Travel dates, pickup point, destination, number of passengers…"
+                                  class="{{ $field }} resize-y @error('message') !border-red-400 @enderror">{{ old('message') }}</textarea>
+                        @error('message')<span class="mt-1 block text-xs text-red-600">{{ $message }}</span>@enderror
+                    </label>
+
+                    <div class="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
+                        <p class="flex items-center gap-1.5 text-xs text-stone-500">
+                            <i data-lucide="lock" class="h-3.5 w-3.5 text-pine-500"></i> Your details are only used to reply to you.
                         </p>
-                    </div>
-
-                    <div class="space-y-4 pt-4 border-t border-gray-100 text-xs">
-                        <!-- Helpline & Hours -->
-                        <div class="flex items-start space-x-3">
-                            <div class="p-2.5 bg-green-50 text-green-700 rounded-xl shrink-0 mt-0.5">
-                                <i data-lucide="phone-call" class="w-4 h-4"></i>
-                            </div>
-                            <div>
-                                <span class="font-bold text-gray-900 block text-xs">Contact Helpline</span>
-                                <a href="tel:{{ \App\Models\Setting::get('contact_phone', '+91 98765 43210') }}" class="text-gray-600 hover:text-green-700 transition">
-                                    {{ \App\Models\Setting::get('contact_phone', '+91 98765 43210') }}
-                                </a>
-                                <span class="block text-[10px] text-gray-400 mt-0.5">
-                                    {{ \App\Models\Setting::get('contact_hours', 'Available 6:00 AM – 11:00 PM') }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Email Desk & Response -->
-                        <div class="flex items-start space-x-3">
-                            <div class="p-2.5 bg-blue-50 text-blue-700 rounded-xl shrink-0 mt-0.5">
-                                <i data-lucide="mail" class="w-4 h-4"></i>
-                            </div>
-                            <div>
-                                <span class="font-bold text-gray-900 block text-xs">Email Desk</span>
-                                <a href="mailto:{{ \App\Models\Setting::get('contact_email', 'info@dharamshalatravels.com') }}" class="text-gray-600 hover:text-blue-700 transition">
-                                    {{ \App\Models\Setting::get('contact_email', 'info@dharamshalatravels.com') }}
-                                </a>
-                                <span class="block text-[10px] text-gray-400 mt-0.5">
-                                    {{ \App\Models\Setting::get('contact_email_response', 'Response within 2 hours') }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Office Address -->
-                        <div class="flex items-start space-x-3">
-                            <div class="p-2.5 bg-yellow-50 text-yellow-700 rounded-xl shrink-0 mt-0.5">
-                                <i data-lucide="map-pin" class="w-4 h-4"></i>
-                            </div>
-                            <div>
-                                <span class="font-bold text-gray-900 block text-xs">Office Address</span>
-                                <p class="text-gray-600 leading-relaxed whitespace-pre-line">
-                                    {{ \App\Models\Setting::get('contact_address', 'Main Taxi Stand, Kotwali Bazar, Dharamshala, Himachal Pradesh 176215') }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Highlight Box (Guarantee) -->
-                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 text-xs text-gray-600 space-y-1.5">
-                        <div class="flex items-center space-x-1.5 font-bold text-gray-900">
-                            <i data-lucide="shield-check" class="w-4 h-4 text-green-600"></i>
-                            <span>{{ \App\Models\Setting::get('contact_guarantee_title', 'Transparent Rates Guarantee') }}</span>
-                        </div>
-                        <p class="text-[11px] text-gray-500 leading-relaxed">
-                            {{ \App\Models\Setting::get('contact_guarantee_desc', 'No hidden hill surcharges, permit fees, or toll taxes. Instant dispatch for Gaggal Airport transfers.') }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column: Enquiry Form -->
-            <div class="lg:col-span-7">
-                <div class="bg-white rounded-2xl p-6 sm:p-8 border border-gray-200 shadow-sm">
-                    <h2 class="text-lg font-bold text-gray-900 mb-1">Send an Enquiry</h2>
-                    <p class="text-xs text-gray-500 mb-6">Fill out the form below and our tour manager will coordinate your travel.</p>
-
-                    <form action="{{ route('contact.store') }}" method="POST" class="space-y-4 text-xs">
-                        @csrf
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block font-semibold mb-1 text-gray-700 uppercase text-[10px]">Your Name *</label>
-                                <input type="text" name="name" required placeholder="e.g. Rajesh Kumar" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-gray-900 text-xs">
-                            </div>
-                            <div>
-                                <label class="block font-semibold mb-1 text-gray-700 uppercase text-[10px]">Phone Number *</label>
-                                <input type="tel" name="phone" required placeholder="e.g. 98160XXXXX" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-gray-900 text-xs">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block font-semibold mb-1 text-gray-700 uppercase text-[10px]">Email Address (Optional)</label>
-                                <input type="email" name="email" placeholder="e.g. rajesh@example.com" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-gray-900 text-xs">
-                            </div>
-                            <div>
-                                <label class="block font-semibold mb-1 text-gray-700 uppercase text-[10px]">Subject / Topic</label>
-                                <input type="text" name="subject" placeholder="e.g. Dharamshala to Manali Cab Enquiry" class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-gray-900 text-xs">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block font-semibold mb-1 text-gray-700 uppercase text-[10px]">Your Message / Requirement *</label>
-                            <textarea name="message" rows="4" required placeholder="Tell us your travel dates, passenger count, pickup point or questions..." class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-gray-900 text-xs"></textarea>
-                        </div>
-
-                        <button type="submit" class="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg text-xs transition shadow-sm flex items-center justify-center space-x-2">
-                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                            <span>Send Enquiry Now</span>
+                        <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-saffron-500 px-7 py-3.5 text-sm font-bold text-pine-950 shadow-lg shadow-saffron-500/25 transition hover:bg-saffron-400">
+                            <i data-lucide="send" class="h-4 w-4"></i> Send message
                         </button>
-                    </form>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- Side --}}
+        <aside class="space-y-6 lg:col-span-5">
+            <div class="overflow-hidden rounded-3xl bg-white ring-1 ring-stone-200">
+                <iframe title="Dharamshala Travels location" src="{{ $mapEmbed }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="h-64 w-full border-0"></iframe>
+                <div class="p-6">
+                    <h2 class="font-extrabold text-pine-950">{{ Setting::get('site_title') ?: 'Dharamshala Travels' }}</h2>
+                    <p class="mt-1 text-sm leading-relaxed text-stone-600">{{ $address }}</p>
+                    <a href="{{ $mapUrl }}" target="_blank" rel="noopener" class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-pine-700 hover:text-pine-900">
+                        Get directions <i data-lucide="arrow-up-right" class="h-4 w-4"></i>
+                    </a>
                 </div>
             </div>
 
+            <div class="rounded-3xl bg-pine-900 p-6 text-white">
+                <div class="flex items-center gap-3">
+                    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-saffron-400"><i data-lucide="shield-check" class="h-5 w-5"></i></span>
+                    <h2 class="font-extrabold">{{ Setting::get('contact_guarantee_title') ?: 'Local Hill Drivers' }}</h2>
+                </div>
+                <p class="mt-3 text-sm leading-relaxed text-white/75">{{ Setting::get('contact_guarantee_desc') ?: 'Experienced drivers who know every road in the Kangra Valley.' }}</p>
+                <div class="mt-5 grid grid-cols-2 gap-2">
+                    <a href="{{ route('airport-taxi') }}" class="rounded-xl bg-white/10 px-3 py-2.5 text-center text-xs font-semibold hover:bg-white/15">Airport taxi</a>
+                    <a href="{{ route('taxi-routes.index') }}" class="rounded-xl bg-white/10 px-3 py-2.5 text-center text-xs font-semibold hover:bg-white/15">Taxi routes</a>
+                    <a href="{{ route('tours.index') }}" class="rounded-xl bg-white/10 px-3 py-2.5 text-center text-xs font-semibold hover:bg-white/15">Tour packages</a>
+                    <a href="{{ route('destinations.index') }}" class="rounded-xl bg-white/10 px-3 py-2.5 text-center text-xs font-semibold hover:bg-white/15">Destinations</a>
+                </div>
+            </div>
+        </aside>
+    </div>
+</section>
+
+{{-- FAQ --}}
+<section class="bg-white">
+    <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-12 lg:px-8 lg:py-20">
+        <div class="lg:col-span-4">
+            <span class="dt-eyebrow">FAQ</span>
+            <h2 class="mt-3 text-3xl font-extrabold text-pine-950">Before you get in touch</h2>
         </div>
-    </main>
+        <div class="lg:col-span-8">
+            @include('partials.faq-list', ['faqs' => $faqs])
+        </div>
+    </div>
+</section>
 
-    <!-- Reusable Global Footer -->
-    @include('components.footer')
+@include('partials.cta-band', [
+    'heading' => 'Prefer to book right away?',
+    'text'    => 'Send a booking request in under a minute — no payment needed.',
+    'type'    => 'airport',
+    'button'  => 'Book a cab now',
+])
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-
-            @if(session('enquiry_success'))
-                Swal.fire({
-                    icon: 'success',
-                    iconColor: '#10b981',
-                    title: '<span class="text-lg font-bold text-gray-900">Enquiry Submitted!</span>',
-                    text: "{{ session('enquiry_success') }}",
-                    confirmButtonText: 'Great, Thanks!',
-                    confirmButtonColor: '#111827',
-                    customClass: {
-                        popup: 'rounded-2xl p-6 shadow-2xl border border-gray-100',
-                        confirmButton: 'px-6 py-2 rounded-lg font-semibold text-xs'
-                    }
-                });
-            @endif
-        });
-    </script>
-</body>
-</html>
+@endsection

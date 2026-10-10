@@ -26,6 +26,12 @@ use App\Models\Blog;
 
 use App\Http\Controllers\ContactController;
 
+use App\Http\Controllers\PageController;
+
+use App\Models\Destination;
+
+use App\Models\TaxiRoute;
+
 use App\Http\Controllers\Admin\EnquiryController as AdminEnquiryController;
 
 use App\Http\Controllers\Admin\HeroBannerController;
@@ -183,16 +189,30 @@ Route::get('/blogs', function () {
 
 
     $blogs = \App\Models\Blog::query()
-
         ->latest('blog_date')
-
         ->latest('id')
+        ->paginate(10);
 
-        ->get();
+    $seo = [
+        'title'       => 'Dharamshala Travel Blog — Guides, Treks & Travel Tips',
+        'description' => 'Travel guides for Dharamshala, McLeodganj and the Kangra Valley: places to visit, how to reach, Triund trek tips, the best time to visit and Bir Billing paragliding.',
+        'keywords'    => 'dharamshala travel blog, mcleodganj travel guide, triund trek guide, best time to visit dharamshala, how to reach dharamshala',
+        'image'       => '/images/dharamshala/mcleodganj-view.jpg',
+        'breadcrumbs' => ['Blog' => route('blogs.public')],
+        'schema'      => [[
+            '@type'    => 'Blog',
+            'name'     => 'Dharamshala Travels Blog',
+            'url'      => route('blogs.public'),
+            'blogPost' => $blogs->getCollection()->map(fn ($b) => [
+                '@type'         => 'BlogPosting',
+                'headline'      => \Illuminate\Support\Str::limit($b->title, 110, ''),
+                'url'           => route('blogs.show', $b->slug),
+                'datePublished' => optional($b->blog_date)->toDateString(),
+            ])->all(),
+        ]],
+    ];
 
-
-
-    return view('blogs.index', compact('blogs'));
+    return view('blogs.index', compact('blogs', 'seo'));
 })->name('blogs.public');
 
 
@@ -205,9 +225,40 @@ Route::get('/blogs/{slug}', function ($slug) {
 
     $blog = \App\Models\Blog::where('slug', $slug)->firstOrFail();
 
+    $related = \App\Models\Blog::where('id', '!=', $blog->id)
+        ->whereNotNull('image')
+        ->latest('blog_date')
+        ->latest('id')
+        ->take(3)
+        ->get();
 
+    $plain = trim(preg_replace('/\s+/', ' ', strip_tags($blog->description ?? '')));
+    $image = \App\Support\Media::url($blog->image);
 
-    return view('blogs.show', compact('blog'));
+    $seo = [
+        'title'       => $blog->title . ' | Dharamshala Travels',
+        'description' => \Illuminate\Support\Str::limit($plain, 158),
+        'image'       => $blog->image,
+        'type'        => 'article',
+        'breadcrumbs' => [
+            'Blog'      => route('blogs.public'),
+            $blog->title => route('blogs.show', $blog->slug),
+        ],
+        'schema'      => [array_filter([
+            '@type'            => 'BlogPosting',
+            'headline'         => \Illuminate\Support\Str::limit($blog->title, 110, ''),
+            'description'      => \Illuminate\Support\Str::limit($plain, 200),
+            'image'            => $image,
+            'datePublished'    => optional($blog->blog_date ?? $blog->created_at)->toDateString(),
+            'dateModified'     => optional($blog->updated_at)->toAtomString(),
+            'wordCount'        => str_word_count($plain),
+            'mainEntityOfPage' => route('blogs.show', $blog->slug),
+            'author'           => ['@type' => 'Organization', 'name' => \App\Models\Setting::get('site_title') ?: 'Dharamshala Travels', 'url' => url('/')],
+            'publisher'        => ['@type' => 'Organization', 'name' => \App\Models\Setting::get('site_title') ?: 'Dharamshala Travels', 'url' => url('/')],
+        ])],
+    ];
+
+    return view('blogs.show', compact('blog', 'related', 'seo'));
 })->name('blogs.show');
 
 
@@ -269,6 +320,34 @@ Route::get('/tours', [BookingController::class, 'toursPage'])
 
 
 /*
+|--------------------------------------------------------------------------
+| Destinations, Taxi Routes & Info Pages
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/destinations', [PageController::class, 'destinations'])
+    ->name('destinations.index');
+
+Route::get('/destinations/{destination}', [PageController::class, 'destination'])
+    ->name('destinations.show');
+
+Route::get('/taxi-routes', [PageController::class, 'taxiRoutes'])
+    ->name('taxi-routes.index');
+
+Route::get('/taxi-routes/{taxiRoute}', [PageController::class, 'taxiRoute'])
+    ->name('taxi-routes.show');
+
+Route::get('/gaggal-airport-taxi', [PageController::class, 'airportTaxi'])
+    ->name('airport-taxi');
+
+Route::get('/about', [PageController::class, 'about'])
+    ->name('about');
+
+Route::get('/photo-credits', [PageController::class, 'photoCredits'])
+    ->name('photo-credits');
+
+
+/*
 
 |--------------------------------------------------------------------------
 
@@ -282,42 +361,52 @@ Route::get('/tours', [BookingController::class, 'toursPage'])
 
 Route::get('/cabs/{slug}', function ($slug) {
 
-
-
     $vehicle = Vehicle::where('slug', $slug)->firstOrFail();
 
-
-
     $relatedVehicles = Vehicle::where('id', '!=', $vehicle->id)
-
         ->where('is_active', true)
-
+        ->orderBy('seating_capacity')
         ->take(3)
-
         ->get();
 
+    $routes = TaxiRoute::orderBy('sort_order')->take(6)->get();
 
+    $faqs = [
+        ["How many people can travel in the {$vehicle->name}?",
+            "The {$vehicle->name} seats {$vehicle->seating_capacity} passengers comfortably, plus the driver, with space for about {$vehicle->luggage_capacity} medium bags."],
+        ["Can I book the {$vehicle->name} for Gaggal Airport pickup?",
+            'Yes. Share your flight number when booking and the driver will meet you at arrivals with a name board.'],
+        ["Is the {$vehicle->name} suitable for mountain roads?",
+            'Yes. All our cabs are serviced for hill driving and come with an experienced local driver who knows the roads of the Kangra Valley and beyond.'],
+        ['Can I book this cab for several days?',
+            'Yes — book it for a full day, multiple days or a complete Himachal tour with the same driver throughout.'],
+    ];
 
-    if (view()->exists('cabs.show')) {
+    $images = collect($vehicle->all_images)->map(fn ($img) => \App\Support\Media::url($img))->filter()->values();
 
-        return view(
+    $seo = [
+        'title'       => "{$vehicle->name} Taxi in Dharamshala — {$vehicle->seating_capacity} Seater {$vehicle->category} | Dharamshala Travels",
+        'description' => "Book a {$vehicle->name} ({$vehicle->category}, {$vehicle->seating_capacity} seats) in Dharamshala and McLeodganj for Gaggal Airport transfers, local sightseeing and outstation trips with an experienced hill driver.",
+        'keywords'    => \Illuminate\Support\Str::lower("{$vehicle->name} dharamshala, {$vehicle->name} taxi, {$vehicle->category} cab dharamshala, {$vehicle->name} on rent mcleodganj"),
+        'image'       => $vehicle->image,
+        'breadcrumbs' => [
+            'Book a Cab'   => route('cabs.index'),
+            $vehicle->name => route('cabs.show', $vehicle->slug),
+        ],
+        'schema'      => [
+            array_filter([
+                '@type'            => 'Vehicle',
+                'name'             => $vehicle->name,
+                'vehicleConfiguration' => $vehicle->category,
+                'seatingCapacity'  => $vehicle->seating_capacity,
+                'image'            => $images->all(),
+                'url'              => route('cabs.show', $vehicle->slug),
+            ]),
+            \App\Http\Controllers\PageController::faqSchema($faqs),
+        ],
+    ];
 
-            'cabs.show',
-
-            compact('vehicle', 'relatedVehicles')
-
-        );
-    }
-
-
-
-    return view(
-
-        'vehicles.show',
-
-        compact('vehicle', 'relatedVehicles')
-
-    );
+    return view('cabs.show', compact('vehicle', 'relatedVehicles', 'routes', 'faqs', 'images', 'seo'));
 })->name('cabs.show');
 
 
@@ -534,7 +623,7 @@ Route::get('/sitemap.xml', function () {
 
 
 
-    $xml .= '<urlset xmlns="http\://www\.sitemaps.org/schemas/sitemap/0.9">';
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
 
 
@@ -601,6 +690,14 @@ Route::get('/sitemap.xml', function () {
         route('reviews.index'),
 
         route('contact'),
+
+        route('destinations.index'),
+
+        route('taxi-routes.index'),
+
+        route('airport-taxi'),
+
+        route('about'),
 
     ];
 
@@ -788,6 +885,25 @@ Route::get('/sitemap.xml', function () {
 
 
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Destination & Taxi Route URLs
+    |--------------------------------------------------------------------------
+    */
+
+    foreach (Destination::orderBy('sort_order')->get() as $destination) {
+        $xml .= '<url><loc>' . htmlspecialchars(route('destinations.show', $destination)) . '</loc>'
+            . '<lastmod>' . $destination->updated_at->toAtomString() . '</lastmod>'
+            . '<changefreq>monthly</changefreq><priority>0.7</priority></url>';
+    }
+
+    foreach (TaxiRoute::orderBy('sort_order')->get() as $taxiRoute) {
+        $xml .= '<url><loc>' . htmlspecialchars(route('taxi-routes.show', $taxiRoute)) . '</loc>'
+            . '<lastmod>' . $taxiRoute->updated_at->toAtomString() . '</lastmod>'
+            . '<changefreq>monthly</changefreq><priority>0.8</priority></url>';
+    }
 
 
     $xml .= '</urlset>';

@@ -133,7 +133,7 @@
                                     </label>
 
                                     <input
-                                        type="url"
+                                        type="text"
                                         name="site_logo"
                                         value="{{ old('site_logo', $branding['site_logo'] ?? '') }}"
                                         placeholder="https://example.com/logo.png"
@@ -148,11 +148,11 @@
                                     <input
                                         type="file"
                                         name="logo_file"
-                                        accept="image/jpeg,image/png,image/jpg,image/webp,image/svg+xml"
+                                        accept=".svg,.webp,.png,.jpg,.jpeg,.gif,.avif,.ico,.bmp,image/*"
                                         class="w-full p-2.5 bg-white border border-slate-300 rounded-lg text-xs">
 
                                     <p class="text-[11px] text-slate-400 mt-1">
-                                        JPG, PNG, WEBP or SVG — maximum 2 MB.
+                                        SVG, WEBP, PNG, JPG, GIF, AVIF, ICO or BMP.
                                     </p>
                                 </div>
 
@@ -196,7 +196,7 @@
                                     </label>
 
                                     <input
-                                        type="url"
+                                        type="text"
                                         name="site_favicon"
                                         value="{{ old('site_favicon', $branding['site_favicon'] ?? '') }}"
                                         placeholder="https://example.com/favicon.ico"
@@ -211,11 +211,11 @@
                                     <input
                                         type="file"
                                         name="favicon_file"
-                                        accept="image/jpeg,image/png,image/jpg,image/webp,image/x-icon,image/svg+xml"
+                                        accept=".svg,.webp,.png,.jpg,.jpeg,.gif,.avif,.ico,.bmp,image/*"
                                         class="w-full p-2.5 bg-white border border-slate-300 rounded-lg text-xs">
 
                                     <p class="text-[11px] text-slate-400 mt-1">
-                                        ICO, PNG, JPG, WEBP or SVG — maximum 1 MB.
+                                        ICO, SVG, PNG, WEBP, JPG, GIF or AVIF.
                                     </p>
                                 </div>
 
