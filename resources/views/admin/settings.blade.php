@@ -184,7 +184,7 @@
                             </label>
 
                             <input
-                                type="email"
+                                type="text"
                                 name="site_email"
                                 value="{{ old('site_email', \App\Models\Setting::get('site_email', 'info@dharamshalatravels.com')) }}"
                                 class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
@@ -258,7 +258,7 @@
                                 </label>
 
                                 <input
-                                    type="url"
+                                    type="text"
                                     name="footer_facebook"
                                     value="{{ old('footer_facebook', \App\Models\Setting::get('footer_facebook', '')) }}"
                                     placeholder="https://facebook.com/yourpage"
@@ -275,7 +275,7 @@
                                 </label>
 
                                 <input
-                                    type="url"
+                                    type="text"
                                     name="footer_instagram"
                                     value="{{ old('footer_instagram', \App\Models\Setting::get('footer_instagram', '')) }}"
                                     placeholder="https://instagram.com/yourpage"
@@ -292,7 +292,7 @@
                                 </label>
 
                                 <input
-                                    type="url"
+                                    type="text"
                                     name="footer_youtube"
                                     value="{{ old('footer_youtube', \App\Models\Setting::get('footer_youtube', '')) }}"
                                     placeholder="https://youtube.com/@yourchannel"
@@ -328,7 +328,7 @@
                             </label>
 
                             <input
-                                type="url"
+                                type="text"
                                 name="footer_map_url"
                                 value="{{ old('footer_map_url', \App\Models\Setting::get('footer_map_url', '')) }}"
                                 placeholder="https://maps.google.com/..."
@@ -388,7 +388,6 @@
                                         type="text"
                                         name="meta_title"
                                         value="{{ old('meta_title', \App\Models\Setting::get('meta_title', 'Dharamshala Travels | Verified Cabs & Tours')) }}"
-                                        maxlength="255"
                                         placeholder="Dharamshala Travels | Verified Cabs & Tours"
                                         class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
                                     >
@@ -406,7 +405,6 @@
                                     <textarea
                                         name="meta_description"
                                         rows="3"
-                                        maxlength="160"
                                         placeholder="Book verified cabs and tour packages in Dharamshala..."
                                         class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none"
                                     >{{ old('meta_description', \App\Models\Setting::get('meta_description', 'Book verified cabs and tour packages in Kangra Valley.')) }}</textarea>
@@ -424,7 +422,6 @@
                                     <textarea
                                         name="meta_keywords"
                                         rows="2"
-                                        maxlength="500"
                                         placeholder="dharamshala taxi, dharamshala tours, himachal tour packages"
                                         class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none"
                                     >{{ old('meta_keywords', \App\Models\Setting::get('meta_keywords', 'taxi in dharamshala, gaggal airport cab, mcleodganj taxi booking, himachal tours')) }}</textarea>
@@ -516,7 +513,6 @@
                                     <textarea
                                         name="og_description"
                                         rows="3"
-                                        maxlength="160"
                                         placeholder="Description shown when your website is shared on Facebook..."
                                         class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none"
                                     >{{ old('og_description', \App\Models\Setting::get('og_description', '')) }}</textarea>
@@ -531,7 +527,7 @@
                                     </label>
 
                                     <input
-                                        type="url"
+                                        type="text"
                                         name="og_image"
                                         value="{{ old('og_image', \App\Models\Setting::get('og_image', '')) }}"
                                         placeholder="https://example.com/og-image.jpg"
@@ -610,7 +606,6 @@
                                     <textarea
                                         name="twitter_description"
                                         rows="3"
-                                        maxlength="160"
                                         placeholder="Travel across Himachal with Dharamshala Travels"
                                         class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none"
                                     >{{ old('twitter_description', \App\Models\Setting::get('twitter_description', '')) }}</textarea>
@@ -625,7 +620,7 @@
                                     </label>
 
                                     <input
-                                        type="url"
+                                        type="text"
                                         name="twitter_image"
                                         value="{{ old('twitter_image', \App\Models\Setting::get('twitter_image', '')) }}"
                                         placeholder="https://example.com/twitter-image.jpg"
@@ -670,7 +665,7 @@
                                     </label>
 
                                     <input
-                                        type="url"
+                                        type="text"
                                         name="seo_business_logo"
                                         value="{{ old('seo_business_logo', \App\Models\Setting::get('seo_business_logo', '')) }}"
                                         placeholder="https://example.com/logo.png"
@@ -703,7 +698,7 @@
                                     </label>
 
                                     <input
-                                        type="email"
+                                        type="text"
                                         name="seo_business_email"
                                         value="{{ old('seo_business_email', \App\Models\Setting::get('seo_business_email', 'info@dharamshalatravels.com')) }}"
                                         class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"

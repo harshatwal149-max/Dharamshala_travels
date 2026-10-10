@@ -39,4 +39,37 @@ class Package extends Model
     {
         return $this->hasMany(Booking::class);
     }
+
+    /**
+     * Inclusions as a clean array — admin saves them either as an array
+     * or as a JSON-encoded string inside the cast column.
+     */
+    public function getInclusionListAttribute(): array
+    {
+        $value = $this->inclusions;
+
+        while (is_string($value) && ($decoded = json_decode($value, true)) !== null) {
+            $value = $decoded;
+        }
+
+        if (is_string($value)) {
+            $value = preg_split('/\r?\n|,/', $value);
+        }
+
+        return collect((array) $value)->map(fn ($item) => trim((string) $item))->filter()->values()->all();
+    }
+
+    /**
+     * Rough trip type used for filtering on the tours page.
+     */
+    public function getTripTypeAttribute(): string
+    {
+        $text = strtolower($this->title . ' ' . $this->duration);
+
+        if (str_contains($text, 'trek')) {
+            return 'Treks';
+        }
+
+        return preg_match('/\bnights?\b|\b[2-9]\s*days?\b/', $text) ? 'Multi-day Tours' : 'Day Trips';
+    }
 }

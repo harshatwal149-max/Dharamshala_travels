@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
-<body class="bg-gray-50 text-gray-800 antialiased">
-
-    <!-- Reusable Global Header -->
-    @include('components.header')<head>
+<head>
 
     <meta charset="UTF-8">
 
@@ -29,9 +26,7 @@
             $vehicle->name .
             ' (' .
             $vehicle->category .
-            ') for Dharamshala, Gaggal Airport transfers, and Himachal tours at â‚¹' .
-            number_format($vehicle->base_fare, 0) .
-            ' base fare.',
+            ') for Dharamshala local sightseeing, Gaggal Airport transfers and Himachal tours with an experienced hill driver.',
 
         'image' => $vehicle->image ?? null
 
@@ -112,6 +107,12 @@
 
 </head>
 
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+    <!-- Reusable Global Header -->
+    @include('components.header')
+
+
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
         <!-- Breadcrumb -->
@@ -190,11 +191,6 @@
                                     {{ $vehicle->category }}
                                 </span>
                                 <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-2">{{ $vehicle->name }}</h1>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-xs text-gray-500 block uppercase font-medium">Standard Tariff</span>
-                                <span class="text-2xl font-extrabold text-gray-900">â‚¹{{ number_format($vehicle->base_fare, 0) }}</span>
-                                <span class="text-xs text-gray-500 block">+ â‚¹{{ number_format($vehicle->rate_per_km, 0) }}/km</span>
                             </div>
                         </div>
 
@@ -293,7 +289,6 @@
                         <span>{{ $rel->seating_capacity }} Seater</span>
                     </div>
                     <h4 class="font-bold text-gray-900 text-sm mb-2">{{ $rel->name }}</h4>
-                    <span class="text-xs font-bold text-green-700">â‚¹{{ number_format($rel->base_fare, 0) }} Base Fare</span>
                 </a>
                 <?php endforeach; ?>
             </div>

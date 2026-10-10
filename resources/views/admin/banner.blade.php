@@ -268,7 +268,7 @@
                                 <div class="relative bg-slate-900">
 
                                     <img
-                                        src="{{ asset('storage/' . $banner->image) }}"
+                                        src="{{ \App\Support\Media::url($banner->image) }}"
                                         alt="{{ $banner->title ?: 'Hero Banner' }}"
                                         class="w-full h-64 object-cover"
                                     >

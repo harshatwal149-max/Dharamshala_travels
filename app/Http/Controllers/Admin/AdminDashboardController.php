@@ -13,6 +13,29 @@ use Illuminate\Support\Str;
 
 class AdminDashboardController extends Controller
 {
+    /**
+     * File types accepted for the logo & favicon uploads.
+     */
+    private const BRANDING_EXTENSIONS = 'svg,webp,png,jpg,jpeg,gif,avif,ico,bmp';
+
+    /**
+     * Store a logo / favicon upload on the public disk, keeping its real
+     * extension (SVGs are often detected as text/html and would otherwise
+     * be saved as .html), and return a site-relative URL.
+     */
+    private function storeBrandingFile(\Illuminate\Http\UploadedFile $file): string
+    {
+        $extension = strtolower($file->getClientOriginalExtension() ?: 'png');
+
+        $path = $file->storeAs(
+            'branding',
+            \Illuminate\Support\Str::random(40) . '.' . $extension,
+            'public'
+        );
+
+        return '/storage/' . $path;
+    }
+
     public function index()
     {
         $stats = [
@@ -146,20 +169,14 @@ class AdminDashboardController extends Controller
     public function updateLogoFavicon(Request $request)
     {
         $request->validate([
-            'site_logo' => 'nullable|url',
-            'logo_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
-            'site_favicon' => 'nullable|url',
-            'favicon_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,ico,svg|max:1024',
+            'site_logo' => 'nullable|string',
+            'logo_file' => 'nullable|file|extensions:' . self::BRANDING_EXTENSIONS,
+            'site_favicon' => 'nullable|string',
+            'favicon_file' => 'nullable|file|extensions:' . self::BRANDING_EXTENSIONS,
         ]);
 
         if ($request->hasFile('logo_file')) {
-            $path = $request->file('logo_file')
-                ->store('branding', 'public');
-
-            Setting::set(
-                'site_logo',
-                asset('storage/' . $path)
-            );
+            Setting::set('site_logo', $this->storeBrandingFile($request->file('logo_file')));
         } elseif ($request->filled('site_logo')) {
             Setting::set(
                 'site_logo',
@@ -168,13 +185,7 @@ class AdminDashboardController extends Controller
         }
 
         if ($request->hasFile('favicon_file')) {
-            $path = $request->file('favicon_file')
-                ->store('branding', 'public');
-
-            Setting::set(
-                'site_favicon',
-                asset('storage/' . $path)
-            );
+            Setting::set('site_favicon', $this->storeBrandingFile($request->file('favicon_file')));
         } elseif ($request->filled('site_favicon')) {
             Setting::set(
                 'site_favicon',
@@ -254,6 +265,7 @@ class AdminDashboardController extends Controller
                 'contact_email_response',
                 'Response within 2 hours'
             ),
+            'admin_notification_emails' => Setting::get('admin_notification_emails'),
         ];
 
         return view(
@@ -265,9 +277,15 @@ class AdminDashboardController extends Controller
     public function updateEmailDesk(Request $request)
     {
         $validated = $request->validate([
-            'contact_email' => 'nullable|email|max:100',
-            'contact_email_response' => 'nullable|string|max:100',
+            'contact_email' => 'nullable|string',
+            'contact_email_response' => 'nullable|string',
+            'admin_notification_emails' => 'nullable|string',
         ]);
+
+        Setting::set(
+            'admin_notification_emails',
+            $validated['admin_notification_emails'] ?? null
+        );
 
         Setting::set(
             'contact_email',
@@ -842,7 +860,7 @@ class AdminDashboardController extends Controller
                 'Mo-Su 06:00-23:00'
             ),
 
-            'seo_price_range' => Setting::get('seo_price_range', '₹₹'),
+            'seo_price_range' => Setting::get('seo_price_range'),
 
             'seo_service_areas' => Setting::get(
                 'seo_service_areas',
@@ -978,71 +996,69 @@ class AdminDashboardController extends Controller
 
             // SEO
             // SEO
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:160',
-            'meta_keywords' => 'nullable|string|max:500',
+            'meta_title' => 'nullable|string',
+            'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string',
 
-            'meta_robots' => 'nullable|in:index,follow,index,nofollow,noindex,follow,noindex,nofollow',
+            'meta_robots' => 'nullable|string',
 
-            'og_title' => 'nullable|string|max:255',
-            'og_description' => 'nullable|string|max:160',
-            'og_image' => 'nullable|url|max:1000',
+            'og_title' => 'nullable|string',
+            'og_description' => 'nullable|string',
+            'og_image' => 'nullable|string',
 
-            'twitter_card' => 'nullable|in:summary,summary_large_image',
-            'twitter_title' => 'nullable|string|max:255',
-            'twitter_description' => 'nullable|string|max:160',
-            'twitter_image' => 'nullable|url|max:1000',
+            'twitter_card' => 'nullable|string',
+            'twitter_title' => 'nullable|string',
+            'twitter_description' => 'nullable|string',
+            'twitter_image' => 'nullable|string',
 
-            'seo_schema_enabled' => 'nullable|boolean',
+            'seo_schema_enabled' => 'nullable|string',
 
-            'seo_business_name' => 'nullable|string|max:255',
-            'seo_business_logo' => 'nullable|url|max:1000',
-            'seo_business_phone' => 'nullable|string|max:50',
-            'seo_business_email' => 'nullable|email|max:100',
-            'seo_business_address' => 'nullable|string|max:500',
+            'seo_business_name' => 'nullable|string',
+            'seo_business_logo' => 'nullable|string',
+            'seo_business_phone' => 'nullable|string',
+            'seo_business_email' => 'nullable|string',
+            'seo_business_address' => 'nullable|string',
 
-            'seo_latitude' => 'nullable|numeric|between:-90,90',
-            'seo_longitude' => 'nullable|numeric|between:-180,180',
+            'seo_latitude' => 'nullable|string',
+            'seo_longitude' => 'nullable|string',
 
-            'seo_opening_hours' => 'nullable|string|max:1000',
-            'seo_price_range' => 'nullable|string|max:20',
-            'seo_service_areas' => 'nullable|string|max:1000',
+            'seo_opening_hours' => 'nullable|string',
+            'seo_price_range' => 'nullable|string',
+            'seo_service_areas' => 'nullable|string',
 
-            'google_site_verification' => 'nullable|string|max:255',
-            'google_analytics_id' => 'nullable|string|max:100',
+            'google_site_verification' => 'nullable|string',
+            'google_analytics_id' => 'nullable|string',
             // Business Information
-            'site_title' => 'nullable|string|max:255',
-            'site_phone' => 'nullable|string|max:50',
-            'site_email' => 'nullable|email|max:100',
-            'site_address' => 'nullable|string|max:500',
+            'site_title' => 'nullable|string',
+            'site_phone' => 'nullable|string',
+            'site_email' => 'nullable|string',
+            'site_address' => 'nullable|string',
 
             // Branding
-            'site_logo' => 'nullable|url',
-            'site_favicon' => 'nullable|url',
+            'site_logo' => 'nullable|string',
+            'site_favicon' => 'nullable|string',
 
-            'logo_file' =>
-            'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
+            'logo_file' => 'nullable|file|extensions:' . self::BRANDING_EXTENSIONS,
 
-            'favicon_file' =>
-            'nullable|image|mimes:jpeg,png,jpg,webp,ico,svg|max:1024',
+            'favicon_file' => 'nullable|file|extensions:' . self::BRANDING_EXTENSIONS,
 
             // Contact
-            'contact_subtitle' => 'nullable|string|max:255',
-            'contact_phone' => 'nullable|string|max:50',
-            'contact_hours' => 'nullable|string|max:100',
-            'contact_email' => 'nullable|email|max:100',
-            'contact_email_response' => 'nullable|string|max:100',
-            'contact_address' => 'nullable|string|max:500',
-            'contact_guarantee_title' => 'nullable|string|max:100',
-            'contact_guarantee_desc' => 'nullable|string|max:500',
+            'contact_subtitle' => 'nullable|string',
+            'contact_phone' => 'nullable|string',
+            'contact_hours' => 'nullable|string',
+            'contact_email' => 'nullable|string',
+            'contact_email_response' => 'nullable|string',
+            'contact_address' => 'nullable|string',
+            'contact_guarantee_title' => 'nullable|string',
+            'contact_guarantee_desc' => 'nullable|string',
 
             // Footer
-            'footer_description' => 'nullable|string|max:500',
-            'footer_facebook' => 'nullable|url|max:500',
-            'footer_instagram' => 'nullable|url|max:500',
-            'footer_youtube' => 'nullable|url|max:500',
-            'footer_whatsapp' => 'nullable|string|max:30',
-            'footer_map_url' => 'nullable|url|max:1000',
+            'footer_description' => 'nullable|string',
+            'footer_facebook' => 'nullable|string',
+            'footer_instagram' => 'nullable|string',
+            'footer_youtube' => 'nullable|string',
+            'footer_whatsapp' => 'nullable|string',
+            'footer_map_url' => 'nullable|string',
         ]);
 
         // ==========================================
@@ -1050,13 +1066,7 @@ class AdminDashboardController extends Controller
         // ==========================================
 
         if ($request->hasFile('logo_file')) {
-            $path = $request->file('logo_file')
-                ->store('branding', 'public');
-
-            Setting::set(
-                'site_logo',
-                asset('storage/' . $path)
-            );
+            Setting::set('site_logo', $this->storeBrandingFile($request->file('logo_file')));
         } elseif ($request->filled('site_logo')) {
             Setting::set(
                 'site_logo',
@@ -1069,13 +1079,7 @@ class AdminDashboardController extends Controller
         // ==========================================
 
         if ($request->hasFile('favicon_file')) {
-            $path = $request->file('favicon_file')
-                ->store('branding', 'public');
-
-            Setting::set(
-                'site_favicon',
-                asset('storage/' . $path)
-            );
+            Setting::set('site_favicon', $this->storeBrandingFile($request->file('favicon_file')));
         } elseif ($request->filled('site_favicon')) {
             Setting::set(
                 'site_favicon',

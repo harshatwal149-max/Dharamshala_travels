@@ -103,7 +103,7 @@
                             </h1>
 
                             <p class="text-xs text-slate-500 mt-1">
-                                Manage the customer support email address and expected response time.
+                                Manage the customer support email, response time and who receives booking & enquiry alerts.
                             </p>
                         </div>
 
@@ -122,7 +122,7 @@
                                 </i>
 
                                 <input
-                                    type="email"
+                                    type="text"
                                     name="contact_email"
                                     value="{{ old('contact_email', $email['contact_email'] ?? '') }}"
                                     maxlength="100"
@@ -133,6 +133,31 @@
 
                             <p class="text-[11px] text-slate-400 mt-1">
                                 Main email address customers can use for enquiries and support.
+                            </p>
+
+                        </div>
+
+                        {{-- ADMIN NOTIFICATION EMAILS --}}
+                        <div>
+
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                                Admin Notification Emails
+                            </label>
+
+                            <textarea
+                                name="admin_notification_emails"
+                                rows="3"
+                                placeholder="owner@example.com, bookings@example.com"
+                                class="w-full px-3 py-3 bg-white border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">{{ old('admin_notification_emails', $email['admin_notification_emails'] ?? '') }}</textarea>
+
+                            <p class="text-[11px] text-slate-400 mt-1">
+                                Every new booking and contact enquiry is emailed to these addresses. Separate multiple emails with commas or new lines.
+                                Leave empty to use the Contact Email above.
+                            </p>
+
+                            <p class="text-[11px] text-slate-500 mt-1">
+                                Currently sending to:
+                                <strong>{{ implode(', ', \App\Support\AdminNotifier::recipients()) ?: 'no valid email set' }}</strong>
                             </p>
 
                         </div>
