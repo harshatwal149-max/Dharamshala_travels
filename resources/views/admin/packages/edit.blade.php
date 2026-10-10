@@ -183,6 +183,39 @@
 
                     </div>
 
+                    @php
+                        $itineraryText = is_array($package->itinerary)
+                            ? collect($package->itinerary)->map(fn ($text, $day) => (is_numeric($day) ? 'Day ' . ($day + 1) : $day) . ': ' . (is_array($text) ? implode(', ', $text) : $text))->implode("\n")
+                            : (string) $package->itinerary;
+                    @endphp
+
+                    {{-- ITINERARY --}}
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1.5">
+                            Day-wise Itinerary
+                        </label>
+
+                        <textarea name="itinerary"
+                            rows="8"
+                            placeholder="Day 1: ...&#10;Day 2: ..."
+                            class="w-full p-3 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600">{{ old('itinerary', $itineraryText) }}</textarea>
+
+                        <p class="text-[11px] text-gray-500 mt-1">Har din ek nayi line mein likhein: <strong>Day 1: ...</strong></p>
+                    </div>
+
+                    {{-- INCLUSIONS --}}
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1.5">
+                            Inclusions
+                        </label>
+
+                        <textarea name="inclusions"
+                            rows="4"
+                            class="w-full p-3 text-sm border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600">{{ old('inclusions', implode("\n", $package->inclusion_list)) }}</textarea>
+
+                        <p class="text-[11px] text-gray-500 mt-1">Ek line mein ek inclusion.</p>
+                    </div>
+
                     {{-- THUMBNAIL --}}
                     <div class="p-5 bg-gray-50 rounded-xl border border-gray-200 space-y-4">
 

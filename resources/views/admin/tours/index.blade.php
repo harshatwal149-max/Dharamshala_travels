@@ -48,11 +48,11 @@
                     <span>Website</span>
                 </a>
 
-                <button type="button" onclick="openTourModal()"
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition">
+                <a href="{{ route('admin.packages.create') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition">
                     <i data-lucide="plus" class="w-4 h-4"></i>
-                    Add Tour
-                </button>
+                    Add New Tour
+                </a>
             </div>
         </header>
 
@@ -119,9 +119,17 @@
 
             </div>
 
-            <div>
-                <h2 class="text-lg font-extrabold text-slate-900">All Tour Circuits</h2>
-                <p class="text-sm text-slate-500 mt-1">Showing {{ $packages->count() }} tours</p>
+            <div class="flex items-end justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-extrabold text-slate-900">All Tour Circuits</h2>
+                    <p class="text-sm text-slate-500 mt-1">Showing {{ $packages->count() }} tours</p>
+                </div>
+
+                <a href="{{ route('admin.packages.create') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-700 text-white text-xs font-semibold hover:bg-emerald-800 transition">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    Add New Tour
+                </a>
             </div>
 
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
@@ -213,10 +221,10 @@
                                             <div class="font-bold text-slate-700">No tours found.</div>
                                             <div class="text-xs text-slate-400 mt-1">Add your first tour circuit.</div>
 
-                                            <button type="button" onclick="openTourModal()"
-                                                    class="mt-4 px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800">
-                                                Add Tour
-                                            </button>
+                                            <a href="{{ route('admin.packages.create') }}"
+                                               class="mt-4 px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800">
+                                                Add New Tour
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
@@ -231,119 +239,7 @@
         </main>
     </div>
 
-    {{-- Add Tour Modal --}}
-    <div id="tourModal"
-         class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900 bg-opacity-50 p-4 overflow-y-auto">
-
-        <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl border border-slate-200 my-8">
-
-            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-200">
-                <div>
-                    <h2 class="text-lg font-extrabold text-slate-900">Add Tour</h2>
-                    <p class="text-xs text-slate-500 mt-1">Add a new tour circuit/package.</p>
-                </div>
-
-                <button type="button" onclick="closeTourModal()"
-                        class="w-9 h-9 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 flex items-center justify-center">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
-
-            <form action="{{ route('admin.packages.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-5">
-                @csrf
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Tour Title *</label>
-                        <input type="text" name="title" value="{{ old('title') }}" required
-                               placeholder="Dharamshala Dalhousie Tour"
-                               class="w-full h-11 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Duration *</label>
-                        <input type="text" name="duration" value="{{ old('duration') }}" required
-                               placeholder="4 Days / 3 Nights"
-                               class="w-full h-11 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Starting Price *</label>
-                        <input type="number" name="starting_price" value="{{ old('starting_price') }}" required min="0" step="0.01"
-                               placeholder="9999"
-                               class="w-full h-11 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Thumbnail URL</label>
-                        <input type="url" name="thumbnail" value="{{ old('thumbnail') }}"
-                               placeholder="https://example.com/tour.jpg"
-                               class="w-full h-11 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200">
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Upload Thumbnail</label>
-                        <input type="file" name="thumbnail_file" accept=".jpg,.jpeg,.png,.webp"
-                               class="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-white text-sm">
-                        <p class="text-[11px] text-slate-400 mt-1">Max 3MB. JPG, PNG or WEBP.</p>
-                    </div>
-
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Short Description *</label>
-                    <textarea name="short_desc" rows="3" required
-                              placeholder="Short tour description..."
-                              class="w-full px-3 py-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200">{{ old('short_desc') }}</textarea>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Itinerary</label>
-                    <textarea name="itinerary" rows="5"
-                              placeholder="Day 1: ...&#10;Day 2: ..."
-                              class="w-full px-3 py-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200">{{ old('itinerary') }}</textarea>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Inclusions</label>
-                    <textarea name="inclusions" rows="3"
-                              placeholder="Hotel, meals, sightseeing, cab..."
-                              class="w-full px-3 py-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200">{{ old('inclusions') }}</textarea>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 pt-2 border-t border-slate-100">
-                    <button type="button" onclick="closeTourModal()"
-                            class="px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-50">
-                        Cancel
-                    </button>
-
-                    <button type="submit"
-                            class="px-5 py-2.5 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800">
-                        Save Tour
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script>
-        function openTourModal() {
-            const modal = document.getElementById('tourModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-        }
-
-        function closeTourModal() {
-            const modal = document.getElementById('tourModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
         document.addEventListener('DOMContentLoaded', function () {
 
             if (typeof lucide !== 'undefined') {

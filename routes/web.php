@@ -490,6 +490,18 @@ Route::get('/tours/{slug}', function ($slug) {
 
 
 
+    $seo = [
+        'title'       => "{$package->title} — {$package->duration} | Dharamshala Travels",
+        'description' => $package->short_desc,
+        'image'       => $package->thumbnail,
+        'breadcrumbs' => [
+            'Tour Packages' => route('tours.index'),
+            $package->title => route('tours.show', $package->slug),
+        ],
+    ];
+
+
+
     if (view()->exists('tours.show')) {
 
         return view(
@@ -502,7 +514,9 @@ Route::get('/tours/{slug}', function ($slug) {
 
                 'relatedPackages',
 
-                'vehicles'
+                'vehicles',
+
+                'seo'
 
             )
 
@@ -1250,6 +1264,16 @@ Route::prefix('admin')
                 'tours'
 
             ])->name('tours.index');
+
+
+
+            Route::get('/packages/create', [
+
+                AdminDashboardController::class,
+
+                'createPackage'
+
+            ])->name('packages.create');
 
 
 

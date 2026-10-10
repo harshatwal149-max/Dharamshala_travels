@@ -538,6 +538,46 @@ class AdminDashboardController extends Controller
     // Tour Packages Management
     // ==========================================
 
+    public function createPackage()
+    {
+        return view('admin.packages.create');
+    }
+
+    /**
+     * "Day 1: text" lines -> ['Day 1' => 'text'] (same shape as the seeder).
+     * Free text that doesn't follow that pattern is kept as-is.
+     */
+    private function parseItinerary(?string $text): array|string|null
+    {
+        $lines = collect(preg_split('/\r?\n/', (string) $text))->map(fn ($line) => trim($line))->filter();
+
+        if ($lines->isEmpty()) {
+            return null;
+        }
+
+        $days = [];
+
+        foreach ($lines as $line) {
+            if (! preg_match('/^([^:]{1,30}):\s*(.+)$/', $line, $m)) {
+                return trim($text);
+            }
+
+            $days[trim($m[1])] = trim($m[2]);
+        }
+
+        return $days;
+    }
+
+    private function parseInclusions(?string $text): array
+    {
+        $text = trim((string) $text);
+
+        // One per line; a single line is treated as a comma-separated list.
+        $items = str_contains($text, "\n") ? preg_split('/\r?\n/', $text) : explode(',', $text);
+
+        return collect($items)->map(fn ($item) => trim($item))->filter()->values()->all();
+    }
+
     public function storePackage(Request $request)
     {
         $validated = $request->validate([
@@ -602,16 +642,16 @@ class AdminDashboardController extends Controller
         }
 
         $validated['itinerary'] =
-            $validated['itinerary']
+            $this->parseItinerary($validated['itinerary'] ?? null)
             ?? $validated['short_desc'];
 
         $validated['inclusions'] =
-            $validated['inclusions']
-            ?? json_encode([
+            $this->parseInclusions($validated['inclusions'] ?? null)
+            ?: [
                 'Dedicated Sanitized Cab',
                 'Verified Mountain Driver',
                 'Fuel & Parking Included'
-            ]);
+            ];
 
         $validated['slug'] =
             Str::slug($validated['title'])
@@ -624,7 +664,7 @@ class AdminDashboardController extends Controller
 
         Package::create($validated);
 
-        return back()->with(
+        return redirect()->route('admin.tours.index')->with(
             'success',
             "Tour package {$validated['title']} published."
         );
@@ -702,16 +742,11 @@ class AdminDashboardController extends Controller
         }
 
         $validated['itinerary'] =
-            $validated['itinerary']
+            $this->parseItinerary($validated['itinerary'] ?? null)
             ?? $validated['short_desc'];
 
-        if (
-            isset($validated['inclusions']) &&
-            is_array($validated['inclusions'])
-        ) {
-            $validated['inclusions'] =
-                json_encode($validated['inclusions']);
-        }
+        $validated['inclusions'] =
+            $this->parseInclusions($validated['inclusions'] ?? null);
 
         $package->update($validated);
 
