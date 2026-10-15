@@ -3,10 +3,18 @@
     on pages using Vite/Tailwind 4 and on older pages using the Tailwind 2 CDN.
 --}}
 @php
-    $siteLogo = \App\Support\Media::url(\App\Models\Setting::get('site_logo'));
+    $siteLogoPath = \App\Models\Setting::get('site_logo');
+    $siteLogo = \App\Support\SiteLogo::url();
+
+    $logoIsBadge = false;
+    if ($siteLogoPath && str_starts_with(ltrim($siteLogoPath, '/'), 'storage/')) {
+        $size = @getimagesize(storage_path('app/public/' . substr(ltrim($siteLogoPath, '/'), 8)));
+        $logoIsBadge = $size && abs($size[0] - $size[1]) <= max($size[0], $size[1]) * 0.05;
+    }
     $siteTitle = \App\Models\Setting::get('site_title') ?: 'Dharamshala Travels';
-    $headerPhone = \App\Models\Setting::get('contact_phone') ?: '+91 98765 43210';
-    $headerPhoneHref = preg_replace('/[^0-9+]/', '', $headerPhone);
+    // Header shows only the main helpline; additional numbers are listed in the footer.
+    $headerPhone = \App\Models\Setting::get('contact_phone') ?: \App\Support\ContactPhones::DEFAULT_PHONE;
+    $headerPhoneHref = \App\Support\ContactPhones::href($headerPhone);
 
     $topBarText = \App\Models\Setting::get('top_bar_text');
     $topBarPhone = \App\Models\Setting::get('top_bar_phone') ?: $headerPhone;
@@ -50,7 +58,7 @@
         @endif
         <div class="dth-topbar-meta">
             @if($topBarPhone)
-                <a href="tel:{{ preg_replace('/[^0-9+]/', '', $topBarPhone) }}">{!! $svg('phone', 13) !!}{{ $topBarPhone }}</a>
+                <a href="tel:{{ \App\Support\ContactPhones::href($topBarPhone) }}">{!! $svg('phone', 13) !!}{{ $topBarPhone }}</a>
             @endif
             @if($topBarLocation)
                 <span>{!! $svg('pin', 13) !!}{{ $topBarLocation }}</span>
@@ -66,7 +74,7 @@
 
         <a href="{{ url('/') }}" class="dth-brand" aria-label="{{ $siteTitle }} — home">
             @if($siteLogo)
-                <img src="{{ $siteLogo }}" alt="{{ $siteTitle }}" class="dth-logo"
+                <img src="{{ $siteLogo }}" alt="{{ $siteTitle }}" @class(['dth-logo', 'is-badge' => $logoIsBadge]) width="64" height="64"
                      onerror="this.remove(); document.querySelectorAll('.dth-mark').forEach(function (m) { m.style.display = 'flex'; });">
             @endif
             <span class="dth-mark" @if($siteLogo) style="display:none" @endif>{!! $svg('mount', 22) !!}</span>
@@ -120,7 +128,7 @@
     .dth a, .dth-topbar a { text-decoration: none; }
     .dth svg, .dth-topbar svg { display: block; flex-shrink: 0; }
 
-    .dth-container { width: 100%; max-width: 80rem; margin: 0 auto; padding: 0 1rem; }
+    .dth-container { width: 100%; max-width: 86rem; margin: 0 auto; padding: 0 1rem; }
     @media (min-width: 640px) { .dth-container { padding: 0 1.5rem; } }
     @media (min-width: 1024px) { .dth-container { padding: 0 2rem; } }
 
@@ -143,18 +151,22 @@
     .dth { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.96); border-bottom: 1px solid #ece7dd; transition: box-shadow .25s ease, background .25s ease; }
     @supports (backdrop-filter: blur(8px)) { .dth { background: rgba(255,255,255,.88); backdrop-filter: saturate(160%) blur(12px); -webkit-backdrop-filter: saturate(160%) blur(12px); } }
     .dth.is-scrolled { box-shadow: 0 8px 30px -12px rgba(10,31,26,.25); }
-    .dth-bar { display: flex; align-items: center; gap: 1.25rem; height: 76px; transition: height .25s ease; }
-    .dth.is-scrolled .dth-bar { height: 64px; }
+    .dth-bar { display: flex; align-items: center; gap: 1.5rem; height: 84px; transition: height .25s ease; }
+    .dth.is-scrolled .dth-bar { height: 66px; }
 
-    .dth-brand { display: flex; align-items: center; gap: .7rem; min-width: 0; flex-shrink: 1; color: #0a1f1a; }
+    .dth-brand { display: flex; align-items: center; gap: .8rem; min-width: 0; flex-shrink: 1; color: #0a1f1a; }
     @media (min-width: 1200px) { .dth-brand { flex-shrink: 0; } }
-    .dth-logo { height: 50px; width: auto; max-width: 160px; object-fit: contain; flex-shrink: 0; transition: height .25s ease; }
-    @media (max-width: 380px) { .dth-logo { height: 42px; } }
-    .dth.is-scrolled .dth-logo { height: 40px; }
+    .dth-logo { height: 56px; width: auto; max-width: 180px; object-fit: contain; flex-shrink: 0; transition: height .25s ease, width .25s ease; }
+    .dth-logo.is-badge { width: 64px; height: 64px; max-width: none; border-radius: 9999px; object-fit: cover; background: #fff; box-shadow: 0 0 0 3px #fff, 0 0 0 4px #e6dfd2, 0 8px 22px -10px rgba(10,31,26,.55); }
+    .dth-brand:hover .dth-logo.is-badge { box-shadow: 0 0 0 3px #fff, 0 0 0 4px #f29b20, 0 10px 26px -10px rgba(10,31,26,.6); }
+    .dth.is-scrolled .dth-logo { height: 44px; }
+    .dth.is-scrolled .dth-logo.is-badge { width: 48px; height: 48px; }
+    @media (max-width: 640px) { .dth-logo.is-badge { width: 52px; height: 52px; } }
+    @media (max-width: 380px) { .dth-logo { height: 44px; } .dth-logo.is-badge { width: 46px; height: 46px; } }
     .dth-mark { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 12px; background: #0a1f1a; color: #f8b84e; flex-shrink: 0; }
     .dth-brand-text { display: flex; flex-direction: column; min-width: 0; }
-    .dth-brand-name { font-family: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, sans-serif; font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; color: #0a1f1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .dth-brand-tag { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #1f644d; white-space: nowrap; }
+    .dth-brand-name { font-family: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, sans-serif; font-size: 1.2rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; color: #0a1f1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dth-brand-tag { margin-top: 3px; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #1f644d; white-space: nowrap; }
 
     .dth-nav { display: none; align-items: center; justify-content: center; gap: .1rem; flex: 1; min-width: 0; }
     .dth-link { position: relative; padding: .55rem .65rem; border-radius: .6rem; font-size: .875rem; font-weight: 600; color: #3f3a33; white-space: nowrap; transition: color .2s, background .2s; }
@@ -177,7 +189,7 @@
     .dth[data-open="true"] .dth-i-open { display: none; }
     .dth[data-open="true"] .dth-i-close { display: block; }
 
-    .dth-mobile { display: none; border-top: 1px solid #ece7dd; background: #fff; max-height: calc(100vh - 64px); overflow-y: auto; }
+    .dth-mobile { display: none; border-top: 1px solid #ece7dd; background: #fff; max-height: calc(100vh - 66px); overflow-y: auto; }
     .dth[data-open="true"] .dth-mobile { display: block; }
     .dth-mobile nav { display: flex; flex-direction: column; padding-top: .75rem; padding-bottom: 1.25rem; }
     .dth-mlink { padding: .8rem .75rem; border-radius: .7rem; font-size: 1rem; font-weight: 600; color: #3f3a33; }

@@ -222,10 +222,6 @@
                                 </th>
 
                                 <th class="px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500">
-                                    Fare
-                                </th>
-
-                                <th class="px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500">
                                     Status
                                 </th>
 
@@ -332,15 +328,6 @@
 
                                     </td>
 
-                                    {{-- Fare --}}
-                                    <td class="px-5 py-5 align-top">
-
-                                        <div class="font-bold text-slate-900">
-                                            ₹{{ number_format((float) $booking->estimated_fare, 2) }}
-                                        </div>
-
-                                    </td>
-
                                     {{-- Status --}}
                                     <td class="px-5 py-5 align-top">
 
@@ -408,7 +395,7 @@
                             @empty
 
                                 <tr>
-                                    <td colspan="7" class="px-5 py-16 text-center">
+                                    <td colspan="6" class="px-5 py-16 text-center">
 
                                         <div class="text-4xl mb-3">
                                             📋

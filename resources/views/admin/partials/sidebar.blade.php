@@ -7,7 +7,7 @@
 
             @php
 
-                $panelLogo = \App\Models\Setting::get('site_logo');
+                $panelLogo = \App\Support\SiteLogo::url();
 
                 $siteTitle = \App\Models\Setting::get('site_title', 'Dharamshala Travels');
 

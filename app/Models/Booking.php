@@ -21,14 +21,12 @@ class Booking extends Model
         'travel_time',
         'vehicle_id',
         'package_id',
-        'estimated_fare',
         'status',
         'notes',
     ];
 
     protected $casts = [
         'travel_date' => 'date',
-        'estimated_fare' => 'decimal:2',
     ];
 
     public function vehicle()

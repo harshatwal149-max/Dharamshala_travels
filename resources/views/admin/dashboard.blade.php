@@ -112,7 +112,7 @@
             </section>
 
             <!-- Metric Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
 
                 <!-- Total Bookings -->
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
@@ -156,21 +156,6 @@
                     </div>
                     <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-700">
                         <i data-lucide="check-circle" class="w-5 h-5"></i>
-                    </div>
-                </div>
-
-                <!-- Revenue -->
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
-                    <div>
-                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                            Estimated Value
-                        </span>
-                        <span class="text-2xl font-extrabold text-slate-900">
-                            ₹{{ number_format($stats['total_revenue'], 0) }}
-                        </span>
-                    </div>
-                    <div class="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700">
-                        <i data-lucide="wallet" class="w-5 h-5"></i>
                     </div>
                 </div>
 

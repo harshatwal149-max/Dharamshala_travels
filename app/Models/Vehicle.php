@@ -15,8 +15,6 @@ class Vehicle extends Model
         'slug',
         'category',
         'badge',
-        'rate_per_km',
-        'base_fare',
         'seating_capacity',
         'luggage_capacity',
         'image',
@@ -29,8 +27,6 @@ class Vehicle extends Model
         'gallery'          => 'array',
         'features'         => 'array',
         'is_active'        => 'boolean',
-        'rate_per_km'      => 'decimal:2',
-        'base_fare'        => 'decimal:2',
         'seating_capacity' => 'integer',
         'luggage_capacity' => 'integer',
     ];

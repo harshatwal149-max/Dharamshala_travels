@@ -219,10 +219,6 @@
                                 </th>
 
                                 <th class="py-4 px-5">
-                                    Fare
-                                </th>
-
-                                <th class="py-4 px-5">
                                     Status
                                 </th>
 
@@ -309,20 +305,6 @@
                                     </td>
 
 
-                                    {{-- Fare --}}
-                                    <td class="py-4 px-5">
-
-                                        <div class="font-bold text-slate-900">
-                                            ₹{{ number_format($vehicle->base_fare, 2) }}
-                                        </div>
-
-                                        <div class="text-[11px] text-slate-500 mt-1">
-                                            ₹{{ number_format($vehicle->rate_per_km, 2) }}/km
-                                        </div>
-
-                                    </td>
-
-
                                     {{-- Status --}}
                                     <td class="py-4 px-5">
 
@@ -371,7 +353,7 @@
                             @empty
 
                                 <tr>
-                                    <td colspan="6" class="text-center py-16">
+                                    <td colspan="5" class="text-center py-16">
 
                                         <div class="flex flex-col items-center justify-center">
 
@@ -491,40 +473,6 @@
                                name="badge"
                                value="{{ old('badge') }}"
                                placeholder="Top Choice"
-                               class="w-full h-11 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400">
-                    </div>
-
-
-                    {{-- Base Fare --}}
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">
-                            Base Fare *
-                        </label>
-
-                        <input type="number"
-                               name="base_fare"
-                               value="{{ old('base_fare') }}"
-                               required
-                               min="0"
-                               step="0.01"
-                               placeholder="1600"
-                               class="w-full h-11 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400">
-                    </div>
-
-
-                    {{-- Rate Per KM --}}
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">
-                            Rate Per KM *
-                        </label>
-
-                        <input type="number"
-                               name="rate_per_km"
-                               value="{{ old('rate_per_km') }}"
-                               required
-                               min="0"
-                               step="0.01"
-                               placeholder="18"
                                class="w-full h-11 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400">
                     </div>
 

@@ -96,7 +96,7 @@ class PageController extends Controller
     public function taxiRoutes()
     {
         $routes = TaxiRoute::orderBy('sort_order')->get();
-        $vehicles = Vehicle::where('is_active', true)->orderBy('base_fare')->get();
+        $vehicles = Vehicle::where('is_active', true)->orderBy('seating_capacity')->orderBy('name')->get();
 
         $seo = [
             'title'       => 'Dharamshala Taxi Routes — Outstation & Airport Cabs',
@@ -160,7 +160,7 @@ class PageController extends Controller
     public function airportTaxi()
     {
         $airportRoutes = TaxiRoute::where('from_city', 'like', 'Gaggal%')->orderBy('sort_order')->get();
-        $vehicles = Vehicle::where('is_active', true)->orderBy('base_fare')->get();
+        $vehicles = Vehicle::where('is_active', true)->orderBy('seating_capacity')->orderBy('name')->get();
 
         $faqs = [
             ['How far is Gaggal Airport from Dharamshala and McLeodganj?',
@@ -199,7 +199,7 @@ class PageController extends Controller
             'breadcrumbs' => ['About Us' => route('about')],
         ];
 
-        $vehicles = Vehicle::where('is_active', true)->orderBy('base_fare')->get();
+        $vehicles = Vehicle::where('is_active', true)->orderBy('seating_capacity')->orderBy('name')->get();
 
         return view('pages.about', compact('seo', 'vehicles'));
     }

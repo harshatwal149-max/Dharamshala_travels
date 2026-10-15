@@ -183,43 +183,6 @@
 
                     </div>
 
-                    {{-- BASE FARE + RATE --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                        <div>
-
-                            <label class="block font-bold text-gray-700 mb-1">
-                                Base Fare (₹)
-                            </label>
-
-                            <input
-                                type="number"
-                                step="0.01"
-                                name="base_fare"
-                                value="{{ old('base_fare', $vehicle->base_fare) }}"
-                                required
-                                class="w-full h-11 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400">
-
-                        </div>
-
-                        <div>
-
-                            <label class="block font-bold text-gray-700 mb-1">
-                                Rate / KM (₹)
-                            </label>
-
-                            <input
-                                type="number"
-                                step="0.01"
-                                name="rate_per_km"
-                                value="{{ old('rate_per_km', $vehicle->rate_per_km) }}"
-                                required
-                                class="w-full h-11 px-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400">
-
-                        </div>
-
-                    </div>
-
                     {{-- SEATING + LUGGAGE --}}
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 

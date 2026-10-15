@@ -42,10 +42,6 @@ class AdminDashboardController extends Controller
             'total_bookings' => Booking::count(),
             'pending_bookings' => Booking::where('status', 'pending')->count(),
             'confirmed_bookings' => Booking::where('status', 'confirmed')->count(),
-            'total_revenue' => Booking::whereIn(
-                'status',
-                ['confirmed', 'completed']
-            )->sum('estimated_fare'),
             'active_fleet' => Vehicle::where('is_active', true)->count(),
             'total_packages' => Package::count(),
         ];
@@ -176,12 +172,9 @@ class AdminDashboardController extends Controller
         ]);
 
         if ($request->hasFile('logo_file')) {
-            Setting::set('site_logo', $this->storeBrandingFile($request->file('logo_file')));
+            \App\Support\SiteLogo::set($this->storeBrandingFile($request->file('logo_file')));
         } elseif ($request->filled('site_logo')) {
-            Setting::set(
-                'site_logo',
-                $request->site_logo
-            );
+            \App\Support\SiteLogo::set($request->site_logo);
         }
 
         if ($request->hasFile('favicon_file')) {
@@ -214,6 +207,7 @@ class AdminDashboardController extends Controller
                 'contact_address',
                 'Main Taxi Stand, Kotwali Bazar, Dharamshala, Himachal Pradesh 176215'
             ),
+            'extra_phones' => \App\Support\ContactPhones::extra(),
         ];
 
         return view(
@@ -228,7 +222,27 @@ class AdminDashboardController extends Controller
             'contact_phone' => 'nullable|string|max:50',
             'contact_hours' => 'nullable|string|max:100',
             'contact_address' => 'nullable|string|max:500',
+            'extra_phones' => 'nullable|array|max:10',
+            'extra_phones.*.label' => 'nullable|string|max:40',
+            'extra_phones.*.number' => ['nullable', 'string', 'max:30', 'regex:/^[0-9+\-\s()]{6,30}$/'],
+        ], [
+            'extra_phones.*.number.regex' => 'Phone numbers can only contain digits, spaces, +, - and brackets.',
         ]);
+
+        Setting::set(
+            'extra_phones',
+            json_encode(
+                collect($validated['extra_phones'] ?? [])
+                    ->map(fn ($row) => [
+                        'label' => trim((string) ($row['label'] ?? '')),
+                        'number' => trim((string) ($row['number'] ?? '')),
+                    ])
+                    ->filter(fn ($row) => $row['number'] !== '')
+                    ->values()
+                    ->all(),
+                JSON_UNESCAPED_UNICODE
+            )
+        );
 
         Setting::set(
             'contact_phone',
@@ -348,8 +362,6 @@ class AdminDashboardController extends Controller
             'name' => 'required|string|max:100',
             'category' => 'required|string|max:50',
             'badge' => 'nullable|string|max:50',
-            'base_fare' => 'required|numeric|min:0',
-            'rate_per_km' => 'required|numeric|min:0',
             'seating_capacity' => 'required|integer|min:1',
             'luggage_capacity' => 'required|integer|min:0',
             'image' => 'nullable|url',
@@ -418,8 +430,6 @@ class AdminDashboardController extends Controller
             'name' => 'required|string|max:100',
             'category' => 'required|string|max:50',
             'badge' => 'nullable|string|max:50',
-            'base_fare' => 'required|numeric|min:0',
-            'rate_per_km' => 'required|numeric|min:0',
             'seating_capacity' => 'required|integer|min:1',
             'luggage_capacity' => 'required|integer|min:0',
             'image' => 'nullable|url',
@@ -543,124 +553,130 @@ class AdminDashboardController extends Controller
         return view('admin.packages.create');
     }
 
-    /**
-     * "Day 1: text" lines -> ['Day 1' => 'text'] (same shape as the seeder).
-     * Free text that doesn't follow that pattern is kept as-is.
-     */
-    private function parseItinerary(?string $text): array|string|null
-    {
-        $lines = collect(preg_split('/\r?\n/', (string) $text))->map(fn ($line) => trim($line))->filter();
+    private const PACKAGE_IMAGES = ['thumbnail', 'image_2', 'image_3', 'image_4', 'image_5'];
 
-        if ($lines->isEmpty()) {
-            return null;
+    private function validatePackage(Request $request): array
+    {
+        $rules = [
+            'title'              => 'required|string|max:150',
+            'duration'           => 'required|string|max:50',
+            'short_desc'         => 'required|string|max:255',
+            'is_featured'        => 'nullable|boolean',
+
+            'itinerary'          => 'nullable|array|max:30',
+            'itinerary.*.label'  => 'nullable|string|max:30',
+            'itinerary.*.title'  => 'nullable|string|max:80',
+            'itinerary.*.text'   => 'nullable|string|max:2000',
+
+            'inclusions'         => 'nullable|array|max:30',
+            'inclusions.*'       => 'nullable|string|max:150',
+
+            'remove_images'      => 'nullable|array',
+            'remove_images.*'    => 'in:image_2,image_3,image_4,image_5',
+        ];
+
+        foreach (self::PACKAGE_IMAGES as $field) {
+            $rules[$field]           = 'nullable|url|max:2048';
+            $rules[$field . '_file'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072';
         }
 
+        return $request->validate($rules, [
+            '*_file.max'   => 'Each image must be 3 MB or smaller.',
+            '*_file.image' => 'Please upload a JPG, PNG or WEBP image.',
+        ]);
+    }
+
+    /**
+     * Itinerary rows -> ['Day 1' => 'Title. Description'] (same shape as the seeder,
+     * which the tour page splits back into a heading and body).
+     */
+    private function buildItinerary(array $rows): ?array
+    {
         $days = [];
 
-        foreach ($lines as $line) {
-            if (! preg_match('/^([^:]{1,30}):\s*(.+)$/', $line, $m)) {
-                return trim($text);
+        foreach ($rows as $row) {
+            // The tour page treats the text before the first "." as the heading.
+            $title = trim(str_replace(['.', ','], ['', ' -'], (string) ($row['title'] ?? '')));
+            $text  = trim(preg_replace('/\s*\R\s*/', ' ', (string) ($row['text'] ?? '')));
+
+            if ($title === '' && $text === '') {
+                continue;
             }
 
-            $days[trim($m[1])] = trim($m[2]);
+            $label = trim(str_replace(':', '', (string) ($row['label'] ?? ''))) ?: 'Day ' . (count($days) + 1);
+
+            for ($base = $label, $n = 2; isset($days[$label]); $n++) {
+                $label = "{$base} ({$n})";
+            }
+
+            $days[$label] = $title !== '' && $text !== '' ? "{$title}. {$text}" : ($title ?: $text);
         }
 
-        return $days;
+        return $days ?: null;
     }
 
-    private function parseInclusions(?string $text): array
+    private function buildInclusions(array $items): array
     {
-        $text = trim((string) $text);
-
-        // One per line; a single line is treated as a comma-separated list.
-        $items = str_contains($text, "\n") ? preg_split('/\r?\n/', $text) : explode(',', $text);
-
-        return collect($items)->map(fn ($item) => trim($item))->filter()->values()->all();
+        return collect($items)->map(fn ($item) => trim((string) $item))->filter()->unique()->values()->all();
     }
 
-    public function storePackage(Request $request)
+    /**
+     * Uploaded file wins over a pasted URL; an empty field keeps the current image.
+     */
+    private function applyPackageImages(Request $request, array $validated): array
     {
-        $validated = $request->validate([
-            'title'          => 'required|string|max:150',
-            'duration'       => 'required|string|max:50',
-            'starting_price' => 'required|numeric|min:0',
-            'short_desc'     => 'required|string|max:255',
-            'itinerary'      => 'nullable|string',
-            'inclusions'     => 'nullable',
+        $remove = $validated['remove_images'] ?? [];
 
-            'thumbnail'      => 'nullable|url',
-            'thumbnail_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
-
-            'image_2'        => 'nullable|url',
-            'image_2_file'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
-
-            'image_3'        => 'nullable|url',
-            'image_3_file'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
-
-            'image_4'        => 'nullable|url',
-            'image_4_file'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
-
-            'image_5'        => 'nullable|url',
-            'image_5_file'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
-        ]);
-
-        // Main Thumbnail
-        if ($request->hasFile('thumbnail_file')) {
-            $path = $request->file('thumbnail_file')
-                ->store('packages', 'public');
-
-            $validated['thumbnail'] = asset(
-                'storage/' . $path
-            );
-        }
-
-        if (empty($validated['thumbnail'])) {
-            return back()->withErrors([
-                'thumbnail' =>
-                'Please provide a Thumbnail URL or upload an image file.'
-            ]);
-        }
-
-        unset($validated['thumbnail_file']);
-
-        // Additional Gallery Images
-        foreach (['image_2', 'image_3', 'image_4', 'image_5'] as $field) {
-
+        foreach (self::PACKAGE_IMAGES as $field) {
             $fileField = $field . '_file';
 
             if ($request->hasFile($fileField)) {
-
-                $path = $request->file($fileField)
-                    ->store('packages/gallery', 'public');
-
-                $validated[$field] = asset(
-                    'storage/' . $path
-                );
+                $folder = $field === 'thumbnail' ? 'packages' : 'packages/gallery';
+                $validated[$field] = asset('storage/' . $request->file($fileField)->store($folder, 'public'));
+            } elseif (in_array($field, $remove, true)) {
+                $validated[$field] = null;
+            } elseif (! $request->filled($field)) {
+                unset($validated[$field]);
             }
 
             unset($validated[$fileField]);
         }
 
-        $validated['itinerary'] =
-            $this->parseItinerary($validated['itinerary'] ?? null)
-            ?? $validated['short_desc'];
+        unset($validated['remove_images']);
 
-        $validated['inclusions'] =
-            $this->parseInclusions($validated['inclusions'] ?? null)
-            ?: [
-                'Dedicated Sanitized Cab',
-                'Verified Mountain Driver',
-                'Fuel & Parking Included'
-            ];
+        return $validated;
+    }
 
-        $validated['slug'] =
-            Str::slug($validated['title'])
-            . '-'
-            . Str::random(4);
+    private function packageData(Request $request, array $validated): array
+    {
+        $validated = $this->applyPackageImages($request, $validated);
 
+        $validated['itinerary']   = $this->buildItinerary($validated['itinerary'] ?? []) ?? $validated['short_desc'];
+        $validated['inclusions']  = $this->buildInclusions($validated['inclusions'] ?? []);
+        $validated['is_featured'] = $request->boolean('is_featured');
+
+        return $validated;
+    }
+
+    public function storePackage(Request $request)
+    {
+        $validated = $this->packageData($request, $this->validatePackage($request));
+
+        if (empty($validated['thumbnail'])) {
+            return back()->withInput()->withErrors([
+                'thumbnail' => 'Please upload a cover photo or paste an image URL.',
+            ]);
+        }
+
+        $validated['inclusions'] = $validated['inclusions'] ?: [
+            'Dedicated Sanitized Cab',
+            'Verified Mountain Driver',
+            'Fuel & Parking Included',
+        ];
+
+        $validated['slug'] = Str::slug($validated['title']) . '-' . Str::random(4);
         $validated['rating'] = 5.0;
         $validated['reviews_count'] = 1;
-        $validated['is_featured'] = true;
 
         Package::create($validated);
 
@@ -682,73 +698,13 @@ class AdminDashboardController extends Controller
         Request $request,
         Package $package
     ) {
-        $validated = $request->validate([
-            'title'          => 'required|string|max:150',
-            'duration'       => 'required|string|max:50',
-            'starting_price' => 'required|numeric|min:0',
-            'short_desc'     => 'required|string|max:255',
-            'itinerary'      => 'nullable|string',
-            'inclusions'     => 'nullable',
+        $package->update($this->packageData($request, $this->validatePackage($request)));
 
-            'thumbnail'      => 'nullable|url',
-            'thumbnail_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
-
-            'image_2'        => 'nullable|url',
-            'image_2_file'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
-
-            'image_3'        => 'nullable|url',
-            'image_3_file'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
-
-            'image_4'        => 'nullable|url',
-            'image_4_file'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
-
-            'image_5'        => 'nullable|url',
-            'image_5_file'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
-        ]);
-
-        // Main Thumbnail
-        if ($request->hasFile('thumbnail_file')) {
-
-            $path = $request->file('thumbnail_file')
-                ->store('packages', 'public');
-
-            $validated['thumbnail'] = asset(
-                'storage/' . $path
-            );
+        if ($request->input('after_save') === 'stay') {
+            return redirect()
+                ->route('admin.packages.edit', $package)
+                ->with('success', 'Changes saved.');
         }
-
-        unset($validated['thumbnail_file']);
-
-        // Additional Gallery Images
-        foreach (['image_2', 'image_3', 'image_4', 'image_5'] as $field) {
-
-            $fileField = $field . '_file';
-
-            if ($request->hasFile($fileField)) {
-
-                $path = $request->file($fileField)
-                    ->store('packages/gallery', 'public');
-
-                $validated[$field] = asset(
-                    'storage/' . $path
-                );
-            } elseif (!$request->filled($field)) {
-
-                // Existing image ko blank field ki wajah se delete nahi karna
-                unset($validated[$field]);
-            }
-
-            unset($validated[$fileField]);
-        }
-
-        $validated['itinerary'] =
-            $this->parseItinerary($validated['itinerary'] ?? null)
-            ?? $validated['short_desc'];
-
-        $validated['inclusions'] =
-            $this->parseInclusions($validated['inclusions'] ?? null);
-
-        $package->update($validated);
 
         return redirect()
             ->route('admin.tours.index')
@@ -1101,12 +1057,9 @@ class AdminDashboardController extends Controller
         // ==========================================
 
         if ($request->hasFile('logo_file')) {
-            Setting::set('site_logo', $this->storeBrandingFile($request->file('logo_file')));
+            \App\Support\SiteLogo::set($this->storeBrandingFile($request->file('logo_file')));
         } elseif ($request->filled('site_logo')) {
-            Setting::set(
-                'site_logo',
-                $request->site_logo
-            );
+            \App\Support\SiteLogo::set($request->site_logo);
         }
 
         // ==========================================
