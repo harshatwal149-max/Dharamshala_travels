@@ -36,7 +36,6 @@
 
     $facts = array_filter([
         ['clock', 'Duration', $package->duration],
-        ['indian-rupee', 'Starting from', (float) $package->starting_price > 0 ? '₹' . number_format((float) $package->starting_price) : null],
         ['compass', 'Trip type', $package->trip_type],
         ['car-front', 'Transport', 'Private cab & driver'],
     ], fn ($f) => filled($f[2]));
@@ -54,7 +53,7 @@
 
 {{-- Key facts --}}
 <section class="border-b border-stone-200 bg-white">
-    <div class="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-4 py-6 sm:px-6 lg:grid-cols-4 lg:px-8">
+    <div class="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-4 py-6 sm:px-6 lg:grid-cols-3 lg:px-8">
         @foreach($facts as [$icon, $label, $value])
             <div class="flex items-center gap-3">
                 <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-pine-50 text-pine-700"><i data-lucide="{{ $icon }}" class="h-5 w-5"></i></span>
@@ -209,13 +208,7 @@
         <aside class="lg:col-span-4">
             <div class="sticky top-24 space-y-6">
                 <div class="rounded-2xl bg-white p-6 shadow-lg shadow-pine-900/5 ring-1 ring-stone-200">
-                    @if((float) $package->starting_price > 0)
-                        <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">Starting from</p>
-                        <p class="mt-1 text-3xl font-extrabold text-pine-950">₹{{ number_format((float) $package->starting_price) }}</p>
-                        <p class="text-xs text-stone-500">Final price depends on group size, hotels & vehicle.</p>
-                    @else
-                        <h2 class="text-lg font-extrabold text-pine-950">Book this tour</h2>
-                    @endif
+                    <h2 class="text-lg font-extrabold text-pine-950">Book this tour</h2>
 
                     <form action="{{ route('bookings.store') }}" method="POST" class="mt-5 space-y-3">
                         @csrf
@@ -295,9 +288,6 @@
                     </div>
                     <div class="p-5">
                         <h3 class="font-bold leading-snug text-pine-950 group-hover:text-pine-700">{{ $rel->title }}</h3>
-                        @if((float) $rel->starting_price > 0)
-                            <p class="mt-2 text-sm text-stone-500">From <span class="font-bold text-pine-900">₹{{ number_format((float) $rel->starting_price) }}</span></p>
-                        @endif
                     </div>
                 </a>
             @endforeach

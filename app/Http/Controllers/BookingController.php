@@ -138,29 +138,6 @@ class BookingController extends Controller
         $validated['status'] = 'pending';
 
         /*
-         * Calculate estimated fare.
-         */
-        $fare = 0;
-
-        if (!empty($validated['package_id'])) {
-            $package = Package::find($validated['package_id']);
-
-            $fare = $package
-                ? $package->starting_price
-                : 0;
-        } elseif (!empty($validated['vehicle_id'])) {
-            $vehicle = Vehicle::find($validated['vehicle_id']);
-
-            $fare = $vehicle
-                ? $vehicle->base_fare
-                : 0;
-        } else {
-            $fare = 1500;
-        }
-
-        $validated['estimated_fare'] = $fare;
-
-        /*
          * Create booking.
          */
         $booking = Booking::create($validated);

@@ -12,10 +12,9 @@
     $address = Setting::get('contact_address') ?: 'Main Taxi Stand, Kotwali Bazar, Dharamshala, Himachal Pradesh 176215';
     $hours = Setting::get('contact_hours') ?: 'Available 6:00 AM – 11:00 PM';
     $response = Setting::get('contact_email_response') ?: 'Response within 2 hours';
-    $mapUrl = Setting::get('footer_map_url') ?: 'https://www.google.com/maps/search/?api=1&query=' . urlencode($address);
-    $lat = Setting::get('seo_latitude');
-    $lng = Setting::get('seo_longitude');
-    $mapEmbed = 'https://maps.google.com/maps?q=' . urlencode($lat && $lng ? "{$lat},{$lng}" : $address) . '&z=15&output=embed';
+    $mapLocation = 'Dharmshala travels, Lower, near hotel abodh, Sakoh Upper, jateher, Dharamshala, Himachal Pradesh 176215';
+    $mapUrl = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($mapLocation);
+    $mapEmbed = 'https://maps.google.com/maps?q=' . urlencode($mapLocation) . '&z=15&output=embed';
 
     $field = 'dt-input';
 @endphp

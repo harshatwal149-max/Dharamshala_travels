@@ -81,7 +81,7 @@
                 </div>
             @endif
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
                     <div>
@@ -95,25 +95,13 @@
 
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
                     <div>
-                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Priced Tours</span>
+                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Active Tours</span>
                         <span class="text-2xl font-extrabold text-emerald-700">
                             {{ $packages->count() }}
                         </span>
                     </div>
                     <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-700">
                         <i data-lucide="check-circle" class="w-5 h-5"></i>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
-                    <div>
-                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Priced Packages</span>
-                        <span class="text-2xl font-extrabold text-slate-900">
-                            {{ $packages->sum(fn($package) => (float) $package->starting_price > 0 ? 1 : 0) }}
-                        </span>
-                    </div>
-                    <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center text-amber-700">
-                        <i data-lucide="star" class="w-5 h-5"></i>
                     </div>
                 </div>
 
@@ -140,7 +128,6 @@
                             <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
                                 <th class="py-4 px-5">Tour</th>
                                 <th class="py-4 px-5">Duration</th>
-                                <th class="py-4 px-5">Price</th>
                                 <th class="py-4 px-5">Status</th>
                                 <th class="py-4 px-5 text-right">Action</th>
                             </tr>
@@ -177,12 +164,6 @@
                                     </td>
 
                                     <td class="py-4 px-5">
-                                        <div class="font-bold text-slate-900">
-                                            ₹{{ number_format((float) ($package->starting_price ?? 0), 2) }}
-                                        </div>
-                                    </td>
-
-                                    <td class="py-4 px-5">
                                         <span class="inline-flex items-center px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 font-bold text-[11px]">
                                             Active
                                         </span>
@@ -213,7 +194,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center py-16">
+                                    <td colspan="4" class="text-center py-16">
                                         <div class="flex flex-col items-center justify-center">
                                             <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mb-3">
                                                 <i data-lucide="map" class="w-6 h-6 text-slate-400"></i>

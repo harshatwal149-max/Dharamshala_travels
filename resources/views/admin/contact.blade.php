@@ -131,8 +131,80 @@
                             </div>
 
                             <p class="text-[11px] text-slate-400 mt-1">
-                                Main phone number customers can use to contact you.
+                                Main phone number customers can use to contact you. Shown first in the header and footer, and used for call buttons across the website.
                             </p>
+
+                        </div>
+
+                        {{-- ADDITIONAL PHONES --}}
+                        @php
+                            $extraPhones = old('extra_phones', $contact['extra_phones'] ?? []);
+                            $phoneLabels = ['Booking', 'Office', 'Tours', 'Taxi Stand', 'WhatsApp', 'Emergency'];
+                        @endphp
+                        <div>
+
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-xs font-bold text-slate-700">
+                                    Additional Phone Numbers
+                                </label>
+                                <span class="text-[11px] text-slate-400"><span data-phone-count>{{ count($extraPhones) }}</span>/10</span>
+                            </div>
+
+                            <p class="text-[11px] text-slate-400 mb-3">
+                                Extra numbers shown in the header and footer after the main helpline. The label (e.g. Booking, Office) appears above the number.
+                            </p>
+
+                            <datalist id="phone-labels">
+                                @foreach($phoneLabels as $phoneLabel)
+                                    <option value="{{ $phoneLabel }}"></option>
+                                @endforeach
+                            </datalist>
+
+                            <div class="space-y-2" data-phone-list>
+                                @foreach($extraPhones as $i => $row)
+                                    <div class="flex items-start gap-2" data-phone-row>
+                                        <input type="text" name="extra_phones[{{ $i }}][label]" value="{{ $row['label'] ?? '' }}" maxlength="40" list="phone-labels"
+                                            placeholder="Label (optional)"
+                                            class="w-36 sm:w-44 shrink-0 px-3 py-3 bg-white border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                                        <div class="relative flex-1">
+                                            <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                                            <input type="tel" name="extra_phones[{{ $i }}][number]" value="{{ $row['number'] ?? '' }}" maxlength="30"
+                                                placeholder="+91 98160 00000"
+                                                class="w-full pl-10 pr-3 py-3 bg-white border @error('extra_phones.' . $i . '.number') border-red-400 @else border-slate-300 @enderror rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                                        </div>
+                                        <button type="button" data-phone-remove title="Remove number"
+                                            class="shrink-0 p-3 rounded-lg border border-slate-300 text-slate-400 hover:text-red-600 hover:border-red-300 hover:bg-red-50">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <p class="text-[11px] text-slate-400 mt-2 {{ count($extraPhones) ? 'hidden' : '' }}" data-phone-empty>
+                                No additional numbers yet.
+                            </p>
+
+                            <button type="button" data-phone-add
+                                class="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-slate-400 text-xs font-semibold text-slate-700 hover:border-blue-500 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                Add another number
+                            </button>
+
+                            <template data-phone-template>
+                                <div class="flex items-start gap-2" data-phone-row>
+                                    <input type="text" data-name="label" maxlength="40" list="phone-labels" placeholder="Label (optional)"
+                                        class="w-36 sm:w-44 shrink-0 px-3 py-3 bg-white border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                                    <div class="relative flex-1">
+                                        <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                                        <input type="tel" data-name="number" maxlength="30" placeholder="+91 98160 00000"
+                                            class="w-full pl-10 pr-3 py-3 bg-white border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                                    </div>
+                                    <button type="button" data-phone-remove title="Remove number"
+                                        class="shrink-0 p-3 rounded-lg border border-slate-300 text-slate-400 hover:text-red-600 hover:border-red-300 hover:bg-red-50">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </template>
 
                         </div>
 
@@ -223,6 +295,46 @@
                 lucide.createIcons();
             }
         });
+
+        // Additional phone numbers: add / remove rows and keep input names in order.
+        (function () {
+            var MAX = 10;
+            var list = document.querySelector('[data-phone-list]');
+            var addBtn = document.querySelector('[data-phone-add]');
+            var template = document.querySelector('[data-phone-template]');
+            if (!list || !addBtn || !template) return;
+
+            function refresh() {
+                var rows = list.querySelectorAll('[data-phone-row]');
+                rows.forEach(function (row, i) {
+                    row.querySelectorAll('input').forEach(function (input) {
+                        var field = input.dataset.name || input.name.replace(/^.*\[(\w+)\]$/, '$1');
+                        input.dataset.name = field;
+                        input.name = 'extra_phones[' + i + '][' + field + ']';
+                    });
+                });
+                document.querySelector('[data-phone-count]').textContent = rows.length;
+                document.querySelector('[data-phone-empty]').classList.toggle('hidden', rows.length > 0);
+                addBtn.disabled = rows.length >= MAX;
+            }
+
+            addBtn.addEventListener('click', function () {
+                list.appendChild(template.content.cloneNode(true));
+                refresh();
+                if (window.lucide) lucide.createIcons();
+                var rows = list.querySelectorAll('[data-phone-row]');
+                rows[rows.length - 1].querySelector('input[data-name="number"]').focus();
+            });
+
+            list.addEventListener('click', function (e) {
+                var btn = e.target.closest('[data-phone-remove]');
+                if (!btn) return;
+                btn.closest('[data-phone-row]').remove();
+                refresh();
+            });
+
+            refresh();
+        })();
     </script>
 
 </body>

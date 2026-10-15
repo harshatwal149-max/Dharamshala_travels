@@ -12,7 +12,6 @@ class Package extends Model
     protected $fillable = [
     'title',
     'duration',
-    'starting_price',
     'short_desc',
     'itinerary',
     'inclusions',
@@ -31,7 +30,6 @@ class Package extends Model
         'itinerary' => 'array',
         'inclusions' => 'array',
         'is_featured' => 'boolean',
-        'starting_price' => 'decimal:2',
         'rating' => 'decimal:1',
     ];
 

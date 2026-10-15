@@ -16,7 +16,6 @@ class PackageSeeder extends Seeder
                 'title'          => 'Dharamshala & McLeodganj Local Sightseeing',
                 'slug'           => 'dharamshala-mcleodganj-local-sightseeing',
                 'duration'       => 'Full Day (8 Hours)',
-                'starting_price' => 2500.00,
                 'short_desc'     => 'A relaxed private day covering the Dalai Lama Temple, Bhagsu Waterfall, St. John in the Wilderness, Dal Lake, the War Memorial and the HPCA Cricket Stadium.',
                 'images'         => ['tsuglagkhang', 'bhagsu-falls', 'st-john-church', 'hpca-stadium', 'dal-lake'],
                 'itinerary'      => [
@@ -31,7 +30,6 @@ class PackageSeeder extends Seeder
                 'title'          => 'McLeodganj & Dharamshala Spiritual Escape',
                 'slug'           => 'mcleodganj-dharamshala-spiritual-escape',
                 'duration'       => '3 Days / 2 Nights',
-                'starting_price' => 7499.00,
                 'short_desc'     => 'Three unhurried days of monasteries, Tibetan culture and mountain views — Tsuglagkhang, Norbulingka, Gyuto Monastery, Bhagsu and sunset at Naddi.',
                 'images'         => ['namgyal-temple', 'norbulingka', 'gyuto-monastery', 'prayer-flags', 'mcleodganj-view'],
                 'itinerary'      => [
@@ -45,7 +43,6 @@ class PackageSeeder extends Seeder
                 'title'          => 'Triund Guided Trek & Camping',
                 'slug'           => 'triund-guided-trek-camping',
                 'duration'       => '2 Days / 1 Night',
-                'starting_price' => 2999.00,
                 'short_desc'     => 'Trek through oak and rhododendron forest to the Triund ridge (approx. 2,850 m), camp under the stars and wake up to the Dhauladhar range glowing at sunrise.',
                 'images'         => ['triund-ridge', 'triund-hilltop', 'triund-campsite', 'five-towns-triund', 'dhauladhar-peaks'],
                 'itinerary'      => [
@@ -58,7 +55,6 @@ class PackageSeeder extends Seeder
                 'title'          => 'Kangra Valley Heritage & Tea Gardens',
                 'slug'           => 'kangra-valley-heritage-tea-gardens',
                 'duration'       => 'Full Day (9 Hours)',
-                'starting_price' => 3200.00,
                 'short_desc'     => 'Discover the ancient Kangra Fort, the 8th-century Masroor rock-cut temples, the sacred Chamunda Devi temple and the Kangra tea gardens around Dharamshala.',
                 'images'         => ['kangra-fort', 'masroor-temple', 'chamunda-temple', 'dharamshala-tea-garden', 'kangra-fort-ruins'],
                 'itinerary'      => [
@@ -72,7 +68,6 @@ class PackageSeeder extends Seeder
                 'title'          => 'Bir Billing Paragliding Day Trip',
                 'slug'           => 'bir-billing-paragliding-day-trip',
                 'duration'       => 'Full Day (10 Hours)',
-                'starting_price' => 3800.00,
                 'short_desc'     => 'A private day trip from Dharamshala to Bir Billing, one of the world’s top paragliding sites, with stops at Palampur tea estates and Bir’s Tibetan monasteries.',
                 'images'         => ['bir-paragliding', 'palampur-tea', 'kangra-tea-garden', 'gyuto-monastery', 'dhauladhar-alpenglow'],
                 'itinerary'      => [
@@ -86,7 +81,6 @@ class PackageSeeder extends Seeder
                 'title'          => 'Dharamshala, Dalhousie & Khajjiar Tour',
                 'slug'           => 'dharamshala-dalhousie-khajjiar-tour',
                 'duration'       => '5 Days / 4 Nights',
-                'starting_price' => 16500.00,
                 'short_desc'     => 'Combine the Tibetan charm of McLeodganj with the colonial hill station of Dalhousie and the meadows of Khajjiar, often called the Mini Switzerland of India.',
                 'images'         => ['khajjiar', 'dalhousie', 'mcleodganj-market', 'namgyal-temple', 'dal-lake'],
                 'itinerary'      => [
@@ -102,7 +96,6 @@ class PackageSeeder extends Seeder
                 'title'          => 'Himachal Grand Circuit: Dharamshala to Manali',
                 'slug'           => 'himachal-grand-circuit-dharamshala-manali',
                 'duration'       => '7 Days / 6 Nights',
-                'starting_price' => 26500.00,
                 'short_desc'     => 'The classic Himachal road trip — Dharamshala, Bir Billing, Manali and the Kangra Valley — in a private cab with the same experienced driver throughout.',
                 'images'         => ['manali-mall-road', 'bir-paragliding', 'dhauladhar-alpenglow', 'kangra-fort', 'mcleodganj-view'],
                 'itinerary'      => [
@@ -120,7 +113,6 @@ class PackageSeeder extends Seeder
                 'title'          => 'Kareri Lake Trek',
                 'slug'           => 'kareri-lake-trek',
                 'duration'       => '3 Days / 2 Nights',
-                'starting_price' => 6499.00,
                 'short_desc'     => 'A quieter alternative to Triund — trek along the Nyund stream to the glacial Kareri Lake (approx. 2,934 m) in the Dhauladhar range.',
                 'images'         => ['kareri-lake', 'dhauladhar-peaks', 'triund-hilltop', 'dhauladhar-alpenglow', 'prayer-flags'],
                 'itinerary'      => [
@@ -134,7 +126,6 @@ class PackageSeeder extends Seeder
                 'title'          => 'Shimla & Manali Tour Package',
                 'slug'           => 'shimla-manali-tour-package',
                 'duration'       => '6 Days / 5 Nights',
-                'starting_price' => 22500.00,
                 'short_desc'     => 'Tour route: Delhi - Shimla - Manali - Delhi. Jakhu Temple, The Mall & The Ridge in Shimla, then Hadimba Devi Temple, Vashisht hot springs, Naggar Castle and an excursion to Rohtang Pass from Manali.',
                 'images'         => ['manali-mall-road', 'dhauladhar-peaks', 'dhauladhar-alpenglow', 'prayer-flags', 'dharamshala-town'],
                 'itinerary'      => [
@@ -151,7 +142,6 @@ class PackageSeeder extends Seeder
                 'title'          => 'Dharamshala & Amritsar Tour Package',
                 'slug'           => 'dharamshala-amritsar-tour-package',
                 'duration'       => '6 Days / 5 Nights',
-                'starting_price' => 18500.00,
                 'short_desc'     => 'Tour route: Amritsar - Dharamshala - Delhi. The Golden Temple, Jallianwala Bagh and the Wagah Border flag ceremony, followed by the Dalai Lama Temple, Bhagsu Nag, Norbulingka Institute, Naddi and Dharamkot.',
                 'images'         => ['tsuglagkhang', 'bhagsu-falls', 'norbulingka', 'dharamkot', 'mcleodganj-market'],
                 'itinerary'      => [
@@ -163,6 +153,41 @@ class PackageSeeder extends Seeder
                     'Day 6' => 'McLeodganj - Delhi / Chandigarh. After breakfast the rest of the day is free to spend at leisure, followed by the overnight bus to Delhi.',
                 ],
                 'inclusions'     => ['Hotel stay with breakfast', 'Amritsar railway station pickup', 'Private cab for all transfers & sightseeing', 'Wagah Border excursion', 'Overnight bus ticket to Delhi', 'Fuel, tolls, parking, state taxes & driver allowance'],
+            ],
+            [
+                'title'          => 'Chandigarh to Pathankot Himachal Tour: Shimla, Manali, Dharamshala & Dalhousie',
+                'slug'           => 'chandigarh-to-pathankot-himachal-tour',
+                'duration'       => '8 Days / 7 Nights',
+                'short_desc'     => 'Tour route: Chandigarh - Shimla - Manali - Dharamshala - Dalhousie - Pathankot. Rock Garden and Sukhna Lake, The Ridge and Kufri, Hadimba Temple and Solang Valley, McLeodganj, and the meadows of Khajjiar, ending at Pathankot.',
+                'images'         => ['manali-mall-road', 'khajjiar', 'mcleodganj-view', 'dalhousie', 'dhauladhar-peaks'],
+                'itinerary'      => [
+                    'Day 1' => 'Chandigarh - Shimla (115 km / 4 hrs). Pickup from Chandigarh airport, railway station or hotel. Visit Nek Chand\'s Rock Garden, Sukhna Lake and the Zakir Hussain Rose Garden, then drive up to Shimla via Pinjore Gardens. Check in and overnight in Shimla.',
+                    'Day 2' => 'Shimla. Morning excursion to Kufri for views of the snow ranges, then Jakhu Hanuman Temple. Afternoon visit to the Viceregal Lodge (Indian Institute of Advanced Study), followed by an evening walk on The Ridge, Christ Church, The Mall and Lakkar Bazaar. Overnight in Shimla.',
+                    'Day 3' => 'Shimla - Manali (250 km / 8 hrs). Scenic drive via Bilaspur, Sundernagar and Pandoh Dam, then along the Beas river through Kullu with stops at the Kullu shawl factories and river rafting points. Check in and overnight in Manali.',
+                    'Day 4' => 'Manali. Morning visit to Solang Valley for snow points, ropeway and adventure activities, with an optional drive through the Atal Tunnel to Sissu (season and permit permitting). Afternoon: Hadimba Devi Temple, Manu Temple, Vashisht hot springs and the Tibetan Monastery, ending on Mall Road. Overnight in Manali.',
+                    'Day 5' => 'Manali - Dharamshala (235 km / 7-8 hrs). Drive via Kullu and Mandi with en-route sightseeing at the 13th-century Baijnath Shiva Temple and the Palampur tea gardens, and a stop at Chamunda Devi Temple near Dharamshala. Check in and overnight in Dharamshala.',
+                    'Day 6' => 'Dharamshala - Dalhousie (120 km / 4 hrs). Morning sightseeing in McLeodganj: Tsuglagkhang (Dalai Lama Temple), Bhagsunag Temple and waterfall, and St. John in the Wilderness church. After lunch drive to Dalhousie. Evening walk on Mall Road, Gandhi Chowk and Subhash Chowk. Overnight in Dalhousie.',
+                    'Day 7' => 'Dalhousie - Khajjiar - Dalhousie. Excursion to Khajjiar, the Mini Switzerland of India, with its meadow, lake and Khajji Nag Temple, via the Kalatop Wildlife Sanctuary. Back in Dalhousie, visit Panchpula, Satdhara Falls and St. John\'s Church. Overnight in Dalhousie.',
+                    'Day 8' => 'Dalhousie - Pathankot (80 km / 3 hrs). After breakfast drive down to Pathankot for drop at the railway station, Pathankot airport or onward bus. End of trip.',
+                ],
+                'inclusions'     => ['Dedicated cab for 8 days', 'Chandigarh pickup & Pathankot drop', 'All sightseeing as per itinerary', 'Fuel, tolls, parking, state taxes & driver allowance'],
+            ],
+            [
+                'title'          => 'Kangra Valley, Dalhousie & Chamba Tour from Gaggal Airport',
+                'slug'           => 'kangra-valley-dalhousie-chamba-tour-from-gaggal',
+                'duration'       => '7 Days / 6 Nights',
+                'short_desc'     => 'Starting at Gaggal Airport (DHM): McLeodganj, Norbulingka, Baijnath and Bir Billing, the Jawalamukhi, Chintpurni and Brajeshwari Devi temples, Kangra Fort and Masroor, then Dalhousie, Khajjiar and Chamba.',
+                'images'         => ['kangra-fort', 'masroor-temple', 'bir-paragliding', 'khajjiar', 'norbulingka'],
+                'itinerary'      => [
+                    'Day 1' => 'Gaggal Airport - Dharamshala (15 km / 30 min). Pickup from Gaggal Airport and transfer to your hotel. Dharamshala and McLeodganj sightseeing: Tsuglagkhang (Dalai Lama Temple) and Namgyal Monastery, Bhagsunag Temple and waterfall, St. John in the Wilderness, Dal Lake and the War Memorial. Evening in McLeodganj market. Overnight in Dharamshala.',
+                    'Day 2' => 'Dharamshala - Baijnath - Bir - Dharamshala. Morning at the Norbulingka Institute and Gyuto Tantric Monastery in Sidhbari. Continue to the 13th-century Baijnath Shiva Temple, then Bir Billing to watch the paragliders or fly tandem (booked separately) and see the Tibetan colony and monasteries of Bir. Return via the Palampur tea gardens. Overnight in Dharamshala.',
+                    'Day 3' => 'Temple circuit (approx. 250 km). Full day visiting the Devi temples of the Kangra region: Brajeshwari Devi Temple in Kangra town, Baglamukhi Temple at Bankhandi, Jawalamukhi Temple with its eternal flames, and Chintpurni Mata Temple. Return to Dharamshala in the evening. Overnight in Dharamshala.',
+                    'Day 4' => 'Kangra sightseeing. Visit Kangra Fort, one of the oldest forts in India, and the 8th-century Masroor rock-cut temples. Afternoon at the Pong Dam (Maharana Pratap Sagar) reservoir and bird sanctuary, ending with a stop at the Tatwani hot springs near Shahpur. Overnight in Dharamshala.',
+                    'Day 5' => 'Dharamshala - Dalhousie (120 km / 4 hrs). After breakfast drive to Dalhousie and check in. Evening walk on Mall Road, Gandhi Chowk, Subhash Chowk and St. John\'s Church. Overnight in Dalhousie.',
+                    'Day 6' => 'Dalhousie - Khajjiar - Dalhousie. Excursion to the Khajjiar meadow and lake and the Khajji Nag Temple via Kalatop Wildlife Sanctuary. Back in Dalhousie, visit Panchpula and Satdhara Falls. Overnight in Dalhousie.',
+                    'Day 7' => 'Dalhousie - Chamba - departure. Drive to Bhalei Mata Temple, then on to Chamba to see Chamera Lake, the Laxmi Narayan Temple complex, the Chaugan ground and the Bhuri Singh Museum. In the afternoon, drop at Pathankot or Gaggal Airport. End of trip.',
+                ],
+                'inclusions'     => ['Dedicated cab for 7 days', 'Gaggal Airport pickup', 'Drop at Pathankot or Gaggal Airport', 'All sightseeing as per itinerary', 'Fuel, tolls, parking, state taxes & driver allowance'],
             ],
         ];
 

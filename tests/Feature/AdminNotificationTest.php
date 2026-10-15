@@ -64,7 +64,7 @@ class AdminNotificationTest extends TestCase
         $booking = \App\Models\Booking::create([
             'booking_code' => 'DT-TEST01', 'booking_type' => 'outstation', 'customer_name' => 'Asha',
             'customer_phone' => '9816012345', 'travel_date' => now(), 'pickup_location' => 'Dharamshala',
-            'drop_location' => 'Manali', 'vehicle_id' => Vehicle::first()->id, 'estimated_fare' => 0, 'status' => 'pending',
+            'drop_location' => 'Manali', 'vehicle_id' => Vehicle::first()->id, 'status' => 'pending',
         ]);
 
         $html = (new NewBookingMail($booking))->render();

@@ -1,11 +1,12 @@
 @php
-    $footerLogo = \App\Support\Media::url(\App\Models\Setting::get('site_logo'));
+    $footerLogo = \App\Support\SiteLogo::url();
     $siteTitle = \App\Models\Setting::get('site_title') ?: 'Dharamshala Travels';
 
     $footerDescription = \App\Models\Setting::get('footer_description')
         ?: 'Reliable cab services, airport transfers and Himachal tour packages from Dharamshala. Travel comfortably with experienced local drivers.';
 
-    $contactPhone = \App\Models\Setting::get('contact_phone') ?: '+91 98765 43210';
+    $contactPhones = \App\Support\ContactPhones::all();
+    $contactPhone = $contactPhones[0]['number'];
     $contactEmail = \App\Models\Setting::get('contact_email') ?: 'info@dharamshalatravels.com';
     $contactAddress = \App\Models\Setting::get('contact_address') ?: 'Main Taxi Stand, Kotwali Bazar, Dharamshala, Himachal Pradesh 176215';
     $contactHours = \App\Models\Setting::get('contact_hours') ?: 'Available 6:00 AM – 11:00 PM';
@@ -16,7 +17,7 @@
     $whatsapp = \App\Models\Setting::get('footer_whatsapp');
     $mapUrl = \App\Models\Setting::get('footer_map_url');
 
-    $phoneHref = preg_replace('/[^0-9+]/', '', $contactPhone);
+    $phoneHref = $contactPhones[0]['href'];
     $whatsappHref = preg_replace('/[^0-9]/', '', $whatsapp ?: $contactPhone);
 
     $exploreLinks = [
@@ -114,15 +115,17 @@
             <div class="col-span-2 lg:col-span-3">
                 <h3 class="footer-heading">Contact Us</h3>
                 <ul class="space-y-4 mt-5">
-                    <li>
-                        <a href="tel:{{ $phoneHref }}" class="footer-contact">
-                            <span class="footer-icon"><i data-lucide="phone"></i></span>
-                            <span>
-                                <span class="footer-label">Call / WhatsApp</span>
-                                <span class="footer-value">{{ $contactPhone }}</span>
-                            </span>
-                        </a>
-                    </li>
+                    @foreach($contactPhones as $phone)
+                        <li>
+                            <a href="tel:{{ $phone['href'] }}" class="footer-contact">
+                                <span class="footer-icon"><i data-lucide="phone"></i></span>
+                                <span>
+                                    <span class="footer-label">{{ $phone['label'] ?: 'Call' }}</span>
+                                    <span class="footer-value">{{ $phone['number'] }}</span>
+                                </span>
+                            </a>
+                        </li>
+                    @endforeach
                     <li>
                         <a href="mailto:{{ $contactEmail }}" class="footer-contact">
                             <span class="footer-icon"><i data-lucide="mail"></i></span>
