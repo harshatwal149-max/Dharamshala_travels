@@ -17,8 +17,138 @@
         rel="stylesheet">
 
     <style>
+        * { box-sizing: border-box; }
+
         body {
             font-family: 'Inter', sans-serif;
+        }
+
+        html, body {
+            max-width: 100%;
+            min-height: 100%;
+        }
+
+        [x-cloak] { display: none !important; }
+
+        .vehicle-edit-main {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .vehicle-edit-header {
+            min-height: 4rem;
+            height: auto;
+            gap: 1rem;
+        }
+
+        .vehicle-edit-header-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: .5rem;
+        }
+
+        .vehicle-edit-card,
+        .vehicle-edit-card form,
+        .vehicle-edit-card section,
+        .vehicle-edit-card input {
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        .vehicle-edit-card input[type="file"] {
+            width: 100%;
+            max-width: 100%;
+            font-size: .875rem;
+        }
+
+        .vehicle-edit-gallery {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .vehicle-edit-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: .75rem;
+        }
+
+        @media (min-width: 480px) {
+            .vehicle-edit-gallery {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (min-width: 640px) {
+            .vehicle-edit-gallery {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 767px) {
+            body {
+                height: 100dvh;
+                overflow: hidden;
+            }
+
+            .vehicle-edit-header {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: .875rem 1rem;
+            }
+
+            .vehicle-edit-header-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .vehicle-edit-header-actions a {
+                flex: 1 1 auto;
+                justify-content: center;
+                white-space: normal;
+                text-align: center;
+            }
+
+            .vehicle-edit-main {
+                padding: 1rem .75rem;
+            }
+
+            .vehicle-edit-card {
+                padding: 1rem;
+                border-radius: .875rem;
+            }
+
+            .vehicle-edit-card .vehicle-edit-image-panel {
+                padding: .875rem;
+            }
+
+            .vehicle-edit-actions {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .vehicle-edit-actions a,
+            .vehicle-edit-actions button {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .vehicle-edit-header-actions {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            .vehicle-edit-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .vehicle-edit-card {
+                padding: .75rem;
+            }
         }
     </style>
 </head>
@@ -33,7 +163,7 @@
 
         {{-- TOP HEADER --}}
         <header
-            class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 sticky top-0 z-30">
+            class="vehicle-edit-header bg-white border-b border-slate-200 px-3 sm:px-4 lg:px-6 flex items-center justify-between shrink-0 sticky top-0 z-30">
 
             <div class="flex items-center gap-2 text-xs">
                 <span class="text-slate-400">Admin</span>
@@ -52,7 +182,7 @@
                 </span>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="vehicle-edit-header-actions">
 
                 <a href="{{ route('home') }}"
                    target="_blank"
@@ -75,7 +205,7 @@
         </header>
 
         {{-- PAGE CONTENT --}}
-        <main class="p-6 space-y-6">
+        <main class="vehicle-edit-main p-3 sm:p-5 lg:p-6 space-y-6">
 
             <section class="space-y-1">
 
@@ -89,7 +219,7 @@
 
             </section>
 
-            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 sm:p-8">
+            <div class="vehicle-edit-card bg-white rounded-xl border border-slate-200 shadow-sm p-4 sm:p-6 lg:p-8">
 
                 {{-- SUCCESS MESSAGE --}}
                 @if(session('success'))
@@ -219,7 +349,7 @@
                     </div>
 
                                         {{-- PRIMARY IMAGE --}}
-                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
+                    <div class="vehicle-edit-image-panel p-3 sm:p-5 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
 
                         <span class="block font-bold text-gray-700">
                             Primary Display Image (File Upload ya URL)
@@ -280,7 +410,7 @@
                     </div>
 
                     {{-- GALLERY --}}
-                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
+                    <div class="vehicle-edit-image-panel p-3 sm:p-5 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
 
                         <span class="block font-bold text-gray-700">
                             Interior & Additional Photos (Multiple Files)
@@ -319,7 +449,7 @@
                                     ({{ count($vehicle->gallery) }}):
                                 </span>
 
-                                <div class="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
+                                <div class="vehicle-edit-gallery grid gap-2.5">
 
                                     @foreach($vehicle->gallery as $galleryImg)
 
@@ -370,7 +500,7 @@
                     </div>
 
                     {{-- ACTIONS --}}
-                    <div class="pt-4 flex justify-end space-x-3">
+                    <div class="vehicle-edit-actions pt-4">
 
                         <a
                             href="{{ route('admin.dashboard') }}"

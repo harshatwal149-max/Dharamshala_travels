@@ -10,6 +10,170 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        html {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            width: 100%;
+            min-width: 0;
+            overflow-x: hidden;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        #blogsMainContent {
+            min-width: 0;
+            width: 100%;
+        }
+
+        #blogsTopHeader {
+            min-height: 4rem;
+            height: auto;
+            gap: 1rem;
+        }
+
+        .blogs-content {
+            min-width: 0;
+        }
+
+        .blogs-grid {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+
+        .blog-card {
+            min-width: 0;
+        }
+
+        .blog-card img {
+            max-width: 100%;
+        }
+
+        .blog-card-footer {
+            flex-wrap: wrap;
+            gap: .75rem;
+        }
+
+        .blog-card-actions {
+            flex-shrink: 0;
+        }
+
+        .blogs-pagination {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        .blogs-pagination nav {
+            min-width: 0;
+        }
+
+        #adminSidebarOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 39;
+            background: rgba(15, 23, 42, .5);
+        }
+
+        @media (min-width: 768px) {
+            .blogs-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .blogs-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 767px) {
+            body {
+                font-size: 14px;
+            }
+
+            #blogsTopHeader {
+                padding: .75rem 1rem;
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+
+            #blogsTopHeader>div:first-child {
+                min-width: 0;
+                flex: 1 1 12rem;
+            }
+
+            #blogsTopHeader>a {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .blogs-content {
+                padding: 1rem !important;
+            }
+
+            .blogs-page-intro {
+                align-items: flex-start !important;
+                flex-direction: column;
+                gap: .875rem;
+            }
+
+            .blogs-total {
+                align-self: flex-start;
+            }
+
+            .blogs-grid {
+                gap: 1rem !important;
+            }
+
+            .blog-cover {
+                height: 12rem !important;
+            }
+
+            .blog-card-body {
+                padding: 1rem !important;
+            }
+
+            .blog-card-footer {
+                align-items: flex-start;
+            }
+
+            .blog-card-actions {
+                margin-left: auto;
+            }
+
+            .blogs-pagination {
+                padding: .75rem !important;
+            }
+
+            .blogs-empty-state {
+                min-height: 22rem !important;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .blog-card-actions {
+                gap: .375rem !important;
+            }
+
+            .blog-card-actions a,
+            .blog-card-actions button {
+                width: 2.25rem;
+                height: 2.25rem;
+            }
+
+            .blog-cover {
+                height: 10rem !important;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-[#f6f8fb] text-slate-900">
@@ -18,14 +182,15 @@
 
         {{-- SIDEBAR --}}
         @include('admin.partials.sidebar')
+        <div id="adminSidebarOverlay" aria-hidden="true"></div>
 
 
         {{-- MAIN --}}
-        <main class="flex-1 min-w-0 overflow-hidden">
+        <main id="blogsMainContent" class="flex-1 min-w-0 overflow-hidden">
 
 
             {{-- TOP HEADER --}}
-            <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-7">
+            <header id="blogsTopHeader" class="min-h-16 bg-white border-b border-slate-200 flex items-center justify-between px-7">
 
                 <div class="flex items-center gap-3">
 
@@ -65,7 +230,7 @@
 
 
             {{-- CONTENT --}}
-            <div class="p-7">
+            <div class="blogs-content p-7">
 
 
                 {{-- SUCCESS --}}
@@ -143,7 +308,7 @@
 
 
                 {{-- PAGE INTRO --}}
-                <div class="flex items-end justify-between mb-6">
+                <div class="blogs-page-intro flex items-end justify-between mb-6">
 
                     <div>
 
@@ -168,7 +333,7 @@
 
                     <div class="flex items-center gap-2">
 
-                        <div class="px-3 py-2 bg-white border border-slate-200 rounded-lg">
+                        <div class="blogs-total px-3 py-2 bg-white border border-slate-200 rounded-lg">
 
                             <span class="text-[10px] text-slate-500 uppercase font-bold">
                                 Total Blogs
@@ -189,17 +354,17 @@
                 {{-- BLOG GRID --}}
                 @if($blogs->count())
 
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div class="blogs-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
 
                     @foreach($blogs as $blog)
 
                     <article
-                        class="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        class="blog-card group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
 
 
                         {{-- IMAGE --}}
-                        <div class="relative h-52 bg-slate-100 overflow-hidden">
+                        <div class="blog-cover relative h-52 bg-slate-100 overflow-hidden">
 
 
                             @if($blog->image)
@@ -288,7 +453,7 @@
 
 
                         {{-- CARD BODY --}}
-                        <div class="p-5">
+                        <div class="blog-card-body p-5">
 
 
                             {{-- CATEGORY / META --}}
@@ -330,7 +495,7 @@
 
 
                             {{-- FOOTER --}}
-                            <div class="flex items-center justify-between">
+                            <div class="blog-card-footer flex items-center justify-between">
 
 
                                 {{-- BLOG ID --}}
@@ -361,7 +526,7 @@
 
 
                                 {{-- ACTIONS --}}
-                                <div class="flex items-center gap-2">
+                                <div class="blog-card-actions flex items-center gap-2">
 
 
                                     {{-- EDIT --}}
@@ -417,7 +582,7 @@
                 {{-- PAGINATION --}}
                 @if($blogs->hasPages())
 
-                <div class="mt-7 bg-white border border-slate-200 rounded-xl px-5 py-4">
+                <div class="blogs-pagination mt-7 bg-white border border-slate-200 rounded-xl px-5 py-4">
 
                     {{ $blogs->links() }}
 
@@ -430,7 +595,7 @@
 
 
                 {{-- EMPTY STATE --}}
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+                <div class="blogs-empty-state bg-white rounded-2xl border border-slate-200 shadow-sm">
 
                     <div class="min-h-[500px] flex items-center justify-center px-6">
 
@@ -505,56 +670,70 @@
                 lucide.createIcons();
             }
 
+            const sidebarOverlay = document.getElementById('adminSidebarOverlay');
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', function() {
+                    document.body.classList.remove('admin-sidebar-mobile-open');
+                    sidebarOverlay.style.display = 'none';
+                });
+            }
+
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    document.body.classList.remove('admin-sidebar-mobile-open');
+                    if (sidebarOverlay) sidebarOverlay.style.display = 'none';
+                }
+            });
         });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-    function confirmDelete(event, form) {
-        event.preventDefault();
+    <script>
+        function confirmDelete(event, form) {
+            event.preventDefault();
 
-        Swal.fire({
-            title: 'Delete Blog?',
-            text: 'This blog will be permanently deleted.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc2626',
-            cancelButtonColor: '#64748b',
-            confirmButtonText: 'Yes, Delete',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
-        });
+            Swal.fire({
+                title: 'Delete Blog?',
+                text: 'This blog will be permanently deleted.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, Delete',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
 
-        return false;
-    }
-</script>
+            return false;
+        }
+    </script>
 
-<script>
-    function confirmEdit(event, url) {
-        event.preventDefault();
+    <script>
+        function confirmEdit(event, url) {
+            event.preventDefault();
 
-        Swal.fire({
-            title: 'Edit Blog?',
-            text: 'You are about to edit this blog.',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#059669',
-            cancelButtonColor: '#64748b',
-            confirmButtonText: 'Yes, Edit',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = url;
-            }
-        });
+            Swal.fire({
+                title: 'Edit Blog?',
+                text: 'You are about to edit this blog.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#059669',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, Edit',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
 
-        return false;
-    }
-</script>
+            return false;
+        }
+    </script>
 
 </body>
 

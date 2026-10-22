@@ -12,11 +12,10 @@
     </title>
 
     @if(\App\Models\Setting::get('site_favicon'))
-        <link
-            rel="icon"
-            type="image/x-icon"
-            href="{{ \App\Models\Setting::get('site_favicon') }}"
-        >
+    <link
+        rel="icon"
+        type="image/x-icon"
+        href="{{ \App\Models\Setting::get('site_favicon') }}">
     @endif
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,13 +23,11 @@
     <link
         rel="preconnect"
         href="https://fonts.gstatic.com"
-        crossorigin
-    >
+        crossorigin>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
+        rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -42,8 +39,182 @@
     </script>
 
     <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: clip;
+        }
+
         body {
+            margin: 0;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
             font-family: 'Inter', sans-serif;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .settings-content {
+            min-width: 0;
+            width: auto;
+            flex: 1 1 0%;
+        }
+
+        .settings-header,
+        .settings-main,
+        .settings-main form,
+        .settings-main form>div {
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        .settings-main {
+            width: 100%;
+            flex: 1 0 auto;
+        }
+
+        .settings-main input,
+        .settings-main textarea,
+        .settings-main select,
+        .settings-main button {
+            max-width: 100%;
+            min-width: 0;
+            font: inherit;
+        }
+
+        .settings-main input,
+        .settings-main textarea,
+        .settings-main select {
+            width: 100%;
+        }
+
+        @media (max-width: 767px) {
+
+            html,
+            body {
+                width: 100%;
+                max-width: 100%;
+                min-height: 100%;
+            }
+
+            body {
+                display: flex !important;
+                flex-direction: column !important;
+                height: auto !important;
+                min-height: 100vh;
+                min-height: 100dvh;
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+            }
+
+            .settings-content {
+                display: flex;
+                flex: 1 1 auto;
+                flex-direction: column;
+                width: 100% !important;
+                min-width: 0;
+                max-width: 100%;
+                min-height: 100vh;
+                min-height: 100dvh;
+                height: auto !important;
+                margin: 0 !important;
+                overflow: visible !important;
+            }
+
+            .settings-header {
+                position: sticky;
+                top: 0;
+                z-index: 30;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: .65rem;
+                width: 100%;
+                min-height: 4rem;
+                height: auto !important;
+                padding: .75rem !important;
+            }
+
+            .settings-header>div {
+                min-width: 0;
+                flex: 1 1 auto;
+            }
+
+            .settings-header a {
+                max-width: 100%;
+                white-space: normal;
+                text-align: center;
+                padding: .5rem .65rem !important;
+            }
+
+            .settings-main {
+                display: block;
+                width: 100% !important;
+                max-width: 100%;
+                min-width: 0;
+                padding: 1rem .75rem 1.5rem !important;
+                overflow: visible !important;
+            }
+
+            .settings-main form {
+                width: 100%;
+            }
+
+            .settings-main form>div {
+                width: 100%;
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+
+            .settings-main .grid {
+                grid-template-columns: minmax(0, 1fr) !important;
+            }
+
+            .settings-main .grid>*,
+            .settings-main form>div>div {
+                min-width: 0;
+            }
+
+            .settings-main input,
+            .settings-main textarea,
+            .settings-main select {
+                width: 100%;
+                min-height: 2.75rem;
+                font-size: 16px;
+            }
+
+            .settings-main textarea {
+                min-height: auto;
+            }
+
+            .settings-main label {
+                overflow-wrap: anywhere;
+            }
+
+            .settings-main .flex.justify-end {
+                justify-content: stretch;
+            }
+
+            .settings-main button[type="submit"] {
+                width: 100%;
+                justify-content: center;
+                min-height: 2.75rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .settings-main {
+                max-width: 64rem;
+            }
         }
     </style>
 
@@ -53,9 +224,9 @@
 
     @include('admin.partials.sidebar')
 
-    <div class="flex-1 flex flex-col overflow-y-auto min-w-0">
+    <div class="settings-content flex-1 flex flex-col overflow-y-auto min-w-0">
 
-        <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 sticky top-0 z-30">
+        <header class="settings-header h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 sticky top-0 z-30">
 
             <div class="flex items-center gap-2 text-xs">
 
@@ -75,54 +246,53 @@
 
             <a
                 href="{{ route('admin.dashboard') }}"
-                class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
-            >
+                class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
                 ← Back to Dashboard
             </a>
 
         </header>
 
-        <main class="p-6 max-w-5xl space-y-6">
+        <main class="settings-main p-6 max-w-5xl space-y-6">
 
             @if(session('success'))
 
-                <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs flex items-center gap-2">
+            <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs flex items-center gap-2">
 
-                    <i
-                        data-lucide="check-circle"
-                        class="w-4 h-4 text-emerald-600">
-                    </i>
+                <i
+                    data-lucide="check-circle"
+                    class="w-4 h-4 text-emerald-600">
+                </i>
 
-                    <span>
-                        {{ session('success') }}
-                    </span>
+                <span>
+                    {{ session('success') }}
+                </span>
 
-                </div>
+            </div>
 
             @endif
 
 
             @if($errors->any())
 
-                <div class="p-4 bg-red-50 border border-red-200 text-red-800 rounded-xl text-xs">
+            <div class="p-4 bg-red-50 border border-red-200 text-red-800 rounded-xl text-xs">
 
-                    <div class="font-bold mb-2">
-                        Please fix the following:
-                    </div>
-
-                    <ul class="list-disc pl-5 space-y-1">
-
-                        @foreach($errors->all() as $error)
-
-                            <li>
-                                {{ $error }}
-                            </li>
-
-                        @endforeach
-
-                    </ul>
-
+                <div class="font-bold mb-2">
+                    Please fix the following:
                 </div>
+
+                <ul class="list-disc pl-5 space-y-1">
+
+                    @foreach($errors->all() as $error)
+
+                    <li>
+                        {{ $error }}
+                    </li>
+
+                    @endforeach
+
+                </ul>
+
+            </div>
 
             @endif
 
@@ -130,8 +300,7 @@
             <form
                 action="{{ route('admin.settings.update') }}"
                 method="POST"
-                class="space-y-6 text-xs"
-            >
+                class="space-y-6 text-xs">
 
                 @csrf
 
@@ -155,8 +324,7 @@
                                 type="text"
                                 name="site_title"
                                 value="{{ old('site_title', \App\Models\Setting::get('site_title', 'Dharamshala Travels')) }}"
-                                class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                            >
+                                class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                         </div>
 
@@ -171,8 +339,7 @@
                                 type="text"
                                 name="site_phone"
                                 value="{{ old('site_phone', \App\Models\Setting::get('site_phone', '+91 98765 43210')) }}"
-                                class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                            >
+                                class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                         </div>
 
@@ -187,8 +354,7 @@
                                 type="text"
                                 name="site_email"
                                 value="{{ old('site_email', \App\Models\Setting::get('site_email', 'info@dharamshalatravels.com')) }}"
-                                class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                            >
+                                class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                         </div>
 
@@ -203,8 +369,7 @@
                                 type="text"
                                 name="site_address"
                                 value="{{ old('site_address', \App\Models\Setting::get('site_address', 'Main Square, McLeodganj')) }}"
-                                class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                            >
+                                class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                         </div>
 
@@ -243,8 +408,7 @@
                                 name="footer_description"
                                 rows="3"
                                 placeholder="Write a short description about your travel business..."
-                                class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none"
-                            >{{ old('footer_description', \App\Models\Setting::get('footer_description', 'Reliable cab services, airport transfers and Himachal tour packages from Dharamshala. Travel comfortably with experienced local drivers.')) }}</textarea>
+                                class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none">{{ old('footer_description', \App\Models\Setting::get('footer_description', 'Reliable cab services, airport transfers and Himachal tour packages from Dharamshala. Travel comfortably with experienced local drivers.')) }}</textarea>
 
                         </div>
 
@@ -262,8 +426,7 @@
                                     name="footer_facebook"
                                     value="{{ old('footer_facebook', \App\Models\Setting::get('footer_facebook', '')) }}"
                                     placeholder="https://facebook.com/yourpage"
-                                    class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                >
+                                    class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                             </div>
 
@@ -279,8 +442,7 @@
                                     name="footer_instagram"
                                     value="{{ old('footer_instagram', \App\Models\Setting::get('footer_instagram', '')) }}"
                                     placeholder="https://instagram.com/yourpage"
-                                    class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                >
+                                    class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                             </div>
 
@@ -296,8 +458,7 @@
                                     name="footer_youtube"
                                     value="{{ old('footer_youtube', \App\Models\Setting::get('footer_youtube', '')) }}"
                                     placeholder="https://youtube.com/@yourchannel"
-                                    class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                >
+                                    class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                             </div>
 
@@ -313,8 +474,7 @@
                                     name="footer_whatsapp"
                                     value="{{ old('footer_whatsapp', \App\Models\Setting::get('footer_whatsapp', '')) }}"
                                     placeholder="+91 98765 43210"
-                                    class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                >
+                                    class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                             </div>
 
@@ -332,8 +492,7 @@
                                 name="footer_map_url"
                                 value="{{ old('footer_map_url', \App\Models\Setting::get('footer_map_url', '')) }}"
                                 placeholder="https://maps.google.com/..."
-                                class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                            >
+                                class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                         </div>
 
@@ -341,7 +500,7 @@
 
                 </div>
 
-                                {{-- SEO --}}
+                {{-- SEO --}}
                 <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
 
                     <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
@@ -389,8 +548,7 @@
                                         name="meta_title"
                                         value="{{ old('meta_title', \App\Models\Setting::get('meta_title', 'Dharamshala Travels | Verified Cabs & Tours')) }}"
                                         placeholder="Dharamshala Travels | Verified Cabs & Tours"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -406,8 +564,7 @@
                                         name="meta_description"
                                         rows="3"
                                         placeholder="Book verified cabs and tour packages in Dharamshala..."
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none"
-                                    >{{ old('meta_description', \App\Models\Setting::get('meta_description', 'Book verified cabs and tour packages in Kangra Valley.')) }}</textarea>
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none">{{ old('meta_description', \App\Models\Setting::get('meta_description', 'Book verified cabs and tour packages in Kangra Valley.')) }}</textarea>
 
                                 </div>
 
@@ -423,8 +580,7 @@
                                         name="meta_keywords"
                                         rows="2"
                                         placeholder="dharamshala taxi, dharamshala tours, himachal tour packages"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none"
-                                    >{{ old('meta_keywords', \App\Models\Setting::get('meta_keywords', 'taxi in dharamshala, gaggal airport cab, mcleodganj taxi booking, himachal tours')) }}</textarea>
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none">{{ old('meta_keywords', \App\Models\Setting::get('meta_keywords', 'taxi in dharamshala, gaggal airport cab, mcleodganj taxi booking, himachal tours')) }}</textarea>
 
                                 </div>
 
@@ -438,34 +594,29 @@
 
                                     <select
                                         name="meta_robots"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                         <option
                                             value="index,follow"
-                                            {{ old('meta_robots', \App\Models\Setting::get('meta_robots', 'index,follow')) == 'index,follow' ? 'selected' : '' }}
-                                        >
+                                            {{ old('meta_robots', \App\Models\Setting::get('meta_robots', 'index,follow')) == 'index,follow' ? 'selected' : '' }}>
                                             Index, Follow
                                         </option>
 
                                         <option
                                             value="index,nofollow"
-                                            {{ old('meta_robots', \App\Models\Setting::get('meta_robots', 'index,follow')) == 'index,nofollow' ? 'selected' : '' }}
-                                        >
+                                            {{ old('meta_robots', \App\Models\Setting::get('meta_robots', 'index,follow')) == 'index,nofollow' ? 'selected' : '' }}>
                                             Index, No Follow
                                         </option>
 
                                         <option
                                             value="noindex,follow"
-                                            {{ old('meta_robots', \App\Models\Setting::get('meta_robots', 'index,follow')) == 'noindex,follow' ? 'selected' : '' }}
-                                        >
+                                            {{ old('meta_robots', \App\Models\Setting::get('meta_robots', 'index,follow')) == 'noindex,follow' ? 'selected' : '' }}>
                                             No Index, Follow
                                         </option>
 
                                         <option
                                             value="noindex,nofollow"
-                                            {{ old('meta_robots', \App\Models\Setting::get('meta_robots', 'index,follow')) == 'noindex,nofollow' ? 'selected' : '' }}
-                                        >
+                                            {{ old('meta_robots', \App\Models\Setting::get('meta_robots', 'index,follow')) == 'noindex,nofollow' ? 'selected' : '' }}>
                                             No Index, No Follow
                                         </option>
 
@@ -498,8 +649,7 @@
                                         name="og_title"
                                         value="{{ old('og_title', \App\Models\Setting::get('og_title', '')) }}"
                                         placeholder="Dharamshala Travels"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -514,8 +664,7 @@
                                         name="og_description"
                                         rows="3"
                                         placeholder="Description shown when your website is shared on Facebook..."
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none"
-                                    >{{ old('og_description', \App\Models\Setting::get('og_description', '')) }}</textarea>
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none">{{ old('og_description', \App\Models\Setting::get('og_description', '')) }}</textarea>
 
                                 </div>
 
@@ -531,8 +680,7 @@
                                         name="og_image"
                                         value="{{ old('og_image', \App\Models\Setting::get('og_image', '')) }}"
                                         placeholder="https://example.com/og-image.jpg"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -558,20 +706,17 @@
 
                                     <select
                                         name="twitter_card"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                         <option
                                             value="summary_large_image"
-                                            {{ old('twitter_card', \App\Models\Setting::get('twitter_card', 'summary_large_image')) == 'summary_large_image' ? 'selected' : '' }}
-                                        >
+                                            {{ old('twitter_card', \App\Models\Setting::get('twitter_card', 'summary_large_image')) == 'summary_large_image' ? 'selected' : '' }}>
                                             Summary Large Image
                                         </option>
 
                                         <option
                                             value="summary"
-                                            {{ old('twitter_card', \App\Models\Setting::get('twitter_card', 'summary_large_image')) == 'summary' ? 'selected' : '' }}
-                                        >
+                                            {{ old('twitter_card', \App\Models\Setting::get('twitter_card', 'summary_large_image')) == 'summary' ? 'selected' : '' }}>
                                             Summary
                                         </option>
 
@@ -591,8 +736,7 @@
                                         name="twitter_title"
                                         value="{{ old('twitter_title', \App\Models\Setting::get('twitter_title', '')) }}"
                                         placeholder="Dharamshala Travels"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -607,8 +751,7 @@
                                         name="twitter_description"
                                         rows="3"
                                         placeholder="Travel across Himachal with Dharamshala Travels"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none"
-                                    >{{ old('twitter_description', \App\Models\Setting::get('twitter_description', '')) }}</textarea>
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none">{{ old('twitter_description', \App\Models\Setting::get('twitter_description', '')) }}</textarea>
 
                                 </div>
 
@@ -624,8 +767,7 @@
                                         name="twitter_image"
                                         value="{{ old('twitter_image', \App\Models\Setting::get('twitter_image', '')) }}"
                                         placeholder="https://example.com/twitter-image.jpg"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -633,7 +775,7 @@
 
                         </div>
 
-                                                {{-- LOCAL BUSINESS SEO --}}
+                        {{-- LOCAL BUSINESS SEO --}}
                         <div class="border-t border-slate-100 pt-5">
 
                             <h4 class="text-xs font-bold text-slate-900 mb-3">
@@ -652,8 +794,7 @@
                                         type="text"
                                         name="seo_business_name"
                                         value="{{ old('seo_business_name', \App\Models\Setting::get('seo_business_name', 'Dharamshala Travels')) }}"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -669,8 +810,7 @@
                                         name="seo_business_logo"
                                         value="{{ old('seo_business_logo', \App\Models\Setting::get('seo_business_logo', '')) }}"
                                         placeholder="https://example.com/logo.png"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -685,8 +825,7 @@
                                         type="text"
                                         name="seo_business_phone"
                                         value="{{ old('seo_business_phone', \App\Models\Setting::get('seo_business_phone', '+91 98765 43210')) }}"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -701,8 +840,7 @@
                                         type="text"
                                         name="seo_business_email"
                                         value="{{ old('seo_business_email', \App\Models\Setting::get('seo_business_email', 'info@dharamshalatravels.com')) }}"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -717,8 +855,7 @@
                                         type="text"
                                         name="seo_business_address"
                                         value="{{ old('seo_business_address', \App\Models\Setting::get('seo_business_address', 'Dharamshala, Himachal Pradesh, India')) }}"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -736,8 +873,7 @@
                                             name="seo_latitude"
                                             value="{{ old('seo_latitude', \App\Models\Setting::get('seo_latitude', '')) }}"
                                             placeholder="32.2190"
-                                            class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                        >
+                                            class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                     </div>
 
@@ -753,8 +889,7 @@
                                             name="seo_longitude"
                                             value="{{ old('seo_longitude', \App\Models\Setting::get('seo_longitude', '')) }}"
                                             placeholder="76.3234"
-                                            class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                        >
+                                            class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                     </div>
 
@@ -772,8 +907,7 @@
                                         name="seo_opening_hours"
                                         value="{{ old('seo_opening_hours', \App\Models\Setting::get('seo_opening_hours', 'Mo-Su 06:00-23:00')) }}"
                                         placeholder="Mo-Su 06:00-23:00"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -789,8 +923,7 @@
                                         name="seo_price_range"
                                         value="{{ old('seo_price_range', \App\Models\Setting::get('seo_price_range', '₹₹')) }}"
                                         placeholder="₹₹"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -805,8 +938,7 @@
                                         name="seo_service_areas"
                                         rows="3"
                                         placeholder="Dharamshala, McLeodganj, Kangra, Himachal Pradesh"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none"
-                                    >{{ old('seo_service_areas', \App\Models\Setting::get('seo_service_areas', 'Dharamshala, McLeodganj, Kangra, Himachal Pradesh')) }}</textarea>
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900 resize-none">{{ old('seo_service_areas', \App\Models\Setting::get('seo_service_areas', 'Dharamshala, McLeodganj, Kangra, Himachal Pradesh')) }}</textarea>
 
                                 </div>
 
@@ -825,8 +957,7 @@
                             <input
                                 type="hidden"
                                 name="seo_schema_enabled"
-                                value="0"
-                            >
+                                value="0">
 
                             <label class="flex items-center gap-3 cursor-pointer">
 
@@ -835,8 +966,7 @@
                                     name="seo_schema_enabled"
                                     value="1"
                                     {{ old('seo_schema_enabled', \App\Models\Setting::get('seo_schema_enabled', '1')) == '1' ? 'checked' : '' }}
-                                    class="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
-                                >
+                                    class="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
 
                                 <span class="font-semibold text-slate-700">
                                     Enable Schema / Structured Data
@@ -867,8 +997,7 @@
                                         name="google_site_verification"
                                         value="{{ old('google_site_verification', \App\Models\Setting::get('google_site_verification', '')) }}"
                                         placeholder="Google verification code"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -884,8 +1013,7 @@
                                         name="google_analytics_id"
                                         value="{{ old('google_analytics_id', \App\Models\Setting::get('google_analytics_id', '')) }}"
                                         placeholder="G-XXXXXXXXXX"
-                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900"
-                                    >
+                                        class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-slate-900">
 
                                 </div>
 
@@ -904,8 +1032,7 @@
 
                     <button
                         type="submit"
-                        class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 py-2.5 rounded-lg transition"
-                    >
+                        class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 py-2.5 rounded-lg transition">
 
                         <i
                             data-lucide="save"
@@ -927,15 +1054,13 @@
 
 
     <script>
-
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
 
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
 
         });
-
     </script>
 
 </body>

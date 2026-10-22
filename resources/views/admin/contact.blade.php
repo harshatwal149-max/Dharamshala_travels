@@ -18,20 +18,37 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
+        * { box-sizing: border-box; }
+        html { min-height: 100%; }
+        body { font-family: 'Inter', sans-serif; min-height: 100vh; }
+        .contact-admin-shell { min-width: 0; width: 100%; }
+        .contact-admin-header { gap: 12px; flex-wrap: wrap; }
+        .contact-admin-main { width: 100%; min-width: 0; }
+        .contact-admin-card { min-width: 0; overflow-wrap: anywhere; }
+        .contact-admin-card input, .contact-admin-card textarea { max-width: 100%; min-width: 0; }
+        .contact-phone-row, .contact-phone-row > * { min-width: 0; }
+        @media (max-width: 640px) {
+            .contact-admin-header { height: auto !important; min-height: 4rem; padding: 12px 14px !important; align-items: flex-start; }
+            .contact-admin-header a { max-width: 100%; white-space: normal; }
+            .contact-admin-main { padding: 14px !important; }
+            .contact-admin-card { padding: 16px !important; }
+            .contact-phone-row { flex-direction: column; }
+            .contact-phone-row > input, .contact-phone-row > div, .contact-phone-row > button { width: 100%; }
+            .contact-phone-row > button { display: flex; justify-content: center; }
+            .contact-save-row { justify-content: stretch !important; }
+            .contact-save-row button { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 
-<body class="bg-slate-100 text-slate-800 antialiased flex h-screen overflow-hidden">
+<body class="bg-slate-100 text-slate-800 antialiased flex min-h-screen overflow-x-hidden">
 
     @include('admin.partials.sidebar')
 
-    <div class="flex-1 flex flex-col overflow-y-auto min-w-0">
+    <div class="contact-admin-shell flex-1 flex flex-col min-w-0">
 
         {{-- HEADER --}}
-        <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 sticky top-0 z-30">
+        <header class="contact-admin-header min-h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between shrink-0 sticky top-0 z-30">
 
             <div class="flex items-center gap-2 text-xs">
                 <span class="text-slate-400">Admin</span>
@@ -50,7 +67,7 @@
         </header>
 
         {{-- CONTENT --}}
-        <main class="flex-1 p-6 overflow-y-auto">
+        <main class="contact-admin-main flex-1 p-3 sm:p-4 lg:p-6">
 
             <div class="max-w-4xl space-y-6">
 
@@ -94,7 +111,7 @@
 
                     @csrf
 
-                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
+                    <div class="contact-admin-card bg-white rounded-xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-6">
 
                         {{-- TITLE --}}
                         <div>
@@ -162,10 +179,10 @@
 
                             <div class="space-y-2" data-phone-list>
                                 @foreach($extraPhones as $i => $row)
-                                    <div class="flex items-start gap-2" data-phone-row>
+                                    <div class="contact-phone-row flex flex-col sm:flex-row items-stretch sm:items-start gap-2" data-phone-row>
                                         <input type="text" name="extra_phones[{{ $i }}][label]" value="{{ $row['label'] ?? '' }}" maxlength="40" list="phone-labels"
                                             placeholder="Label (optional)"
-                                            class="w-36 sm:w-44 shrink-0 px-3 py-3 bg-white border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                                            class="w-full sm:w-36 lg:w-44 sm:shrink-0 px-3 py-3 bg-white border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                                         <div class="relative flex-1">
                                             <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
                                             <input type="tel" name="extra_phones[{{ $i }}][number]" value="{{ $row['number'] ?? '' }}" maxlength="30"
@@ -191,9 +208,9 @@
                             </button>
 
                             <template data-phone-template>
-                                <div class="flex items-start gap-2" data-phone-row>
+                                <div class="contact-phone-row flex flex-col sm:flex-row items-stretch sm:items-start gap-2" data-phone-row>
                                     <input type="text" data-name="label" maxlength="40" list="phone-labels" placeholder="Label (optional)"
-                                        class="w-36 sm:w-44 shrink-0 px-3 py-3 bg-white border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                                        class="w-full sm:w-36 lg:w-44 sm:shrink-0 px-3 py-3 bg-white border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                                     <div class="relative flex-1">
                                         <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
                                         <input type="tel" data-name="number" maxlength="30" placeholder="+91 98160 00000"
@@ -266,7 +283,7 @@
                         </div>
 
                         {{-- SAVE --}}
-                        <div class="flex justify-end pt-2">
+                        <div class="contact-save-row flex justify-end pt-2">
 
                             <button
                                 type="submit"
@@ -313,8 +330,10 @@
                         input.name = 'extra_phones[' + i + '][' + field + ']';
                     });
                 });
-                document.querySelector('[data-phone-count]').textContent = rows.length;
-                document.querySelector('[data-phone-empty]').classList.toggle('hidden', rows.length > 0);
+                var countEl = document.querySelector('[data-phone-count]');
+                var emptyEl = document.querySelector('[data-phone-empty]');
+                if (countEl) countEl.textContent = rows.length;
+                if (emptyEl) emptyEl.classList.toggle('hidden', rows.length > 0);
                 addBtn.disabled = rows.length >= MAX;
             }
 

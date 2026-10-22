@@ -53,26 +53,136 @@
         .inquiry-table th {
             white-space: nowrap;
         }
+
+        /* Responsive admin layout */
+        #adminMainContent {
+            min-width: 0;
+            width: 100%;
+        }
+
+        #adminTopHeader {
+            min-height: 4rem;
+            height: auto;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+
+        .inquiry-table {
+            min-width: 900px;
+            width: 100%;
+        }
+
+        .inquiry-table-wrap {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .inquiry-pagination {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        .inquiry-pagination nav {
+            min-width: max-content;
+        }
+
+        .inquiry-table td {
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 767px) {
+            body.admin-inquiries-page {
+                height: auto;
+                min-height: 100vh;
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+
+            #adminMainContent {
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+
+            #adminTopHeader {
+                padding-left: 1rem;
+                padding-right: 1rem;
+                align-items: flex-start;
+            }
+
+            #adminTopHeader > div:last-child {
+                margin-left: auto;
+            }
+
+            #adminPageContent {
+                width: 100%;
+                max-width: 100%;
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            #inquirySearchForm,
+            #inquirySearchForm > div,
+            #inquirySearchForm > div > div {
+                min-width: 0;
+                max-width: 100%;
+            }
+
+            #inquirySearchForm input,
+            #inquirySearchForm select {
+                width: 100%;
+                min-width: 0;
+            }
+
+            #inquirySearchForm {
+                padding: 1rem;
+            }
+
+            #inquirySearchActions {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            #inquirySearchActions > * {
+                justify-content: center;
+                text-align: center;
+            }
+
+            .inquiry-table th,
+            .inquiry-table td {
+                padding: 0.75rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            #inquirySearchActions {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
-<body class="bg-slate-100 text-slate-800 antialiased flex h-screen overflow-hidden">
+<body class="admin-inquiries-page bg-slate-100 text-slate-800 antialiased flex h-screen overflow-hidden">
 
     {{-- =========================================================
          COMMON ADMIN SIDEBAR
     ========================================================== --}}
     @include('admin.partials.sidebar')
+    <div id="adminSidebarOverlay" class="hidden fixed inset-0 bg-slate-950 bg-opacity-50 z-40 md:hidden" aria-hidden="true"></div>
 
 
     {{-- =========================================================
          MAIN CONTENT
     ========================================================== --}}
-    <div class="flex-1 flex flex-col overflow-y-auto min-w-0">
+    <div id="adminMainContent" class="flex-1 flex flex-col overflow-y-auto min-w-0">
 
         {{-- =====================================================
              TOP HEADER
         ====================================================== --}}
-        <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 sticky top-0 z-30">
+        <header id="adminTopHeader" class="min-h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 sticky top-0 z-30">
 
             {{-- Breadcrumb --}}
             <div class="flex items-center gap-2 text-xs">
@@ -96,7 +206,7 @@
         {{-- =====================================================
              PAGE CONTENT
         ====================================================== --}}
-        <main class="p-6 space-y-6">
+        <main id="adminPageContent" class="p-6 space-y-6 min-w-0">
 
             {{-- Page Heading --}}
             <section class="space-y-1">
@@ -115,7 +225,7 @@
             ================================================== --}}
             <form method="GET"
                 action="{{ route('admin.inquiries.index') }}"
-                class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+                id="inquirySearchForm" class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
 
@@ -154,7 +264,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3 mt-4">
+                <div id="inquirySearchActions" class="flex items-center gap-3 mt-4 flex-wrap">
                     <button type="submit"
                         class="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition">
                         Search
@@ -210,9 +320,9 @@
             ================================================== --}}
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
 
-                <div class="overflow-x-auto">
+                <div class="inquiry-table-wrap">
 
-                    <table class="w-full text-left border-collapse text-xs inquiry-table">
+                    <table class="text-left border-collapse text-xs inquiry-table">
 
                         <thead>
                             <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
@@ -384,7 +494,7 @@
 
                 {{-- Pagination --}}
                 @if(method_exists($enquiries, 'links'))
-                <div class="px-5 py-4 border-t border-slate-100">
+                <div class="inquiry-pagination px-3 sm:px-5 py-4 border-t border-slate-100">
                     {{ $enquiries->withQueryString()->links() }}
                 </div>
                 @endif
@@ -405,6 +515,21 @@
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
+
+            const sidebarOverlay = document.getElementById('adminSidebarOverlay');
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', function () {
+                    document.body.classList.remove('admin-sidebar-mobile-open');
+                    sidebarOverlay.classList.add('hidden');
+                });
+            }
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    document.body.classList.remove('admin-sidebar-mobile-open');
+                    if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
+                }
+            });
 
             document.querySelectorAll('.delete-inquiry-form').forEach(function(form) {
 

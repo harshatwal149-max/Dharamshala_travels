@@ -1,4 +1,12 @@
-<aside class="w-64 h-screen bg-white border-r border-slate-200 flex flex-col shrink-0 overflow-hidden">
+<aside
+    id="adminSidebar"
+    class="fixed inset-y-0 left-0 z-50 flex h-screen w-72 max-w-[85vw]
+           -translate-x-full flex-col overflow-hidden border-r border-slate-200
+           !bg-white shadow-xl transition-transform duration-300 ease-in-out
+           md:sticky md:top-0 md:h-screen md:w-64 md:max-w-none
+           md:translate-x-0 md:shadow-none shrink-0"
+    aria-label="Admin navigation"
+>
 
     {{-- Sidebar Header --}}
 
@@ -155,7 +163,7 @@
 
                         class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold
 
-                        {{ request()->routeIs('admin.bookings.\*')
+                        {{ request()->routeIs('admin.bookings.*')
 
                             ? 'bg-slate-100 text-slate-900'
 
@@ -196,7 +204,7 @@
 
                         class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold
 
-                        {{ request()->routeIs('admin.inquiries.\*')
+                        {{ request()->routeIs('admin.inquiries.*')
 
                             ? 'bg-slate-100 text-slate-900'
 
@@ -305,7 +313,7 @@
 
                         class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold
 
-                        {{ request()->routeIs('admin.vehicles.\*')
+                        {{ request()->routeIs('admin.vehicles.*')
 
                             ? 'bg-slate-100 text-slate-900'
 
@@ -340,7 +348,7 @@
 
                         class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold
 
-                        {{ request()->routeIs('admin.tours.\*') || request()->routeIs('admin.packages.\*')
+                        {{ request()->routeIs('admin.tours.*') || request()->routeIs('admin.packages.*')
 
                             ? 'bg-slate-100 text-slate-900'
 
@@ -424,7 +432,7 @@
 
                         class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold
 
-                        {{ request()->routeIs('admin.top-announcement.\*')
+                        {{ request()->routeIs('admin.top-announcement.*')
 
                             ? 'bg-slate-100 text-slate-900'
 
@@ -452,7 +460,7 @@
 
                         class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold
 
-                        {{ request()->routeIs('admin.logo-favicon.\*')
+                        {{ request()->routeIs('admin.logo-favicon.*')
 
                             ? 'bg-slate-100 text-slate-900'
 
@@ -480,7 +488,7 @@
 
                         class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold
 
-                        {{ request()->routeIs('admin.contact-information.\*')
+                        {{ request()->routeIs('admin.contact-information.*')
 
                             ? 'bg-slate-100 text-slate-900'
 
@@ -508,7 +516,7 @@
 
                         class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold
 
-                        {{ request()->routeIs('admin.email-desk.\*')
+                        {{ request()->routeIs('admin.email-desk.*')
 
                             ? 'bg-slate-100 text-slate-900'
 
@@ -564,7 +572,7 @@
 
                         class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold
 
-                        {{ request()->routeIs('admin.reviews.\*')
+                        {{ request()->routeIs('admin.reviews.*')
 
                             ? 'bg-slate-100 text-slate-900'
 
@@ -624,7 +632,7 @@
 
                     <span class="text-[10px] text-slate-500 block truncate">
 
-                        {{ auth()->user()->email ?? 'admin\@gmail.com' }}
+                        {{ auth()->user()->email ?? 'admin@gmail.com' }}
 
                     </span>
 
@@ -690,15 +698,24 @@
 </aside>
 
 
+<div
+    id="adminSidebarOverlay"
+    class="fixed inset-0 z-40 hidden bg-slate-900 bg-opacity-50 md:hidden"
+    aria-hidden="true"
+></div>
+
+
 <script>
 
     document.addEventListener('DOMContentLoaded', function () {
 
+        // Dashboard pages own the hamburger behavior. Do not create a second button
+        // or attach a competing click handler from this shared sidebar partial.
 
         function updateSidebarActiveState() {
 
 
-            const currentPath = window\.location.pathname;
+            const currentPath = window.location.pathname;
 
 
             const menuItems = document.querySelectorAll(

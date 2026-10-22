@@ -1,0 +1,22 @@
+ package-lock.json                                  |   2 [32m+[m[31m-[m
+ public/build/assets/app-A1mxLIxf.css               |   2 [31m-[m
+ public/build/assets/app-DnNKWpv6.css               |   2 [32m+[m
+ public/build/manifest.json                         |   2 [32m+[m[31m-[m
+ resources/views/admin/banner.blade.php             | 520 [32m++++++++++[m[31m------[m
+ resources/views/admin/blogs/index.blade.php        | 293 [32m+++++++[m[31m--[m
+ resources/views/admin/bookings/index.blade.php     | 568 [32m++++++++++++[m[31m------[m
+ resources/views/admin/contact.blade.php            |  47 [32m+[m[31m-[m
+ resources/views/admin/dashboard.blade.php          | 399 [32m++++++++++++[m[31m-[m
+ resources/views/admin/email-desk.blade.php         | 183 [32m++++[m[31m--[m
+ resources/views/admin/enquiries/index.blade.php    | 143 [32m++++[m[31m-[m
+ resources/views/admin/hero-banners/index.blade.php | 332 [32m++++++++++[m[31m-[m
+ resources/views/admin/login.blade.php              | 251 [32m++++++[m[31m--[m
+ resources/views/admin/logo-favicon.blade.php       | 239 [32m++++++[m[31m--[m
+ resources/views/admin/packages/form.blade.php      | 658 [32m++++++++++++++[m[31m-------[m
+ resources/views/admin/partials/sidebar.blade.php   |  41 [32m+[m[31m-[m
+ resources/views/admin/reviews/index.blade.php      | 315 [32m++++[m[31m------[m
+ resources/views/admin/settings.blade.php           | 377 [32m++++++++[m[31m----[m
+ resources/views/admin/tours/index.blade.php        |  82 [32m++[m[31m-[m
+ resources/views/admin/vehicles/edit.blade.php      | 146 [32m++++[m[31m-[m
+ resources/views/admin/vehicles/index.blade.php     | 285 [32m++++++++[m[31m-[m
+ 21 files changed, 3639 insertions(+), 1248 deletions(-)

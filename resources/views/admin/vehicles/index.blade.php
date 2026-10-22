@@ -49,9 +49,175 @@
             display: none !important;
         }
 
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            max-width: 100%;
+            min-height: 100%;
+            margin: 0;
+        }
+
+        body {
+            min-width: 0;
+            overflow-x: hidden;
+        }
+
+        #adminSidebar {
+            flex-shrink: 0;
+        }
+
+        body.admin-sidebar-collapsed #adminSidebar {
+            transform: translateX(-100%);
+            width: 0 !important;
+            min-width: 0 !important;
+            margin-left: -16rem;
+            border-right-width: 0 !important;
+        }
+
+        body.admin-sidebar-mobile-open #adminSidebar {
+            transform: translateX(0);
+        }
+
+        #adminMainContent {
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        .vehicle-table-wrap {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .vehicle-table {
+            width: 100%;
+            min-width: 760px;
+            border-collapse: collapse;
+        }
+
         .vehicle-table th {
             white-space: nowrap;
         }
+
+        .vehicle-table td {
+            overflow-wrap: anywhere;
+        }
+
+        input,
+        select,
+        button,
+        a {
+            max-width: 100%;
+        }
+
+        #vehicleModal {
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #vehicleModal > div {
+            max-height: calc(100dvh - 2rem);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+
+        #vehicleModal input[type="file"] {
+            min-width: 0;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 767px) {
+            body {
+                height: 100dvh;
+            }
+
+            #adminSidebar {
+                position: fixed !important;
+                inset: 0 auto 0 0 !important;
+                z-index: 50 !important;
+                height: 100dvh !important;
+                max-width: 85vw !important;
+                width: 16rem !important;
+                transform: translateX(-100%);
+            }
+
+            body.admin-sidebar-mobile-open #adminSidebarOverlay {
+                display: block !important;
+            }
+
+            body.admin-sidebar-mobile-open {
+                overflow: hidden;
+            }
+
+            body.admin-sidebar-collapsed #adminSidebar {
+                transform: translateX(-100%);
+                width: 16rem !important;
+                margin-left: 0;
+                border-right-width: 1px !important;
+            }
+
+            #adminTopHeader {
+                min-height: 4rem;
+                height: auto;
+                padding: .75rem 1rem;
+                flex-wrap: wrap;
+                gap: .75rem;
+            }
+
+            #adminTopHeader > div:last-child {
+                flex-wrap: wrap;
+                gap: .5rem;
+            }
+
+            #adminMainContent {
+                padding: 0;
+            }
+
+            #adminMainContentBody {
+                padding: 1rem;
+            }
+
+            .vehicle-table th,
+            .vehicle-table td {
+                padding: 0.75rem;
+            }
+
+            #adminTopHeader > div:last-child {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            #vehicleModal {
+                align-items: flex-start;
+                padding: 0.75rem;
+            }
+
+            #vehicleModal > div {
+                margin-top: 0.25rem;
+                margin-bottom: 0.25rem;
+                max-height: calc(100dvh - 1.5rem);
+                border-radius: 1rem;
+            }
+
+            #vehicleModal form {
+                gap: 1rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #adminSidebar {
+                transition: none !important;
+            }
+        }
+
     </style>
 </head>
 
@@ -61,19 +227,33 @@
     @include('admin.partials.sidebar')
 
 
+    {{-- Sidebar overlay for mobile drawer --}}
+    <div id="adminSidebarOverlay"
+         class="fixed inset-0 z-40 hidden bg-slate-900 bg-opacity-50"
+         aria-hidden="true"></div>
+
     {{-- Main Content --}}
-    <div class="flex-1 flex flex-col overflow-y-auto min-w-0">
+    <div id="adminMainContent" class="flex-1 flex flex-col overflow-y-auto overflow-x-hidden min-w-0">
 
         {{-- Top Header --}}
-        <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 sticky top-0 z-30">
+        <header id="adminTopHeader" class="min-h-16 h-auto bg-white border-b border-slate-200 px-3 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 shrink-0 sticky top-0 z-30">
 
-            <div class="flex items-center gap-2 text-xs">
+            <div class="flex min-w-0 items-center gap-2 text-xs">
+                <button
+                    type="button"
+                    id="adminSidebarToggle"
+                    class="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    aria-label="Toggle admin sidebar"
+                    aria-controls="adminSidebar"
+                    aria-expanded="false">
+                    <i data-lucide="menu" class="h-5 w-5"></i>
+                </button>
                 <span class="text-slate-400">Admin</span>
                 <span class="text-slate-300">/</span>
                 <span class="font-bold text-slate-800">Vehicles</span>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                 <a href="{{ route('home') }}"
                    target="_blank"
                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
@@ -92,7 +272,7 @@
 
 
         {{-- Page Content --}}
-        <main class="p-6 space-y-6">
+        <main id="adminMainContentBody" class="min-w-0 max-w-full p-3 sm:p-6 space-y-4 sm:space-y-6">
 
             {{-- Heading --}}
             <section class="space-y-1">
@@ -134,7 +314,7 @@
             {{-- Summary Cards --}}
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between gap-3 min-w-0">
                     <div>
                         <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
                             Total Vehicles
@@ -150,7 +330,7 @@
                 </div>
 
 
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between gap-3 min-w-0">
                     <div>
                         <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
                             Active Fleet
@@ -166,7 +346,7 @@
                 </div>
 
 
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between gap-3 min-w-0">
                     <div>
                         <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
                             Categories
@@ -199,9 +379,9 @@
             {{-- Vehicles Table --}}
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
 
-                <div class="overflow-x-auto">
+                <div class="vehicle-table-wrap">
 
-                    <table class="w-full text-left border-collapse text-xs vehicle-table">
+                    <table class="text-left border-collapse text-xs vehicle-table">
 
                         <thead>
                             <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
@@ -324,7 +504,7 @@
                                     {{-- Actions --}}
                                     <td class="py-4 px-5 text-right">
 
-                                        <div class="flex items-center justify-end gap-2">
+                                        <div class="flex items-center justify-end gap-2 min-w-max">
 
                                             <a href="{{ route('admin.vehicles.edit', $vehicle->id) }}"
                                                class="px-3.5 py-2 rounded-lg border border-slate-200 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-50 transition">
@@ -403,7 +583,7 @@
 
         <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl border border-slate-200 my-8">
 
-            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-200">
+            <div class="flex items-center justify-between gap-3 px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-200">
 
                 <div>
                     <h2 class="text-lg font-extrabold text-slate-900">
@@ -427,7 +607,7 @@
             <form action="{{ route('admin.vehicles.store') }}"
                   method="POST"
                   enctype="multipart/form-data"
-                  class="p-6 space-y-5">
+                  class="p-4 sm:p-6 space-y-5">
 
                 @csrf
 
@@ -609,10 +789,87 @@
             modal.classList.remove('flex');
         }
 
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeVehicleModal();
+                document.body.classList.remove('admin-sidebar-mobile-open');
+                const overlay = document.getElementById('adminSidebarOverlay');
+                if (overlay) overlay.classList.add('hidden');
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', function () {
 
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
+            }
+
+            const sidebar = document.getElementById('adminSidebar');
+            const sidebarToggle = document.getElementById('adminSidebarToggle');
+            const sidebarOverlay = document.getElementById('adminSidebarOverlay');
+            const mobileQuery = window.matchMedia('(max-width: 767px)');
+
+            function setSidebarState(open) {
+                if (mobileQuery.matches) {
+                    document.body.classList.toggle('admin-sidebar-mobile-open', open);
+                    document.body.classList.remove('admin-sidebar-collapsed');
+                    if (sidebarOverlay) sidebarOverlay.classList.toggle('hidden', !open);
+                } else {
+                    document.body.classList.toggle('admin-sidebar-collapsed', !open);
+                    document.body.classList.remove('admin-sidebar-mobile-open');
+                    if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
+                }
+
+                if (sidebarToggle) {
+                    sidebarToggle.setAttribute('aria-expanded', String(open));
+                    sidebarToggle.setAttribute('aria-label', open ? 'Close admin sidebar' : 'Open admin sidebar');
+                    const icon = sidebarToggle.querySelector('[data-lucide]');
+                    if (icon) {
+                        icon.setAttribute('data-lucide', open ? 'x' : 'menu');
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    }
+                }
+            }
+
+            if (sidebar && sidebarToggle) {
+                sidebarToggle.addEventListener('click', function () {
+                    const isOpen = mobileQuery.matches
+                        ? document.body.classList.contains('admin-sidebar-mobile-open')
+                        : !document.body.classList.contains('admin-sidebar-collapsed');
+                    setSidebarState(!isOpen);
+                });
+
+                if (sidebarOverlay) {
+                    sidebarOverlay.addEventListener('click', function () {
+                        setSidebarState(false);
+                    });
+                }
+
+                sidebar.querySelectorAll('a').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        if (mobileQuery.matches) setSidebarState(false);
+                    });
+                });
+
+                const onBreakpointChange = function () {
+                    document.body.classList.remove('admin-sidebar-mobile-open', 'admin-sidebar-collapsed');
+                    if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
+                    if (sidebarToggle) {
+                        sidebarToggle.setAttribute('aria-expanded', 'false');
+                        sidebarToggle.setAttribute('aria-label', 'Open admin sidebar');
+                        const icon = sidebarToggle.querySelector('[data-lucide]');
+                        if (icon) {
+                            icon.setAttribute('data-lucide', 'menu');
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
+                        }
+                    }
+                };
+
+                if (typeof mobileQuery.addEventListener === 'function') {
+                    mobileQuery.addEventListener('change', onBreakpointChange);
+                } else {
+                    mobileQuery.addListener(onBreakpointChange);
+                }
             }
 
             document.querySelectorAll('.delete-vehicle-form').forEach(function (form) {

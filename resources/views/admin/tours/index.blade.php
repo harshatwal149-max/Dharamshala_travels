@@ -22,26 +22,61 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        * { box-sizing: border-box; }
+        html, body { width: 100%; max-width: 100%; }
         body { font-family: 'Inter', sans-serif; }
         [x-cloak] { display: none !important; }
         .tour-table th { white-space: nowrap; }
+        #adminSidebar { transition: width .25s ease, transform .25s ease; }
+        #adminMainContent { min-width: 0; width: 100%; }
+        #adminSidebarOverlay { display: none; }
+        body.admin-sidebar-collapsed #adminSidebar { width: 0 !important; min-width: 0 !important; border: 0 !important; }
+        body.admin-sidebar-collapsed #adminMainContent { width: 100%; }
+        @media (max-width: 767px) {
+            body { height: 100dvh !important; min-height: 100dvh !important; overflow: hidden !important; }
+            #adminSidebar { position: fixed !important; inset: 0 auto 0 0 !important; width: min(18rem, 85vw) !important; max-width: 85vw !important; height: 100dvh !important; z-index: 50 !important; transform: translateX(-105%); }
+            body.admin-sidebar-mobile-open #adminSidebar { transform: translateX(0); }
+            #adminSidebarOverlay { position: fixed; inset: 0; z-index: 40; background: rgba(15, 23, 42, .5); cursor: pointer; }
+            body.admin-sidebar-mobile-open #adminSidebarOverlay { display: block; }
+            #adminMainContent { width: 100%; height: 100dvh; }
+            #adminTopHeader { min-height: 4rem; height: auto; padding: .65rem .85rem; gap: .6rem; flex-wrap: wrap; }
+            #adminTopHeader > div:first-child { flex: 1 1 auto; }
+            #adminTopHeader > div:last-child { gap: .5rem; flex-wrap: wrap; justify-content: flex-end; }
+            #adminTopHeader a { max-width: 100%; }
+            #adminMainContent > main { padding: 1rem; }
+            .tour-table { min-width: 650px; }
+            .tour-table th, .tour-table td { white-space: nowrap; }
+            .tour-table td:first-child { white-space: normal; }
+            .tour-table td:first-child > div { min-width: 230px; }
+            .tour-table th, .tour-table td { padding: .75rem .85rem !important; }
+        }
+        @media (max-width: 420px) {
+            #adminTopHeader > div:last-child a { padding: .5rem .6rem; font-size: 11px; }
+            #adminMainContent > main { padding: .75rem; }
+        }
     </style>
 </head>
 
 <body class="bg-slate-100 text-slate-800 antialiased flex h-screen overflow-hidden">
 
     @include('admin.partials.sidebar')
+    <div id="adminSidebarOverlay" class="hidden" aria-hidden="true"></div>
 
-    <div class="flex-1 flex flex-col overflow-y-auto min-w-0">
+    <div id="adminMainContent" class="flex-1 flex flex-col overflow-y-auto overflow-x-hidden min-w-0">
 
-        <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 sticky top-0 z-30">
-            <div class="flex items-center gap-2 text-xs">
+        <header id="adminTopHeader" class="min-h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between gap-3 shrink-0 sticky top-0 z-30">
+            <div class="flex items-center gap-2 text-xs min-w-0">
+                <button id="adminMobileMenuToggle" type="button"
+                        class="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 bg-white text-slate-700 shrink-0"
+                        aria-label="Open admin menu" aria-expanded="false">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
                 <span class="text-slate-400">Admin</span>
                 <span class="text-slate-300">/</span>
                 <span class="font-bold text-slate-800">Tours</span>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 shrink-0">
                 <a href="{{ route('home') }}" target="_blank"
                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
                     <i data-lucide="globe" class="w-3.5 h-3.5 text-slate-500"></i>
@@ -56,7 +91,7 @@
             </div>
         </header>
 
-        <main class="p-6 space-y-6">
+        <main class="p-6 space-y-6 min-w-0">
 
             <section class="space-y-1">
                 <h1 class="text-xl font-extrabold text-slate-900">Tours Management</h1>
@@ -107,20 +142,20 @@
 
             </div>
 
-            <div class="flex items-end justify-between gap-4">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 min-w-0">
                 <div>
                     <h2 class="text-lg font-extrabold text-slate-900">All Tour Circuits</h2>
                     <p class="text-sm text-slate-500 mt-1">Showing {{ $packages->count() }} tours</p>
                 </div>
 
                 <a href="{{ route('admin.packages.create') }}"
-                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-700 text-white text-xs font-semibold hover:bg-emerald-800 transition">
+                   class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-700 text-white text-xs font-semibold hover:bg-emerald-800 transition self-start sm:self-auto shrink-0">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
                     Add New Tour
                 </a>
             </div>
 
-            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden min-w-0">
                 <div class="overflow-x-auto">
 
                     <table class="w-full text-left border-collapse text-xs tour-table">
@@ -222,6 +257,37 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.getElementById('adminMobileMenuToggle');
+            const sidebarOverlay = document.getElementById('adminSidebarOverlay');
+
+            function closeMobileSidebar() {
+                document.body.classList.remove('admin-sidebar-mobile-open');
+                if (menuToggle) {
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    menuToggle.setAttribute('aria-label', 'Open admin menu');
+                }
+            }
+
+            function toggleMobileSidebar() {
+                const isOpen = document.body.classList.toggle('admin-sidebar-mobile-open');
+                if (menuToggle) {
+                    menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                    menuToggle.setAttribute('aria-label', isOpen ? 'Close admin menu' : 'Open admin menu');
+                }
+            }
+
+            if (menuToggle) {
+                menuToggle.addEventListener('click', toggleMobileSidebar);
+            }
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', closeMobileSidebar);
+            }
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') closeMobileSidebar();
+            });
+            window.addEventListener('resize', function () {
+                if (window.innerWidth >= 768) closeMobileSidebar();
+            });
 
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
